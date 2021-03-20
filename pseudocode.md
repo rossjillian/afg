@@ -27,33 +27,42 @@ Game - the game itself
 
 Game Manager - controls game, i.e. initializes game, enforces timing, etc.
 
+    template <class game_type>
     class Manager {
-        
+       	private:
+	    int time_limit; // Time limit for move
+
+    	public:
+	    game_type initialize_game(); // Initializes game		 
     }
 
 Player - a player in the game who makes moves
 
+    template <class player_type>
     class Player {
-    
+        public:
+	    player_type get_type(); // Maximizing or minimizing player
     }
 
 
 Display - handles game "graphics"
 
+    template <class display_type>
     class Display {
-    
+        public:
+	    void display_state(game_type state);
     }
 
 
 ## Minimax Algorithm
 
 The minimax algorithm requires:
-1. a game with moves that have some value (heuristic)
-2. a notion of depth
-3. two players
+1. A game with moves that have some value (heuristic)
+2. A notion of depth - this should respect the essence of the algorithm (traversing a tree)
+3. Two players
 
 
-    minimax(Game<game_type> game, int depth, player) {
+    minimax(Game<game_type> game, int depth, player_type player) {
         if game.game_over() { 
             return game.heuristic();
         }
@@ -84,3 +93,36 @@ Based on this psuedocode, we need a generic notion of:
 ## Optimizations
 
 Alpha-Beta Pruning
+
+Can we extract pruning further away from the core minimax algorithm?
+
+
+    minimax_ab(Game<game_type> game, int depth, int alpha, int beta, player_type player) {
+        if game.game_over() { 
+            return game.heuristic();
+        }
+        
+        moves = get_possible_moves(); 
+        if (player is max) {
+            val = -infinity
+            for (move : moves) {
+                val = max(val, minimax(move, depth-1, min));
+            }
+	    alpha = max(alpha, val);
+ 	    if (alpha >= beta) {
+	        break;
+	    }
+            return val;
+        }		
+        else {
+            val = infinity;
+            for (move : moves) {
+                val = min(val, minimax(move, depth-1, max));
+            }
+            beta = min(beta, val);
+	    if (beta <= alpha) {
+	        break;
+	    }
+	    return val;
+        }
+    }
