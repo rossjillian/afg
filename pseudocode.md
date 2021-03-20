@@ -29,11 +29,11 @@ Game Manager - controls game, i.e. initializes game, enforces timing, etc.
 
     template <class game_type>
     class Manager {
-       	private:
-	    int time_limit; // Time limit for move
-
-    	public:
-	    game_type initialize_game(); // Initializes game		 
+        private:
+            int time_limit; // Time limit for move
+        
+        public:
+            game_type initialize_game(); // Initializes game		 
     }
 
 Player - a player in the game who makes moves
@@ -41,7 +41,7 @@ Player - a player in the game who makes moves
     template <class player_type>
     class Player {
         public:
-	    player_type get_type(); // Maximizing or minimizing player
+            player_type get_type(); // Maximizing or minimizing player
     }
 
 
@@ -50,7 +50,7 @@ Display - handles game "graphics"
     template <class display_type>
     class Display {
         public:
-	    void display_state(game_type state);
+            void display_state(game_type state);
     }
 
 
