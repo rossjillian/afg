@@ -20,10 +20,13 @@ Board::Board(size_t size)
 
 bool Board::checkValid(int move)
 {
+    int max = board.size() * board.size() - 1;
+    if (move > max)
+    {
+        return false;
+    }
     int row = move / board.size();
     int col = move % board.size();
-    cout << row << endl;
-    cout << col << endl;
     if (board[row][col] == ' ')
     {
         return true;
@@ -93,6 +96,8 @@ int main (int argc, char **argv)
     board.printBoard();
     cout << board.checkValid(14);
     board.makeMove(3, 1);
-    board.printBoard();
+    board.makeMove(3, 0);
     board.makeMove(2, 0);
+    board.makeMove(15, 0);
+    board.printBoard();
 }
