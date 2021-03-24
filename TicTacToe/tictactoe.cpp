@@ -12,10 +12,38 @@ Board::Board(size_t size)
     {
         for (size_t j = 0; j < size; j++)
         {
-            board[i][j] = 'x';
+            board[i][j] = ' ';
         }
         
     }     
+}
+
+bool Board::checkValid(int move)
+{
+    int row = move / board.size();
+    int col = move % board.size();
+    cout << row << endl;
+    cout << col << endl;
+    if (board[row][col] == ' ')
+    {
+        return true;
+    }
+    return false;
+}
+
+void Board::makeMove(int move, int player){
+    //TODO: could remove repition from this calculation
+    int row = move / board.size();
+    int col = move % board.size();
+    if (checkValid(move))
+    {
+        if (player)
+        {
+            board[row][col] = 'x';
+        } else {
+            board[row][col] = 'o';
+        }
+    }
 }
 
 void Board::printBoard(bool instructions = false)
@@ -52,15 +80,19 @@ Game::Game(Player player1, Player player2, int size = 3)
     : board(size), 
     p1(player1),
     p2(player2),
-    currentplayer(player1)
+    currentplayer(0)
 {
 
 }
 
 int main (int argc, char **argv)
 {
-    Board board(3);
+    Board board(4);
     board.printBoard(true);
     cout << endl;
     board.printBoard();
+    cout << board.checkValid(14);
+    board.makeMove(3, 1);
+    board.printBoard();
+    board.makeMove(2, 0);
 }

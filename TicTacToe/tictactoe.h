@@ -11,6 +11,8 @@ class Board {
         bool isTerminal();
         Board(size_t size);
         void printBoard(bool instructions);
+        bool checkValid(int move);
+        void makeMove(int move, int player);
     private:
         vector<vector<char>> board;
 };
@@ -22,8 +24,7 @@ class Game {
         Board board;
         Player p1;
         Player p2;
-        Player currentplayer;
-        
+        int currentplayer;
 };
 
 #endif
