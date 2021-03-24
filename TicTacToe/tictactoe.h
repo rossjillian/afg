@@ -13,8 +13,12 @@ class Board {
         void printBoard(bool instructions);
         bool checkValid(int move);
         void makeMove(int move, int player);
+
     private:
         vector<vector<char>> board;
+        bool checkColumns();
+        bool checkRows();
+        bool checkDiagonals();
 };
 
 class Game {

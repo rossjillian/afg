@@ -49,6 +49,75 @@ void Board::makeMove(int move, int player){
     }
 }
 
+// We will know who just went, so we just need to return whether there's a winner or not
+bool Board::isTerminal()
+{
+    return checkRows() || checkColumns() || checkDiagonals();
+}
+
+bool Board::checkDiagonals()
+{
+    bool winner1 = true;
+    bool winner2 = true;
+    char elem1 = board[0][0];
+    char elem2 = board[0][board.size() - 1];
+    for (size_t i = 1; i < static_cast<size_t>(board.size()); i++)
+    {
+        if (elem2 != board[i][board.size() - 1 - i] || elem2 == ' ')
+        {
+            winner2 = false;
+        }
+        if (elem1 != board[i][i] || elem1 == ' ')
+        {
+            winner1 = false;
+        }
+    }
+    return winner1 || winner2;
+}
+
+//TODO: maybe some way to reuse code?
+bool Board::checkColumns()
+{
+    for (size_t i = 0; i < static_cast<size_t>(board.size()); i++)
+    {
+        bool winner = true;
+        char elem = board[0][i];
+        for (size_t j = 0; j < static_cast<size_t>(board.size()); j++)
+        {
+            if (elem != board[j][i] || elem == ' ')
+            {
+                winner = false;
+            }
+        }
+        if (winner)
+        {
+            return winner;
+        }
+    }
+    return false;
+}
+
+bool Board::checkRows()
+{
+    for (auto row = board.begin(); row != board.end(); ++row)
+    {
+        bool winner = true;
+        char elem = *(row -> begin());
+        for (auto col = row->begin() + 1; col != row->end(); ++col)
+        {
+            if (elem != *col || elem == ' ')
+            {
+                winner = false;
+            }
+        }
+        if (winner)
+        {
+            return winner;
+        }
+    }
+    return false;
+}
+
 void Board::printBoard(bool instructions = false)
 {
     int num = 0;
@@ -94,10 +163,10 @@ int main (int argc, char **argv)
     board.printBoard(true);
     cout << endl;
     board.printBoard();
-    cout << board.checkValid(14);
     board.makeMove(3, 1);
-    board.makeMove(3, 0);
-    board.makeMove(2, 0);
-    board.makeMove(15, 0);
+    board.makeMove(6, 1);
+    board.makeMove(9, 1);
+    board.makeMove(12, 1);
     board.printBoard();
+    cout << board.isTerminal();
 }
