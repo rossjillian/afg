@@ -1,6 +1,7 @@
 #include <iostream>
 #include "tictactoe.h"
 #include <vector>
+#include <iomanip>
 
 using namespace std; 
 
@@ -11,26 +12,32 @@ Board::Board(size_t size)
     {
         for (size_t j = 0; j < size; j++)
         {
-            board[i][j] = ' ';
+            board[i][j] = 'x';
         }
         
     }     
 }
 
-void Board::printBoard()
+void Board::printBoard(bool instructions = false)
 {
-    
+    int num = 0;
     for (auto row = board.begin(); row != board.end(); ++row)
     {
         string baseline;
         for (auto col = row->begin(); col != row->end(); ++col)
         {
             baseline += "----";
-            cout << *col;
+            if (!instructions)
+            {
+                cout << setw(2) << *col << setw(2);
+            } else {
+                cout << setw(2) << num << setw(2);
+            }
             if (col+1 != row->end())
             {
-                cout << "  |";
+                cout << "|";
             }
+            num++;
             
         }
         cout << endl;
@@ -52,6 +59,8 @@ Game::Game(Player player1, Player player2, int size = 3)
 
 int main (int argc, char **argv)
 {
-    Board board(4);
+    Board board(3);
+    board.printBoard(true);
+    cout << endl;
     board.printBoard();
 }

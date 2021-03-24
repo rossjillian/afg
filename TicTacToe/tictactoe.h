@@ -10,7 +10,7 @@ class Board {
     public:
         bool isTerminal();
         Board(size_t size);
-        void printBoard();
+        void printBoard(bool instructions);
     private:
         vector<vector<char>> board;
 };
