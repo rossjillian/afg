@@ -14,4 +14,4 @@ default: tictactoe
 
 tictactoe: tictactoe.o
 
-tictactoe.o: tictactoe.cpp
+tictactoe.o: tictactoe.cpp tictactoe.h
