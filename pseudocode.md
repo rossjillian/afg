@@ -8,7 +8,7 @@ There are several abstract objects in minimax:
 3. Player
 4. Display
 
-Game - the game itself
+Game - the game itself. 
 
     template <class game_type>
     class Game {
@@ -25,7 +25,7 @@ Game - the game itself
             
     }
 
-Game Manager - controls game, i.e. initializes game, enforces timing, etc.
+Game Manager - controls game, i.e. initializes game, enforces timing, etc. Interfaces with display.
 
     template <class game_type>
     class Manager {
