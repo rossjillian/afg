@@ -157,16 +157,37 @@ Game::Game(Player player1, Player player2, int size = 3)
 
 }
 
-int main (int argc, char **argv)
+void Game::Play()
 {
-    Board board(4);
+    cout << "How big would you like the board to be (? x ?)" << endl;
+    int size;
+    cin >> size;
+    Board board(size);
+    cout << "Refer to moves using the following chart: " << endl;
     board.printBoard(true);
     cout << endl;
+    while (!board.isTerminal())
+    {
+        cout << "Player " << currentplayer << " make a move!" << endl;
+        board.printBoard();
+        int move;
+        cin >> move;
+        if (!board.checkValid(move))
+        {
+            cout << "Invalid move." << endl;
+        } else {
+            board.makeMove(move, currentplayer);
+            currentplayer ^= 1;
+        }
+    }
     board.printBoard();
-    board.makeMove(3, 1);
-    board.makeMove(6, 1);
-    board.makeMove(9, 1);
-    board.makeMove(12, 1);
-    board.printBoard();
-    cout << board.isTerminal();
+    currentplayer ^= 1;
+    cout << "Player " << currentplayer << " wins!" << endl;
+
+}
+
+int main (int argc, char **argv)
+{
+    Game game(Player::human, Player::human);
+    game.Play();
 }

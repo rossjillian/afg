@@ -24,6 +24,7 @@ class Board {
 class Game {
     public:
         Game(Player player1, Player player2, int size);
+        void Play();
     private:
         Board board;
         Player p1;
