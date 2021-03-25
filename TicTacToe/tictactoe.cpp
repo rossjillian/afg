@@ -49,6 +49,21 @@ void Board::makeMove(int move, int player){
     }
 }
 
+bool Board::isFull()
+{
+    for (auto row = board.begin(); row != board.end(); ++row)
+    {
+        for (auto col = row->begin() + 1; col != row->end(); ++col)
+        {
+            if (*col == ' ')
+            {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
 // We will know who just went, so we just need to return whether there's a winner or not
 bool Board::isTerminal()
 {
@@ -159,14 +174,16 @@ Game::Game(Player player1, Player player2, int size = 3)
 
 void Game::Play()
 {
-    cout << "How big would you like the board to be (? x ?)" << endl;
-    int size;
-    cin >> size;
+    int size = 0;
+    do {
+        cout << "How big would you like the board to be (? x ?)" << endl;
+        cin >> size;
+    } while (size <= 0);
     Board board(size);
     cout << "Refer to moves using the following chart: " << endl;
     board.printBoard(true);
     cout << endl;
-    while (!board.isTerminal())
+    while (!board.isTerminal() && !board.isFull())
     {
         cout << "Player " << currentplayer << " make a move!" << endl;
         board.printBoard();
@@ -181,8 +198,14 @@ void Game::Play()
         }
     }
     board.printBoard();
-    currentplayer ^= 1;
-    cout << "Player " << currentplayer << " wins!" << endl;
+    if (board.isTerminal())
+    {
+        currentplayer ^= 1;
+        cout << "Player " << currentplayer << " wins!" << endl;
+    } else {
+        cout << "It's a draw!" << endl;
+    }
+
 
 }
 

@@ -13,6 +13,7 @@ class Board {
         void printBoard(bool instructions);
         bool checkValid(int move);
         void makeMove(int move, int player);
+        bool isFull();
 
     private:
         vector<vector<char>> board;
