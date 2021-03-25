@@ -18,7 +18,7 @@ Board::Board(size_t size)
     }     
 }
 
-bool Board::checkValid(int move)
+bool Board::isValid(int move)
 {
     int max = board.size() * board.size() - 1;
     if (move > max)
@@ -34,11 +34,11 @@ bool Board::checkValid(int move)
     return false;
 }
 
-void Board::makeMove(int move, int player){
+void Board::makeMove(int move, int player, vector<vector<char>> &board){
     //TODO: could remove repition from this calculation
     int row = move / board.size();
     int col = move % board.size();
-    if (checkValid(move))
+    if (isValid(move))
     {
         if (player)
         {
@@ -49,11 +49,37 @@ void Board::makeMove(int move, int player){
     }
 }
 
+void Board::makeMove(int move, int player){
+    makeMove(move, player, board);
+}
+
+vector<vector<vector<char>>> Board::getMoves(int player)
+{
+    vector<vector<vector<char>>> boards;
+    for (int i = 0; i < static_cast<int>(board.size() * board.size()); i++)
+    {
+        if (isValid(i))
+        {
+            vector<vector<char>> possibleState = board;
+            makeMove(i, player, possibleState);
+            boards.push_back(possibleState);
+        }
+    }
+    /* remove, for testing
+    
+    for (auto it = boards.begin(); it != boards.end(); ++it)
+    {
+        printBoard(*it, false);
+        cout << endl;
+    }*/
+    return boards;
+}
+
 bool Board::isFull()
 {
     for (auto row = board.begin(); row != board.end(); ++row)
     {
-        for (auto col = row->begin() + 1; col != row->end(); ++col)
+        for (auto col = row->begin(); col != row->end(); ++col)
         {
             if (*col == ' ')
             {
@@ -135,6 +161,11 @@ bool Board::checkRows()
 
 void Board::printBoard(bool instructions = false)
 {
+    printBoard(board, instructions);
+}
+
+void Board::printBoard(const vector<vector<char>> &board, bool instructions = false)
+{
     int num = 0;
     for (auto row = board.begin(); row != board.end(); ++row)
     {
@@ -189,7 +220,7 @@ void Game::Play()
         board.printBoard();
         int move;
         cin >> move;
-        if (!board.checkValid(move))
+        if (!board.isValid(move))
         {
             cout << "Invalid move." << endl;
         } else {

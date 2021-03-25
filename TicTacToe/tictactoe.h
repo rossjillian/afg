@@ -11,9 +11,12 @@ class Board {
         bool isTerminal();
         Board(size_t size);
         void printBoard(bool instructions);
-        bool checkValid(int move);
+        void printBoard(const vector<vector<char>> &board, bool instructions);
+        bool isValid(int move);
+        void makeMove(int move, int player, vector<vector<char>> &board);
         void makeMove(int move, int player);
         bool isFull();
+        vector<vector<vector<char>>> getMoves(int currentplayer);
 
     private:
         vector<vector<char>> board;
