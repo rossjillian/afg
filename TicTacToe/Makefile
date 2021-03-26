@@ -13,4 +13,4 @@ tictactoe:
 
 .PHONY:
 clean:
-	rm -rf *.o a.out .dSYM tictactoe
+	rm -rf *.o a.out *.dSYM tictactoe
