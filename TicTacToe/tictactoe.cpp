@@ -1,66 +1,50 @@
 #include <iostream>
-#include "tictactoe.h"
 #include <vector>
 #include <iomanip>
+#include "tictactoe.h"
 
-using namespace std; 
+using namespace std;
 
 Board::Board(size_t size)
 {
+    numTiles = size * size;
     board.resize(size, vector<char>(size));
-    for (size_t i = 0; i < size; i++)
-    {
-        for (size_t j = 0; j < size; j++)
-        {
-            board[i][j] = ' ';
-        }
-        
-    }     
+    for (auto& row : board)
+        fill(row.begin(), row.end(), ' ');
 }
 
 bool Board::isValid(int move)
 {
-    int max = board.size() * board.size() - 1;
+    int max = numTiles - 1;
     if (move > max)
-    {
         return false;
-    }
+
     int row = move / board.size();
     int col = move % board.size();
-    if (board[row][col] == ' ')
-    {
-        return true;
-    }
-    return false;
+
+    return board[row][col] == ' ';
 }
 
-void Board::makeMove(int move, int player, vector<vector<char>> &board){
+void Board::makeMove(int move, int player, Grid& board){
     //TODO: could remove repition from this calculation
     int row = move / board.size();
     int col = move % board.size();
     if (isValid(move))
-    {
-        if (player)
-        {
-            board[row][col] = 'x';
-        } else {
-            board[row][col] = 'o';
-        }
-    }
+        board[row][col] = player ? 'x' : 'o';
 }
 
 void Board::makeMove(int move, int player){
     makeMove(move, player, board);
 }
 
-vector<vector<vector<char>>> Board::getMoves(int player)
+vector<Grid> Board::getMoves(int player)
 {
-    vector<vector<vector<char>>> boards;
-    for (int i = 0; i < static_cast<int>(board.size() * board.size()); i++)
+    vector<Grid> boards;
+    for (auto i = 0; i < numTiles; i++)
     {
         if (isValid(i))
         {
-            vector<vector<char>> possibleState = board;
+            Grid possibleState = board;
             makeMove(i, player, possibleState);
             boards.push_back(possibleState);
         }
@@ -77,16 +61,10 @@ vector<vector<vector<char>>> Board::getMoves(int player)
 
 bool Board::isFull()
 {
-    for (auto row = board.begin(); row != board.end(); ++row)
-    {
-        for (auto col = row->begin(); col != row->end(); ++col)
-        {
-            if (*col == ' ')
-            {
-                return false;
-            }
-        }
-    }
+    for (auto& row : board)
+        if (any_of(row.begin(), row.end(), [](char t) { return t == ' '; }))
+            return false;
+
     return true;
 }
 
@@ -102,7 +80,7 @@ bool Board::checkDiagonals()
     bool winner2 = true;
     char elem1 = board[0][0];
     char elem2 = board[0][board.size() - 1];
-    for (size_t i = 1; i < static_cast<size_t>(board.size()); i++)
+    for (auto i = 1; i < board.size(); i++)
     {
         if (elem2 != board[i][board.size() - 1 - i] || elem2 == ' ')
         {
@@ -119,42 +97,42 @@ bool Board::checkDiagonals()
 //TODO: maybe some way to reuse code?
 bool Board::checkColumns()
 {
-    for (size_t i = 0; i < static_cast<size_t>(board.size()); i++)
+    for (auto c = 0; c < board.size(); c++)
     {
         bool winner = true;
-        char elem = board[0][i];
-        for (size_t j = 0; j < static_cast<size_t>(board.size()); j++)
+        char elem = board[0][c];
+        for (const auto& row : board)
         {
-            if (elem != board[j][i] || elem == ' ')
+            if (elem != row[c] || elem == ' ')
             {
                 winner = false;
+                break;
             }
         }
+
         if (winner)
-        {
             return winner;
-        }
     }
     return false;
 }
 
 bool Board::checkRows()
 {
-    for (auto row = board.begin(); row != board.end(); ++row)
+    for (const auto& row : board)
     {
         bool winner = true;
-        char elem = *(row -> begin());
-        for (auto col = row->begin() + 1; col != row->end(); ++col)
+        char elem = *(row.begin());
+        for (auto col = row.begin() + 1; col != row.end(); ++col)
         {
             if (elem != *col || elem == ' ')
             {
                 winner = false;
+                break;
             }
         }
+
         if (winner)
-        {
             return winner;
-        }
     }
     return false;
 }
@@ -164,7 +142,7 @@ void Board::printBoard(bool instructions = false)
     printBoard(board, instructions);
 }
 
-void Board::printBoard(const vector<vector<char>> &board, bool instructions = false)
+void Board::printBoard(const Grid &board, bool instructions = false)
 {
     int num = 0;
     for (auto row = board.begin(); row != board.end(); ++row)
@@ -184,7 +162,7 @@ void Board::printBoard(const vector<vector<char>> &board, bool instructions = fa
                 cout << "|";
             }
             num++;
-            
+
         }
         cout << endl;
         if (row+1 != board.end())
@@ -194,10 +172,10 @@ void Board::printBoard(const vector<vector<char>> &board, bool instructions = fa
     }
 }
 
-Game::Game(Player player1, Player player2, int size = 3) 
-    : board(size), 
-    p1(player1),
-    p2(player2),
+Game::Game(Player player1, Player player2, int size = 3)
+    : board(size),
+    /* p1(player1), */
+    /* p2(player2), */
     currentplayer(0)
 {
 

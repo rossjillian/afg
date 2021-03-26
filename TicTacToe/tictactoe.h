@@ -3,23 +3,25 @@
 
 #include <vector>
 
-using namespace std; 
+using namespace std;
 enum Player { human, computer };
+using Grid = vector<vector<char>>;
 
 class Board {
     public:
         bool isTerminal();
         Board(size_t size);
         void printBoard(bool instructions);
-        void printBoard(const vector<vector<char>> &board, bool instructions);
+        void printBoard(const Grid& board, bool instructions);
         bool isValid(int move);
-        void makeMove(int move, int player, vector<vector<char>> &board);
+        void makeMove(int move, int player, Grid& board);
         void makeMove(int move, int player);
         bool isFull();
-        vector<vector<vector<char>>> getMoves(int currentplayer);
+        vector<Grid> getMoves(int currentplayer);
 
     private:
-        vector<vector<char>> board;
+        Grid board;
+        size_t numTiles;
         bool checkColumns();
         bool checkRows();
         bool checkDiagonals();
@@ -31,8 +33,8 @@ class Game {
         void Play();
     private:
         Board board;
-        Player p1;
-        Player p2;
+        /* Player p1; */
+        /* Player p2; */
         int currentplayer;
 };
 

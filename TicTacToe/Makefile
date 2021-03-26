@@ -1,5 +1,5 @@
-CC = g++ -std=c++17
-CXX = g++ -std=c++17
+CC = g++ -std=c++2a
+CXX = g++ -std=c++2a
 
 INCLUDES =
 
@@ -9,9 +9,8 @@ CXXFLAGS = -g -Wall -O2 $(INCLUDES)
 LDFLAGS = 
 LDLIBS = 
 
-.PHONY: default
-default: tictactoe
+tictactoe:
 
-tictactoe: tictactoe.o
-
-tictactoe.o: tictactoe.cpp tictactoe.h
+.PHONY:
+clean:
+	rm -rf *.o a.out .dSYM tictactoe
