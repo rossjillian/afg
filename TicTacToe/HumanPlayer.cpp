@@ -20,3 +20,14 @@ int HumanPlayer::getStrategy(const Board& board) {
 
     return tileNo;
 }
+
+StupidPlayer::StupidPlayer(int t) {
+    timeout = t;
+}
+
+int StupidPlayer::getStrategy(const Board& board) {
+    vector<int> possibleMoves = board.getAvailableMoves();
+    // Error check in while loop
+
+    return possibleMoves[0];
+}

@@ -170,7 +170,7 @@ void Board::printBoard(const Grid &board, bool instructions = false)
     }
 }
 
-Game::Game(HumanPlayer player1, HumanPlayer player2, int size = 3)
+Game::Game(HumanPlayer player1, StupidPlayer player2, int size = 3)
     : board(size),
     /* p1(player1), */
     /* p2(player2), */
@@ -222,7 +222,7 @@ void Game::Play()
 int main (int argc, char **argv)
 {
     HumanPlayer p1;
-    HumanPlayer p2;
+    StupidPlayer p2;
     Game game(p1, p2);
     game.Play();
 }

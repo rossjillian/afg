@@ -35,14 +35,22 @@ class HumanPlayer {
         int timeout;
 };
 
+class StupidPlayer {
+    public:
+        StupidPlayer(int t = 0);
+        int getStrategy(const Board& board);
+    private:
+        int timeout;
+};
+
 class Game {
     public:
-        Game(HumanPlayer player1, HumanPlayer player2, int size);
+        Game(HumanPlayer player1, StupidPlayer player2, int size);
         void Play();
     private:
         Board board;
         HumanPlayer p1;
-        HumanPlayer p2;
+        StupidPlayer p2;
         int currentplayer;
 };
 
