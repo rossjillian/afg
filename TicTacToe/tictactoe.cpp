@@ -205,8 +205,8 @@ void Game::Play()
     {
         cout << "Player " << currentPlayer << " make a move!" << endl;
         board.printBoard();
-        int tileNo = (currentPlayer) ? p1.getStrategy(board) : p2.getStrategy(board);
-        board.makeMove(tileNo, currentPlayer);
+        int action = (currentPlayer) ? p1.getStrategy(board) : p2.getStrategy(board);
+        board.makeMove(action, currentPlayer);
         currentPlayer ^= 1;
     }
 
