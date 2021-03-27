@@ -13,7 +13,7 @@ Board::Board(size_t size)
         fill(row.begin(), row.end(), ' ');
 }
 
-bool Board::isValid(int move)
+bool Board::isValid(int move) const
 {
     int max = numTiles - 1;
     if (move > max)
@@ -37,16 +37,14 @@ void Board::makeMove(int move, int player){
     makeMove(move, player, board);
 }
 
-vector<Grid> Board::getMoves(int player)
+vector<int> Board::getAvailableMoves() const
 {
-    vector<Grid> boards;
+    vector<int> moves; // vector<Move> moves;
     for (auto i = 0; i < numTiles; i++)
     {
         if (isValid(i))
         {
-            Grid possibleState = board;
-            makeMove(i, player, possibleState);
-            boards.push_back(possibleState);
+            moves.push_back(i);
         }
     }
     /* remove, for testing
@@ -56,7 +54,7 @@ vector<Grid> Board::getMoves(int player)
         printBoard(*it, false);
         cout << endl;
     }*/
-    return boards;
+    return moves;
 }
 
 bool Board::isFull()
@@ -172,7 +170,7 @@ void Board::printBoard(const Grid &board, bool instructions = false)
     }
 }
 
-Game::Game(Player player1, Player player2, int size = 3)
+Game::Game(HumanPlayer player1, HumanPlayer player2, int size = 3)
     : board(size),
     /* p1(player1), */
     /* p2(player2), */
@@ -196,15 +194,18 @@ void Game::Play()
     {
         cout << "Player " << currentplayer << " make a move!" << endl;
         board.printBoard();
-        int move;
-        cin >> move;
-        if (!board.isValid(move))
-        {
-            cout << "Invalid move." << endl;
-        } else {
-            board.makeMove(move, currentplayer);
-            currentplayer ^= 1;
-        }
+        int tileNo = (currentplayer) ? p1.getStrategy(board) : p2.getStrategy(board);
+        /* int move; */
+        /* cin >> move; */
+        board.makeMove(tileNo, currentplayer);
+        currentplayer ^= 1;
+        /* if (!board.isValid(move)) */
+        /* { */
+        /*     cout << "Invalid move." << endl; */
+        /* } else { */
+        /*     board.makeMove(move, currentplayer); */
+        /*     currentplayer ^= 1; */
+        /* } */
     }
     board.printBoard();
     if (board.isTerminal())
@@ -220,6 +221,8 @@ void Game::Play()
 
 int main (int argc, char **argv)
 {
-    Game game(Player::human, Player::human);
+    HumanPlayer p1;
+    HumanPlayer p2;
+    Game game(p1, p2);
     game.Play();
 }

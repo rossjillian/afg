@@ -9,7 +9,9 @@ CXXFLAGS = -g -Wall -O2 $(INCLUDES)
 LDFLAGS = 
 LDLIBS = 
 
-tictactoe:
+tictactoe: HumanPlayer.o
+
+HumanPlayer.o:
 
 .PHONY:
 clean:

@@ -4,7 +4,7 @@
 #include <vector>
 
 using namespace std;
-enum Player { human, computer };
+enum PlayerType { human, computer };
 using Grid = vector<vector<char>>;
 
 class Board {
@@ -13,11 +13,11 @@ class Board {
         Board(size_t size);
         void printBoard(bool instructions);
         void printBoard(const Grid& board, bool instructions);
-        bool isValid(int move);
+        bool isValid(int move) const;
         void makeMove(int move, int player, Grid& board);
         void makeMove(int move, int player);
         bool isFull();
-        vector<Grid> getMoves(int currentplayer);
+        vector<int> getAvailableMoves() const;
 
     private:
         Grid board;
@@ -27,14 +27,22 @@ class Board {
         bool checkDiagonals();
 };
 
+class HumanPlayer {
+    public:
+        HumanPlayer(int t = 0);
+        int getStrategy(const Board& board);
+    private:
+        int timeout;
+};
+
 class Game {
     public:
-        Game(Player player1, Player player2, int size);
+        Game(HumanPlayer player1, HumanPlayer player2, int size);
         void Play();
     private:
         Board board;
-        /* Player p1; */
-        /* Player p2; */
+        HumanPlayer p1;
+        HumanPlayer p2;
         int currentplayer;
 };
 
