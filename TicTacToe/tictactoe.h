@@ -9,7 +9,6 @@ using Grid = vector<vector<char>>;
 
 class Board {
     public:
-        bool isTerminal();
         Board(size_t size);
         void printBoard(bool instructions);
         void printBoard(const Grid& board, bool instructions);
@@ -17,6 +16,8 @@ class Board {
         void makeMove(int move, int player, Grid& board);
         void makeMove(int move, int player);
         bool isFull();
+        bool isTerminal();
+        bool isWinner();
         vector<int> getAvailableMoves() const;
 
     private:
@@ -45,13 +46,14 @@ class StupidPlayer {
 
 class Game {
     public:
-        Game(HumanPlayer player1, StupidPlayer player2, int size);
+        Game(HumanPlayer player1, StupidPlayer player2);
+        void Initialize();
         void Play();
     private:
         Board board;
         HumanPlayer p1;
         StupidPlayer p2;
-        int currentplayer;
+        int currentPlayer;
 };
 
 #endif

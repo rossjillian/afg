@@ -67,9 +67,14 @@ bool Board::isFull()
 }
 
 // We will know who just went, so we just need to return whether there's a winner or not
-bool Board::isTerminal()
+bool Board::isWinner()
 {
     return checkRows() || checkColumns() || checkDiagonals();
+}
+
+bool Board::isTerminal()
+{
+    return isWinner() || isFull();
 }
 
 bool Board::checkDiagonals()
@@ -170,56 +175,52 @@ void Board::printBoard(const Grid &board, bool instructions = false)
     }
 }
 
-Game::Game(HumanPlayer player1, StupidPlayer player2, int size = 3)
-    : board(size),
-    /* p1(player1), */
-    /* p2(player2), */
-    currentplayer(0)
-{
+Game::Game(HumanPlayer p1, StupidPlayer p2)
+    : board(3),
+      p1(p1),
+      p2(p2),
+      currentPlayer(0)
+{ }
 
-}
-
-void Game::Play()
+void Game::Initialize()
 {
     int size = 0;
     do {
         cout << "How big would you like the board to be (? x ?)" << endl;
         cin >> size;
     } while (size <= 0);
-    Board board(size);
+
+    if (size != 3)
+        board = Board(size);
+
     cout << "Refer to moves using the following chart: " << endl;
     board.printBoard(true);
     cout << endl;
-    while (!board.isTerminal() && !board.isFull())
+}
+
+void Game::Play()
+{
+    Initialize();
+    while (!board.isTerminal())
     {
-        cout << "Player " << currentplayer << " make a move!" << endl;
+        cout << "Player " << currentPlayer << " make a move!" << endl;
         board.printBoard();
-        int tileNo = (currentplayer) ? p1.getStrategy(board) : p2.getStrategy(board);
-        /* int move; */
-        /* cin >> move; */
-        board.makeMove(tileNo, currentplayer);
-        currentplayer ^= 1;
-        /* if (!board.isValid(move)) */
-        /* { */
-        /*     cout << "Invalid move." << endl; */
-        /* } else { */
-        /*     board.makeMove(move, currentplayer); */
-        /*     currentplayer ^= 1; */
-        /* } */
+        int tileNo = (currentPlayer) ? p1.getStrategy(board) : p2.getStrategy(board);
+        board.makeMove(tileNo, currentPlayer);
+        currentPlayer ^= 1;
     }
+
     board.printBoard();
-    if (board.isTerminal())
+    if (board.isWinner())
     {
-        currentplayer ^= 1;
-        cout << "Player " << currentplayer << " wins!" << endl;
+        currentPlayer ^= 1;
+        cout << "Player " << currentPlayer << " wins!" << endl;
     } else {
         cout << "It's a draw!" << endl;
     }
-
-
 }
 
-int main (int argc, char **argv)
+int main(int argc, char **argv)
 {
     HumanPlayer p1;
     StupidPlayer p2;
