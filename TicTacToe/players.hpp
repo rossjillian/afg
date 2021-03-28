@@ -1,3 +1,6 @@
+#ifndef PLAYERS_HPP
+#define PLAYERS_HPP
+
 #include <iostream>
 #include <vector>
 
@@ -40,3 +43,5 @@ class StupidPlayer {
     private:
         int timeout;
 };
+
+#endif

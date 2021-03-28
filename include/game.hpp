@@ -13,7 +13,6 @@ using namespace std;
 /*     }; */
 
 
-
 template <class GameType, class Player1Type, class Player2Type>
 class Game {
 
@@ -37,9 +36,9 @@ class Game {
               currentPlayer(0)
         { }
 
-        void initialize() {
-            /* state.apply(configs); */
-        }
+        /* void initialize() { */
+        /*     state.apply(configs); */
+        /* } */
 
         void play() {
             /* initialize(); */

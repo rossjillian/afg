@@ -15,7 +15,9 @@ tictactoe.o: tictactoe.hpp players.hpp
 
 board.o: board.hpp
 
-
 .PHONY:
 clean:
 	rm -rf *.o a.out *.dSYM tictactoe
+
+.PHONY:
+all: clean tictactoe

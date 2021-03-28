@@ -1,3 +1,6 @@
+#ifndef BOARD_HPP
+#define BOARD_HPP
+
 #include <vector>
 
 using namespace std;
@@ -24,3 +27,5 @@ class Board {
         bool checkRows();
         bool checkDiagonals();
 };
+
+#endif
