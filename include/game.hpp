@@ -14,9 +14,10 @@ using namespace std;
 
 
 template <class GameType, class Player1Type, class Player2Type>
-class Game {
+class TPGame {
 
     using game_t = GameType;
+    using move_t = typename GameType::move_t;
     using p1_t = Player1Type;
     using p2_t = Player2Type;
 
@@ -28,7 +29,7 @@ class Game {
 
     public:
         /* static_assert(has_config<gametype>); */
-        Game(Config<game_t> config, p1_t player1, p2_t player2)
+        TPGame(Config<game_t> config, p1_t player1, p2_t player2)
             : state(config),
               p1(player1),
               p2(player2)
@@ -44,7 +45,7 @@ class Game {
             {
                 cout << "[ Turn " << state.getTurnCount() << " ] Player " << state.getCurrentPlayer() << " make a move!" << endl;
                 state.print();
-                int action = (state.getCurrentPlayer()) ? p1.getStrategy(state) : p2.getStrategy(state);
+                move_t action = (state.getCurrentPlayer()) ? p1.getStrategy(state) : p2.getStrategy(state);
                 state.makeMove(action);
             }
 
