@@ -40,7 +40,7 @@ void Board::makeMove(int move, int player){
 vector<int> Board::getAvailableMoves() const
 {
     vector<int> moves; // vector<Move> moves;
-    for (auto i = 0; i < numTiles; i++)
+    for (size_t i = 0; i < numTiles; i++)
     {
         if (isValid(i))
         {
@@ -49,7 +49,7 @@ vector<int> Board::getAvailableMoves() const
     }
     /* remove, for testing
 
-    for (auto it = boards.begin(); it != boards.end(); ++it)
+    for (size_t it = boards.begin(); it != boards.end(); ++it)
     {
         printBoard(*it, false);
         cout << endl;
@@ -80,7 +80,7 @@ bool Board::checkDiagonals()
     bool winner2 = true;
     char elem1 = board[0][0];
     char elem2 = board[0][board.size() - 1];
-    for (auto i = 1; i < board.size(); i++)
+    for (size_t i = 1; i < board.size(); i++)
     {
         if (elem2 != board[i][board.size() - 1 - i] || elem2 == ' ')
         {
@@ -97,7 +97,7 @@ bool Board::checkDiagonals()
 //TODO: maybe some way to reuse code?
 bool Board::checkColumns()
 {
-    for (auto c = 0; c < board.size(); c++)
+    for (size_t c = 0; c < board.size(); c++)
     {
         bool winner = true;
         char elem = board[0][c];
