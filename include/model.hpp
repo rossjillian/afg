@@ -5,14 +5,15 @@
 /* #include "config.hpp" */
 #include <queue>
 #include <unordered_set>
+#include <concepts>
 
 using namespace std;
 
-/* template <class T> */
-/* concept configurable = */
-/*     requires { */
-/*         typename Config<T>; */
-/*     }; */
+template <class T>
+concept Checkable = requires(T a) {
+        { a.meme() } -> same_as<void>;
+};
+
 namespace Model {
     template<class GameType>
     struct SearchResult {
