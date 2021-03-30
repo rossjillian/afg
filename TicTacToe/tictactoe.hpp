@@ -18,26 +18,44 @@ struct Config<TicTacToe>
 };
 
 struct TicTacToe {
+    using move_t = int;
+
     Board b;
+    int turnCount;
 
     TicTacToe(Config<TicTacToe> c)
-        : b(c.width)
+        : b(c.width),
+          turnCount(0)
     {}
 
     bool isTerminal() {
         return b.isWinner() || b.isFull();
     }
 
-    bool isWinner() {
+    int getTurnCount() const { return turnCount; }
+
+    int getCurrentPlayer() const { return turnCount % 2; }
+
+    bool isWinner() const {
         return b.isWinner();
+    }
+
+    int getWinner() const {
+        if (!isWinner()) return false;
+
+        return (turnCount - 1) % 2;
     }
 
     void print() {
         b.print(false);
     }
 
-    void makeMove(int tileNo, int currentPlayer) {
-        b.makeMove(tileNo, currentPlayer);
+    void makeMove(int tileNo) {
+        b.makeMove(tileNo, turnCount++ % 2);
+    }
+
+    vector<move_t> getAvailableMoves() const {
+        return b.getAvailableMoves();
     }
 
     bool operator==(const TicTacToe& other_ttt) const

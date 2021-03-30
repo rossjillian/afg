@@ -13,14 +13,14 @@
 struct SearchResult {
     bool success;
     int explored;
-    vector<pair<TicTacToe, int>> matches;
+    vector<TicTacToe> matches;
 };
 
 
 
-SearchResult bfsFind(TicTacToe init, function<bool(const TicTacToe&, int)> is_goal, int depth) {
-    queue<pair<TicTacToe, int>> q;
-    q.push(make_pair(init, 0));
+SearchResult bfsFind(TicTacToe init, function<bool(const TicTacToe&)> is_goal, int depth) {
+    queue<TicTacToe> q;
+    q.push(init);
     unordered_set<TicTacToe, TicTacToe::HashFunction> visited;
     visited.insert(init);
 
@@ -28,30 +28,30 @@ SearchResult bfsFind(TicTacToe init, function<bool(const TicTacToe&, int)> is_go
     res.explored = 0;
 
     while (!q.empty()) {
-        auto [st, turn] = q.front();
+        auto st = q.front();
         q.pop();
         res.explored++;
 
-        if (is_goal(st, turn)) {
+        if (is_goal(st)) {
             res.success = true;
-            res.matches.push_back(make_pair(st, turn));
+            res.matches.push_back(st);
             continue;
             /* return res; */
         }
 
-        if (st.isTerminal() || turn == depth) {
+        if (st.isTerminal() || st.turnCount == depth) {
             continue;
         }
 
-        for (auto mv : st.b.getAvailableMoves()) {
+        for (auto mv : st.getAvailableMoves()) {
             TicTacToe neighbor(st);
-            neighbor.makeMove(mv, turn % 2);
+            neighbor.makeMove(mv);
             if (visited.find(neighbor) != visited.end()) {
                 continue;
             }
 
             visited.insert(neighbor);
-            q.push(make_pair(neighbor, turn + 1));
+            q.push(neighbor);
         }
     }
 
@@ -59,7 +59,7 @@ SearchResult bfsFind(TicTacToe init, function<bool(const TicTacToe&, int)> is_go
     return res;
 }
 
-bool pathExists(TicTacToe init, vector<function<bool(const TicTacToe&, int)>> goals, int depth) {
+bool pathExists(TicTacToe init, vector<function<bool(const TicTacToe&)>> goals, int depth) {
 
     if (!goals.size()) {
         return true;
@@ -69,8 +69,8 @@ bool pathExists(TicTacToe init, vector<function<bool(const TicTacToe&, int)>> go
     if (!res.success) {
         return false;
     }
-    for (auto& [match, matchDepth] : res.matches) {
-        if (pathExists(match, vector<function<bool(const TicTacToe&, int)>>(goals.begin() + 1, goals.end()), depth-matchDepth)) {
+    for (auto& match : res.matches) {
+        if (pathExists(match, vector<function<bool(const TicTacToe&)>>(goals.begin() + 1, goals.end()), depth-match.getTurnCount())) {
             return true;
         }
     }
@@ -83,9 +83,9 @@ int main(int argc, char **argv)
     StupidPlayer p2;
     Config<TicTacToe> config {3};
     TicTacToe ttt(config);
-    vector<function<bool(const TicTacToe&, int)>> predicates;
-    predicates.push_back([](const TicTacToe& st, int depth) { return st.b.board[0][0] == 'x' && st.b.board[0][1] == 'x' && st.b.board[1][1] == 'x'; });
-    predicates.push_back([](const TicTacToe& st, int depth) { return st.b.isWinner() && ((depth - 1) % 2 == 1); });
+    vector<function<bool(const TicTacToe&)>> predicates;
+    predicates.push_back([](const TicTacToe& st) { return st.b.board[0][0] == 'x' && st.b.board[0][1] == 'x' && st.b.board[1][1] == 'x'; });
+    predicates.push_back([](const TicTacToe& st) { return st.b.isWinner() && (st.getWinner() == 1); });
     /* auto res = bfsFind(ttt, predicates[1], 10); */
     /* for (auto [ttt, _] : res.matches) { */
     /*     string repr; */
@@ -97,8 +97,8 @@ int main(int argc, char **argv)
     /*     cout << repr << endl; */
     /* } */
 
-    cout << pathExists(ttt, predicates, 100) << endl;
+    /* cout << pathExists(ttt, predicates, 100) << endl; */
 
-    /* Game<TicTacToe, HumanPlayer, StupidPlayer> game(config, p1, p2); */
-    /* game.play(); */
+    Game<TicTacToe, HumanPlayer, StupidPlayer> game(config, p1, p2);
+    game.play();
 }

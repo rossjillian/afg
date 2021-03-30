@@ -15,7 +15,7 @@ class HumanPlayer {
         {}
 
         int getStrategy(const TicTacToe& state) {
-            vector<int> possibleMoves = state.b.getAvailableMoves();
+            vector<int> possibleMoves = state.getAvailableMoves();
             for (int t : possibleMoves) {
                 cout << t << ", " << endl;
             }
@@ -37,7 +37,7 @@ class StupidPlayer {
             : timeout(t)
         {}
         int getStrategy(const TicTacToe& state) {
-            vector<int> possibleMoves = state.b.getAvailableMoves();
+            vector<int> possibleMoves = state.getAvailableMoves();
             return possibleMoves[0];
         }
     private:
