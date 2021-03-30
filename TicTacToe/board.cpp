@@ -67,14 +67,14 @@ bool Board::isFull()
 }
 
 // We will know who just went, so we just need to return whether there's a winner or not
-bool Board::isWinner()
+bool Board::isWinner() const
 {
     return checkRows() || checkColumns() || checkDiagonals();
 }
 
 
 
-bool Board::checkDiagonals()
+bool Board::checkDiagonals() const
 {
     bool winner1 = true;
     bool winner2 = true;
@@ -95,7 +95,7 @@ bool Board::checkDiagonals()
 }
 
 //TODO: maybe some way to reuse code?
-bool Board::checkColumns()
+bool Board::checkColumns() const
 {
     for (size_t c = 0; c < board.size(); c++)
     {
@@ -116,7 +116,7 @@ bool Board::checkColumns()
     return false;
 }
 
-bool Board::checkRows()
+bool Board::checkRows() const
 {
     for (const auto& row : board)
     {

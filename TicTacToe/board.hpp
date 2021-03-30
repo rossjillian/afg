@@ -9,6 +9,8 @@ using Grid = vector<vector<char>>;
 
 class Board {
     public:
+        Grid board;
+        size_t numTiles;
         Board(size_t size);
         void print(bool instructions);
         void print(const Grid& board, bool instructions);
@@ -17,15 +19,13 @@ class Board {
         void makeMove(int move, int player);
         bool isFull();
         bool isTerminal();
-        bool isWinner();
+        bool isWinner() const;
         vector<int> getAvailableMoves() const;
 
     private:
-        Grid board;
-        size_t numTiles;
-        bool checkColumns();
-        bool checkRows();
-        bool checkDiagonals();
+        bool checkColumns() const;
+        bool checkRows() const;
+        bool checkDiagonals() const;
 };
 
 #endif
