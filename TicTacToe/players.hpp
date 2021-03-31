@@ -30,6 +30,10 @@ class HumanPlayer {
             return tileNo;
         }
 
+        int getTimeout() const {
+            return timeout;
+        }
+
     private:
         int timeout;
 };
@@ -42,6 +46,9 @@ class StupidPlayer {
         int getStrategy(const TicTacToe& state) {
             vector<int> possibleMoves = state.getAvailableMoves();
             return possibleMoves[0];
+        }
+         int getTimeout() const {
+            return timeout;
         }
     private:
         int timeout;

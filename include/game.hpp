@@ -17,10 +17,15 @@ concept Playable = requires(T m, T::move_t mv) {
         { m.makeMove(mv) } -> same_as<void>;
 };
 
+template <class T, class G>
+concept Player = requires(T player, G game) {
+    Playable<G>;
+    { player.getStrategy(game) } -> same_as<typename G::move_t>;
+    { player.getTimeout() } -> same_as<int>;
+};
 
-template <Playable GameType, class Player1Type, class Player2Type>
+template <Playable GameType, Player<GameType> Player1Type, Player<GameType> Player2Type>
 class TPGame {
-
     using game_t = GameType;
     using move_t = typename GameType::move_t;
     using p1_t = Player1Type;
