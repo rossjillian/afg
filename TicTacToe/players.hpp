@@ -16,13 +16,16 @@ class HumanPlayer {
 
         int getStrategy(const TicTacToe& state) {
             vector<int> possibleMoves = state.getAvailableMoves();
+            cout << "[ ";
             for (int t : possibleMoves) {
-                cout << t << ", " << endl;
+                cout << t << ", ";
             }
+            cout << "]" << endl;
 
+
+            cout << "Tile #: ";
             int tileNo;
             cin >> tileNo;
-            // Error check in while loop
 
             return tileNo;
         }

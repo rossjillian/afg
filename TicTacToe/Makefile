@@ -11,13 +11,17 @@ LDLIBS =
 
 tictactoe: board.o
 
+model-check: board.o
+
+model-check.o: tictactoe.hpp
+
 tictactoe.o: tictactoe.hpp players.hpp
 
 board.o: board.hpp
 
 .PHONY:
 clean:
-	rm -rf *.o a.out *.dSYM tictactoe
+	rm -rf *.o a.out *.dSYM tictactoe model-check
 
 .PHONY:
-all: clean tictactoe
+all: clean tictactoe model-check

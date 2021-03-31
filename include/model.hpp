@@ -1,8 +1,6 @@
 #ifndef MODEL_HPP
 #define MODEL_HPP
 
-/* #include <iostream> */
-/* #include "config.hpp" */
 #include <queue>
 #include <unordered_set>
 #include <concepts>
@@ -10,24 +8,28 @@
 using namespace std;
 
 template <class T>
-concept Checkable = requires(T a) {
-        { a.meme() } -> same_as<void>;
+concept Checkable = requires(T m, T::move_t mv) {
+        { m.isTerminal() } -> same_as<bool>;
+        { m.getTurnCount() } -> same_as<int>;
+        { m.getAvailableMoves() } -> same_as<vector<typename T::move_t>>;
+        { m.makeMove(mv) } -> same_as<void>;
+        { hash<T>{}(m) } -> same_as<size_t>;
 };
 
 namespace Model {
-    template<class GameType>
+    template<Checkable GameType>
     struct SearchResult {
         bool success;
         int explored;
         vector<GameType> matches;
     };
 
-    template<class GameType>
+    template<Checkable GameType>
     SearchResult<GameType> bfsFind(GameType initState,
                                    function<bool(const GameType&)> isGoal,
                                    int depthLimit) {
         queue<GameType> frontier;
-        unordered_set<GameType, typename GameType::HashFunction> visited;
+        unordered_set<GameType> visited;
 
         frontier.push(initState);
         visited.insert(initState);
@@ -68,7 +70,7 @@ namespace Model {
     }
 
 
-    template<class GameType>
+    template<Checkable GameType>
     bool pathExists(const GameType& initState,
                     vector<function<bool(const GameType&)>> predicates,
                     int depthLimit) {
@@ -84,7 +86,7 @@ namespace Model {
 
         for (const auto& match : result.matches) {
             if (pathExists(match,
-                           vector<function<bool(const GameType&)>>(predicates.begin() + 1, predicates.end()), 
+                           vector<function<bool(const GameType&)>>(predicates.begin() + 1, predicates.end()),
                            depthLimit - match.getTurnCount())) {
                 return true;
             }

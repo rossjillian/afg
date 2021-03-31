@@ -62,21 +62,21 @@ struct TicTacToe {
     {
         return b.board == other_ttt.b.board;
     }
+};
 
-    class HashFunction {
-        public:
-            size_t operator() (const TicTacToe& ttt) const
-            {
-                string repr;
-                for (auto& row : ttt.b.board) {
-                    for (auto& c : row) {
-                        repr += c;
-                    }
+template<> // Explicit specialization of std::hash<T>
+struct std::hash<TicTacToe> {
+    size_t operator() (const TicTacToe& ttt) const
+        {
+            string repr;
+            for (auto& row : ttt.b.board) {
+                for (auto& c : row) {
+                    repr += c;
                 }
-
-                return hash<string>()(repr);
             }
-    };
+
+            return hash<string>()(repr);
+        }
 };
 
 #endif

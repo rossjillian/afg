@@ -6,14 +6,19 @@
 
 using namespace std;
 
-/* template <class T> */
-/* concept configurable = */
-/*     requires { */
-/*         typename Config<T>; */
-/*     }; */
+template <class T>
+concept Playable = requires(T m, T::move_t mv) {
+        typename Config<T>;
+        { m.isTerminal() } -> same_as<bool>;
+        { m.isWinner() } -> same_as<bool>;
+        { m.getTurnCount() } -> same_as<int>;
+        { m.getCurrentPlayer() } -> same_as<int>;
+        { m.getAvailableMoves() } -> same_as<vector<typename T::move_t>>;
+        { m.makeMove(mv) } -> same_as<void>;
+};
 
 
-template <class GameType, class Player1Type, class Player2Type>
+template <Playable GameType, class Player1Type, class Player2Type>
 class TPGame {
 
     using game_t = GameType;
@@ -37,6 +42,7 @@ class TPGame {
 
         /* void initialize() { */
         /*     state.apply(configs); */
+                /* state.setup() */
         /* } */
 
         void play() {
@@ -45,7 +51,7 @@ class TPGame {
             {
                 cout << "[ Turn " << state.getTurnCount() << " ] Player " << state.getCurrentPlayer() << " make a move!" << endl;
                 state.print();
-                move_t action = (state.getCurrentPlayer()) ? p1.getStrategy(state) : p2.getStrategy(state);
+                move_t action = (state.getCurrentPlayer()) ? p2.getStrategy(state) : p1.getStrategy(state);
                 state.makeMove(action);
             }
 
