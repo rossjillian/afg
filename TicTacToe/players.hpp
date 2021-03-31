@@ -10,38 +10,48 @@ using namespace std;
 
 class HumanPlayer {
     public:
-        HumanPlayer(int t = 0)
+        HumanPlayer(double t = 0.0)
             : timeout(t)
         {}
 
         int getStrategy(const TicTacToe& state) {
-            vector<int> possibleMoves = state.b.getAvailableMoves();
+            vector<int> possibleMoves = state.getAvailableMoves();
+            cout << "[ ";
             for (int t : possibleMoves) {
-                cout << t << ", " << endl;
+                cout << t << ", ";
             }
+            cout << "]" << endl;
 
+
+            cout << "Tile #: ";
             int tileNo;
             cin >> tileNo;
-            // Error check in while loop
 
             return tileNo;
         }
 
+        double getTimeout() const {
+            return timeout;
+        }
+
     private:
-        int timeout;
+        double timeout;
 };
 
 class StupidPlayer {
     public:
-        StupidPlayer(int t = 0)
+        StupidPlayer(double t = 0.0)
             : timeout(t)
         {}
         int getStrategy(const TicTacToe& state) {
-            vector<int> possibleMoves = state.b.getAvailableMoves();
+            vector<int> possibleMoves = state.getAvailableMoves();
             return possibleMoves[0];
         }
+         double getTimeout() const {
+            return timeout;
+        }
     private:
-        int timeout;
+        double timeout;
 };
 
 #endif
