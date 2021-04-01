@@ -28,7 +28,7 @@ struct TicTacToe {
           turnCount(0)
     {}
 
-    bool isTerminal() {
+    bool isTerminal() const {
         return b.isWinner() || b.isFull();
     }
 
@@ -53,7 +53,19 @@ struct TicTacToe {
     void makeMove(int tileNo) {
         b.makeMove(tileNo, turnCount++ % 2);
     }
+    
+    void makeMove(int tileNo, int player) {
+        b.makeMove(tileNo, player);
+    }
 
+    void retractMove(int tileNo) {
+        b.retractMove(tileNo, turnCount++ % 2);
+    }
+    
+    void retractMove(int tileNo, int player) {
+        b.retractMove(tileNo, player);
+    }
+    
     vector<move_t> getAvailableMoves() const {
         return b.getAvailableMoves();
     }

@@ -28,4 +28,9 @@ class StupidPlayer : public Player {
         int getStrategy(const TicTacToe& state);
 };
 
+class SmartPlayer : public Player {
+    public:
+        int getStrategy(const TicTacToe& state);
+};
+
 #endif

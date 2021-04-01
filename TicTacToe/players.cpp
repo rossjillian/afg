@@ -18,3 +18,8 @@ int StupidPlayer::getStrategy(const TicTacToe& state)
 {
     return random_tile(state);
 }
+
+int SmartPlayer::getStrategy(const TicTacToe& state)
+{
+    return minimax_tile(state);
+}

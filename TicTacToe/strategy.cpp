@@ -8,6 +8,10 @@
 
 using namespace std;
 
+const int WIN = 1;
+const int LOSS = -1;
+const int NEUTRAL = 0;
+
 int random_tile(const TicTacToe& state) {
     vector<int> possibleMoves = state.getAvailableMoves();
     auto rng = std::default_random_engine {};
@@ -38,7 +42,55 @@ int io_tile(const TicTacToe& state) {
     return tileNo;
 }
 
-int minimax_tile() {
-    return 0;
+int minimax_tile(const TicTacToe& state, int player) {
+    int best_move;
+    TicTacToe state_copy = state;
+    if (player == 1) {    
+        max(state_copy, best_move);
+    }
+    else {
+        min(state_copy, best_move);
+    }
+
+    return best_move;
 }
 
+int max(TicTacToe& state, int& best_move) {
+    if (state.isWinner())
+        return LOSS;
+    else if (state.isTerminal())
+        return NEUTRAL;
+    
+    int val = -100;
+    vector<int> possibleMoves = state.getAvailableMoves();
+    for (int move : possibleMoves) {
+        state.makeMove(move, 0);
+	int new_val = min(state, best_move);
+        if (new_val > val) {
+            val = new_val;
+            best_move = move;
+        }
+        state.retractMove(move, 0);
+    } 
+    return val;
+}
+
+int min(TicTacToe& state, int& best_move) {
+    if (state.isWinner())
+        return WIN;
+    else if (state.isTerminal())
+        return NEUTRAL;
+    
+    int val = 100;
+    vector<int> possibleMoves = state.getAvailableMoves();
+    for (int move : possibleMoves) {
+        state.makeMove(move, 1);
+        int new_val = max(state, best_move);
+        if (new_val < val) {
+            val = new_val;
+            best_move = move;
+        }
+        state.retractMove(move, 1);
+    }
+    return val;
+}    
