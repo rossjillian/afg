@@ -9,7 +9,7 @@
 
 int main(int argc, char **argv)
 {
-    HumanPlayer p1(2.5);
+    HumanPlayer p1(10);
     StupidPlayer p2;
 
     Config<TicTacToe> config {3};

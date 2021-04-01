@@ -5,53 +5,27 @@
 #include <vector>
 
 #include "tictactoe.hpp"
+#include "strategy.hpp"
 
 using namespace std;
 
-class HumanPlayer {
+class Player {
     public:
-        HumanPlayer(double t = 0.0)
-            : timeout(t)
-        {}
-
-        int getStrategy(const TicTacToe& state) {
-            vector<int> possibleMoves = state.getAvailableMoves();
-            cout << "[ ";
-            for (int t : possibleMoves) {
-                cout << t << ", ";
-            }
-            cout << "]" << endl;
-
-
-            cout << "Tile #: ";
-            int tileNo;
-            cin >> tileNo;
-
-            return tileNo;
-        }
-
-        double getTimeout() const {
-            return timeout;
-        }
-
+        Player(double t = 0.0);
+        int getStrategy(const TicTacToe& state);
+        double getTimeout() const;
     private:
         double timeout;
 };
 
-class StupidPlayer {
+class HumanPlayer : public Player {
     public:
-        StupidPlayer(double t = 0.0)
-            : timeout(t)
-        {}
-        int getStrategy(const TicTacToe& state) {
-            vector<int> possibleMoves = state.getAvailableMoves();
-            return possibleMoves[0];
-        }
-         double getTimeout() const {
-            return timeout;
-        }
-    private:
-        double timeout;
+        int getStrategy(const TicTacToe& state);
+};
+
+class StupidPlayer : public Player {
+    public:
+        int getStrategy(const TicTacToe& state);
 };
 
 #endif
