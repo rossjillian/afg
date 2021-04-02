@@ -9,6 +9,9 @@ CXXFLAGS = -g -Wall -O2 $(INCLUDES)
 LDFLAGS = 
 LDLIBS = 
 
+.PHONY:
+default: tictactoe model-check
+
 tictactoe: tictactoe.o board.o
 
 model-check: model-check.o board.o
@@ -24,4 +27,4 @@ clean:
 	rm -rf *.o a.out *.dSYM tictactoe model-check
 
 .PHONY:
-all: clean tictactoe model-check
+all: clean default
