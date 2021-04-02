@@ -2,7 +2,6 @@
 #define TICTACTOE_HPP
 
 #include <vector>
-#include <functional>
 #include "config.hpp"
 #include "board.hpp"
 
