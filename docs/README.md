@@ -16,11 +16,12 @@ the search logic, we instead request from the game dev a state that satisfies
 the constraints of the `Checkable` concept:
 
     template <class T>
-    concept Checkable = requires(T m, T::move_t mv) {
+    concept Checkable = requires(T m, T other, T::move_t mv) {
             { m.isTerminal() } -> same_as<bool>;
             { m.getTurnCount() } -> same_as<int>;
             { m.getAvailableMoves() } -> same_as<vector<typename T::move_t>>;
             { m.makeMove(mv) } -> same_as<void>;
+            { m == other } -> same_as<bool>;
             { hash<T>{}(m) } -> same_as<size_t>;
     };
 
@@ -32,7 +33,7 @@ search agent methods to validate their system.
 One quick note on the `hash` constraint – we need this in order to use the state
 `T` in hashable containers, like `unordered_set`. Search agents need to maintain
 a `visited` set, so the state `T` must be hashable so that it can be inserted in
-a set.
+a set. We must also implement `operator==()`, but that's not too interesting.
 
 Hash can be supported through the use of explicit specialization. `hash<T>` is a
 templatized struct from the standard library that needs to be instantiated for
@@ -56,23 +57,19 @@ example of explicit specialization when we implemented `hash` for `TicTacToe`:
 
 Finally, here are the two main model checking utilities.
 
-    template<Checkable GameType>
+    template<Checkable GameType, Predicate<GameType> Function>
     SearchResult<GameType> bfsFind(GameType initState,
-                                   function<bool(const GameType&)> isGoal,
+                                   Function isGoal,
                                    int depthLimit);
 
-`bfsFind()` is a depth-limited BFS search that traverses the state space. We use
-`std::function<>` as the type of the predicate function in order to avoid the
-C-style function pointer as the type argument. Using the function type gives
-more flexibility in terms of the type of argument that can be passed in – it
-could be a lambda, function, or object that implements `operator()`. We return a
+`bfsFind()` is a depth-limited BFS search that traverses the state space. We return a
 templatized `SearchResult` which contains some information about the search –
 success, number of states explored, and a vector of matches.
 
 
-    template<Checkable GameType>
+    template<Checkable GameType, Predicate<GameType> Function>
     bool pathExists(const GameType& initState,
-                    vector<function<bool(const GameType&)>> predicates,
+                    vector<Function> predicates,
                     int depthLimit);
 
 `pathExists()` is meant to chain several `bfsFind()`s together by going through
@@ -81,3 +78,17 @@ the vector of predicates and successively applying them.
 Both `bfsFind()` and `pathExists()` are available as simple templated functions
 in the `Model` namespace. No extra object creation required to use these
 powerful functions.
+
+The `Function` template parameter is constrained using the `Predicate` concept,
+just for the sake of adding better typechecking to the function. It has to take a state
+and return a bool, so that's what we mandate:
+
+    template <class Function, checkable Model>
+    concept Predicate = requires(Function f, Model m) {
+        { f(m) } -> same_as<bool>;
+    };
+
+I originally used `std::function<bool(const Model&)>` but found that that didn't work too well
+whenever I used lambdas. I suppose the phase of the compiler that does template computations
+happens before the phase were lambdas are typechecked to see if they can be converted to an
+equivalent type.
