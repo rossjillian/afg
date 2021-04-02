@@ -4,16 +4,23 @@
 #include <queue>
 #include <unordered_set>
 #include <concepts>
+#include <functional>
 
 using namespace std;
 
 template <class T>
-concept Checkable = requires(T m, T::move_t mv) {
+concept Checkable = requires(T m, T other, T::move_t mv) {
         { m.isTerminal() } -> same_as<bool>;
         { m.getTurnCount() } -> same_as<int>;
         { m.getAvailableMoves() } -> same_as<vector<typename T::move_t>>;
         { m.makeMove(mv) } -> same_as<void>;
+        { m == other } -> same_as<bool>;
         { hash<T>{}(m) } -> same_as<size_t>;
+};
+
+template <class Function, class Model>
+concept Predicate = requires(Function f, Model m) {
+    { f(m) } -> same_as<bool>;
 };
 
 namespace Model {
@@ -24,9 +31,9 @@ namespace Model {
         vector<GameType> matches;
     };
 
-    template<Checkable GameType>
+    template<Checkable GameType, Predicate<GameType> Function>
     SearchResult<GameType> bfsFind(GameType initState,
-                                   function<bool(const GameType&)> isGoal,
+                                   Function isGoal,
                                    int depthLimit) {
         queue<GameType> frontier;
         unordered_set<GameType> visited;
@@ -70,9 +77,9 @@ namespace Model {
     }
 
 
-    template<Checkable GameType>
+    template<Checkable GameType, Predicate<GameType> Function>
     bool pathExists(const GameType& initState,
-                    vector<function<bool(const GameType&)>> predicates,
+                    vector<Function> predicates,
                     int depthLimit) {
 
         if (!predicates.size()) {
