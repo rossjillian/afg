@@ -18,8 +18,9 @@ concept Checkable = requires(T m, T other, T::move_t mv) {
         { hash<T>{}(m) } -> same_as<size_t>;
 };
 
-template <class Function, checkable Model>
+template <class Function, class Model>
 concept Predicate = requires(Function f, Model m) {
+    Checkable<Model>;
     { f(m) } -> same_as<bool>;
 };
 
