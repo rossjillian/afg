@@ -9,9 +9,9 @@ CXXFLAGS = -g -Wall -O2 $(INCLUDES)
 LDFLAGS = 
 LDLIBS = 
 
-tictactoe: board.o
+tictactoe: tictactoe.o board.o
 
-model-check: board.o
+model-check: model-check.o board.o
 
 model-check.o: tictactoe.hpp
 
