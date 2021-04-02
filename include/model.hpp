@@ -82,14 +82,15 @@ namespace Model {
                     vector<Function> predicates,
                     int depthLimit) {
 
-        if (!predicates.size()) {
+        if (depthLimit <= 0)
+            return false;
+
+        if (!predicates.size())
             return true;
-        }
 
         auto result = bfsFind(initState, predicates[0], depthLimit);
-        if (!result.success) {
+        if (!result.success)
             return false;
-        }
 
         for (const auto& match : result.matches) {
             if (pathExists(match,

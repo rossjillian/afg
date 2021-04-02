@@ -2,6 +2,7 @@
 #include <numeric>
 #include <vector>
 #include <cassert>
+#include <functional>
 
 #include "model.hpp"
 
@@ -130,9 +131,30 @@ void bfs_test() {
     cout << "..OK!" << endl;
 }
 
+void path_test() {
+    cout << "[unittest] Path" << endl;
+    CoinGame cg1(100, {1, 5, 10});
+
+    auto sumTen = [](const CoinGame& cg){return cg.getSum() == 10;};
+    auto sumSixteen = [](const CoinGame& cg){return cg.getSum() == 16;};
+
+    vector<function<bool(const CoinGame &)>> predicates;
+    predicates.push_back(sumTen);
+    predicates.push_back(sumSixteen);
+
+    cout << "[1] Finds path when depth limit isn't harsh.." << endl;
+    assert(Model::pathExists(cg1, predicates, 10));
+
+    cout << "[2] Doesn't find path when depth limit is harsh.." << endl;
+    assert(!Model::pathExists(cg1, predicates, 2));
+
+    cout << "..OK!" << endl;
+}
+
 int main() {
     hash_test();
     bfs_test();
+    path_test();
 
     return 0;
 }
