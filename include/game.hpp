@@ -17,6 +17,8 @@ concept Playable = requires(T m, T::move_t mv) {
         { m.getCurrentPlayer() } -> same_as<int>;
         { m.getAvailableMoves() } -> same_as<vector<typename T::move_t>>;
         { m.makeMove(mv) } -> same_as<void>;
+        { m.isValid(mv) } -> same_as<bool>;
+        { m.setup() } -> same_as<void>;
 };
 
 template <class T, class G>
@@ -47,14 +49,9 @@ class TPGame {
               p2(player2)
         { }
 
-        /* void initialize() { */
-        /*     state.apply(configs); */
-                /* state.setup() */
-        /* } */
-
-
         void play() {
-            /* initialize(); */
+            state.setup();
+
             while (!state.isTerminal())
             {
                 cout << "[ Turn " << state.getTurnCount() << " ] Player " << state.getCurrentPlayer() << " make a move!" << endl;
@@ -70,7 +67,12 @@ class TPGame {
                     return;
                 }
 
-                state.makeMove(action);
+                if (state.isValid(action))
+                {
+                    state.makeMove(action);
+                } else {
+                    cout << "Invalid move" << endl;
+                }
             }
 
             state.print();

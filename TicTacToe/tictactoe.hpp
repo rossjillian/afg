@@ -54,6 +54,15 @@ struct TicTacToe {
         b.makeMove(tileNo, turnCount++ % 2);
     }
 
+    bool isValid(int tileNo) {
+        return b.isValid(tileNo);
+    }
+
+    void setup() {
+        cout << "Refer to moves using the following chart: " << endl;
+        b.print(true);
+    }
+
     vector<move_t> getAvailableMoves() const {
         return b.getAvailableMoves();
     }

@@ -47,13 +47,7 @@ vector<int> Board::getAvailableMoves() const
             moves.push_back(i);
         }
     }
-    /* remove, for testing
 
-    for (size_t it = boards.begin(); it != boards.end(); ++it)
-    {
-        printBoard(*it, false);
-        cout << endl;
-    }*/
     return moves;
 }
 
@@ -137,12 +131,38 @@ bool Board::checkRows() const
     return false;
 }
 
-void Board::print(bool instructions = false)
-{
-    print(board, instructions);
+ostream& operator<<(ostream& os, const Board& board){
+    int num = 0;
+    const Grid& grid = board.board;
+    for (auto row = grid.begin(); row != grid.end(); ++row)
+    {
+        string baseline;
+        for (auto col = row->begin(); col != row->end(); ++col)
+        {
+            baseline += "----";
+            os << setw(2) << *col << setw(2);
+            if (col+1 != row->end())
+            {
+                os << "|";
+            }
+            num++;
+
+        }
+        cout << endl;
+        if (row+1 != grid.end())
+        {
+            os << baseline << endl;
+        }
+    }
+    return os;
 }
 
-void Board::print(const Grid &board, bool instructions = false)
+void Board::print(bool instructions = false) const
+{
+    printBoard(board, instructions);
+}
+
+void printBoard(const Grid &board, bool instructions = false)
 {
     int num = 0;
     for (auto row = board.begin(); row != board.end(); ++row)
