@@ -6,31 +6,59 @@
 
 #include "tictactoe.hpp"
 #include "strategy.hpp"
+#include "game.hpp"
 
 using namespace std;
 
-class Player {
+template <class Player>
+class HumanPlayer {
     public:
-        Player(double t = 0.0);
+        HumanPlayer(double t = 0.0)
+            : timeout(t)
+        {}	
+
         int getStrategy(const TicTacToe& state);
-        double getTimeout() const;
+
+	double getTimeout() {
+            return timeout;
+        }
+
     private:
         double timeout;
 };
 
-class HumanPlayer : public Player {
+template <class Player>
+class StupidPlayer {
     public:
+        StupidPlayer(double t = 0.0)
+            : timeout(t)
+        {}	
+        
         int getStrategy(const TicTacToe& state);
+	
+        double getTimeout() {
+            return timeout;
+        }
+
+    private:
+        double timeout;
 };
 
-class StupidPlayer : public Player {
+template <class Player>
+class SmartPlayer {
     public:
+        SmartPlayer(double t = 0.0)
+            : timeout(t)
+        {}	
+        
         int getStrategy(const TicTacToe& state);
-};
+        
+        double getTimeout() {
+            return timeout;
+        }
 
-class SmartPlayer : public Player {
-    public:
-        int getStrategy(const TicTacToe& state);
+    private:
+        double timeout;
 };
 
 #endif

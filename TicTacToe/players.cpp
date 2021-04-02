@@ -1,25 +1,20 @@
 #include "players.hpp"
 #include "strategy.hpp"
 
-Player::Player(double t)
-    : timeout(t)
-{}
-
-double Player::getTimeout() const {
-    return timeout;
-}
-
-int HumanPlayer::getStrategy(const TicTacToe& state) 
+template<>
+int HumanPlayer<TicTacToe>::getStrategy(const TicTacToe& state) 
 {
     return io_tile(state);
 }
 
-int StupidPlayer::getStrategy(const TicTacToe& state)
+template<>
+int StupidPlayer<TicTacToe>::getStrategy(const TicTacToe& state)
 {
     return random_tile(state);
 }
 
-int SmartPlayer::getStrategy(const TicTacToe& state)
+template<>
+int SmartPlayer<TicTacToe>::getStrategy(const TicTacToe& state)
 {
     return minimax_tile(state);
 }
