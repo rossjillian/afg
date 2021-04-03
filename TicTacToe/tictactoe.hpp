@@ -2,7 +2,6 @@
 #define TICTACTOE_HPP
 
 #include <vector>
-#include <functional>
 #include "config.hpp"
 #include "board.hpp"
 
@@ -66,6 +65,15 @@ struct TicTacToe {
         b.retractMove(tileNo, player);
     }
     
+    bool isValid(int tileNo) {
+        return b.isValid(tileNo);
+    }
+
+    void setup() {
+        cout << "Refer to moves using the following chart: " << endl;
+        b.print(true);
+    }
+
     vector<move_t> getAvailableMoves() const {
         return b.getAvailableMoves();
     }
