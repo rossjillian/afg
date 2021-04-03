@@ -37,6 +37,16 @@ void Board::makeMove(int move, int player){
     makeMove(move, player, board);
 }
 
+void Board::retractMove(int move, int player, Grid& board) {
+    int row = move / board.size();
+    int col = move % board.size();
+    board[row][col] = ' ';
+}
+
+void Board::retractMove(int move, int player) {
+    retractMove(move, player, board);
+}
+
 vector<int> Board::getAvailableMoves() const
 {
     vector<int> moves; // vector<Move> moves;
@@ -51,7 +61,7 @@ vector<int> Board::getAvailableMoves() const
     return moves;
 }
 
-bool Board::isFull()
+bool Board::isFull() const
 {
     for (auto& row : board)
         if (any_of(row.begin(), row.end(), [](char t) { return t == ' '; }))
@@ -61,6 +71,7 @@ bool Board::isFull()
 }
 
 // We will know who just went, so we just need to return whether there's a winner or not
+// This assumes that players alternate turns; might not be true in a game like checkers
 bool Board::isWinner() const
 {
     return checkRows() || checkColumns() || checkDiagonals();

@@ -5,32 +5,21 @@
 #include <vector>
 
 #include "tictactoe.hpp"
+#include "strategy.hpp"
+#include "game.hpp"
 
 using namespace std;
 
+template <class Player>
 class HumanPlayer {
     public:
         HumanPlayer(double t = 0.0)
             : timeout(t)
-        {}
+        {}	
 
-        int getStrategy(const TicTacToe& state) {
-            vector<int> possibleMoves = state.getAvailableMoves();
-            cout << "[ ";
-            for (int t : possibleMoves) {
-                cout << t << ", ";
-            }
-            cout << "]" << endl;
+        int getStrategy(const TicTacToe& state);
 
-
-            cout << "Tile #: ";
-            int tileNo;
-            cin >> tileNo;
-
-            return tileNo;
-        }
-
-        double getTimeout() const {
+	double getTimeout() {
             return timeout;
         }
 
@@ -38,18 +27,36 @@ class HumanPlayer {
         double timeout;
 };
 
+template <class Player>
 class StupidPlayer {
     public:
         StupidPlayer(double t = 0.0)
             : timeout(t)
-        {}
-        int getStrategy(const TicTacToe& state) {
-            vector<int> possibleMoves = state.getAvailableMoves();
-            return possibleMoves[0];
-        }
-         double getTimeout() const {
+        {}	
+        
+        int getStrategy(const TicTacToe& state);
+	
+        double getTimeout() {
             return timeout;
         }
+
+    private:
+        double timeout;
+};
+
+template <class Player>
+class SmartPlayer {
+    public:
+        SmartPlayer(double t = 0.0)
+            : timeout(t)
+        {}	
+        
+        int getStrategy(const TicTacToe& state);
+        
+        double getTimeout() {
+            return timeout;
+        }
+
     private:
         double timeout;
 };

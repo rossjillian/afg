@@ -20,8 +20,10 @@ class Board {
         bool isValid(int move) const;
         void makeMove(int move, int player, Grid& board);
         void makeMove(int move, int player);
-        bool isFull();
-        bool isTerminal();
+        void retractMove(int move, int player, Grid& board);
+        void retractMove(int move, int player);
+        bool isFull() const;
+        bool isTerminal() const;
         bool isWinner() const;
         vector<int> getAvailableMoves() const;
 
