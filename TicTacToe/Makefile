@@ -1,5 +1,5 @@
-CC = g++-10.1 -std=c++20
-CXX = g++-10.1 -std=c++20
+CC = g++ -std=c++20
+CXX = g++ -std=c++20
 
 INCLUDES = -I../include
 
