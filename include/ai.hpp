@@ -5,11 +5,11 @@
 #include "game.hpp"
 
 namespace AI {
-    template<Playable GameType>
-    int minimizer(GameType& state, int& bestMove, Player<GameType> player);
+    template<Playable GameType, Player<GameType> P>
+    int minimizer(GameType& state, int& bestMove, P player);
 	
-    template<Playable GameType>
-    int maximizer(GameType& state, int& bestMove, Player<GameType> player) {
+    template<Playable GameType, Player<GameType> P>
+    int maximizer(GameType& state, int& bestMove, P player) {
 	if (state.isTerminal())
             return player.heuristic(state);
 
@@ -18,7 +18,7 @@ namespace AI {
         vector<typename GameType::move_t> possibleMoves = state.getAvailableMoves();
         for (typename GameType::move_t move : possibleMoves) {
             GameType stateCopy = state;
-            stateCopy.makeMove(move, 0);
+            stateCopy.makeMove(move);
             int newVal = minimizer(stateCopy, bestMove, player);
             if (newVal > val) {
                 val = newVal;
@@ -28,8 +28,8 @@ namespace AI {
         return val;
     }
 
-    template<Playable GameType>
-    int minimizer(GameType& state, int& bestMove, Player<GameType> player) {
+    template<Playable GameType, Player<GameType> P>
+    int minimizer(GameType& state, int& bestMove, P player) {
         if (state.isTerminal())
             return player.heuristic(state);
 
@@ -38,7 +38,7 @@ namespace AI {
         vector<typename GameType::move_t> possibleMoves = state.getAvailableMoves();
         for (typename GameType::move_t move : possibleMoves) {
             GameType stateCopy = state;
-            stateCopy.makeMove(move, 1);
+            stateCopy.makeMove(move);
             int newVal = maximizer(stateCopy, bestMove, player);
             if (newVal < val) {
                 val = newVal;
@@ -48,8 +48,8 @@ namespace AI {
         return val;
     }
     
-    template<Playable GameType>
-    GameType::move_t minimax(const GameType& state, Player<GameType> player) {
+    template<Playable GameType, Player<GameType> P>
+    GameType::move_t minimax(const GameType& state, P player) {
         int bestMove;
         GameType stateCopy = state;
         if (player.getParity() == 1) {

@@ -1,13 +1,46 @@
 #ifndef STRATEGY_HPP
 #define STRATEGY_HPP
 
-template <class T>
-int getRandomTile(const T& state);
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <random>
 
-template <class T>
-int getIOTile(const T& state);
+#include "strategy.hpp"
+#include "game.hpp"
+#include "ai.hpp"
 
-template <class T>
-int getMinimaxTile(const T& state, Player<T> player);
+using namespace std;
+
+template <Playable GameType>
+typename GameType::move_t getRandomTile(const GameType& state) {
+    vector<typename GameType::move_t> possibleMoves = state.getAvailableMoves();
+    auto rng = std::default_random_engine {};
+	
+    std::shuffle(possibleMoves.begin(), possibleMoves.end(), rng);
+	
+    return possibleMoves[0];
+}
+
+template <Playable GameType>
+typename GameType::move_t getIOTile(const GameType& state) {
+    vector<typename GameType::move_t> possibleMoves = state.getAvailableMoves();
+    cout << "[ ";
+    for (typename GameType::move_t t : possibleMoves) {
+        cout << t << ", ";
+    }
+    cout << "]" << endl;
+
+    cout << "Tile #: ";
+    int tileNo;
+    cin >> tileNo;
+
+    return tileNo;
+}
+
+template <Playable GameType, Player<GameType> P>
+typename GameType::move_t getMinimaxTile(const GameType& state, P player) {
+    return AI::minimax(state, player);
+}
 
 #endif

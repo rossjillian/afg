@@ -28,15 +28,14 @@ struct TicTacToe {
     {}
 
     bool isTerminal() const {
-        return (b.getWinningTurn() != -1) || b.isFull();
+        return b.isWinner() || b.isFull();
     }
 
     int getTurnCount() const { return turnCount; }
 
     int getTurnParity() const { return turnCount % 2; } 
 
-    template <Player T>
-    T getTurnPlayer() const { }
+    //Player<TicTacToe> getTurnPlayer() const { }
 
     bool isWinner() const {
         return b.isWinner();
@@ -52,10 +51,6 @@ struct TicTacToe {
             turnCount += 1;
     }
     
-    void makeMove(int tileNo, Player<TicTacToe> p) {
-        b.makeMove(tileNo, p.getTurnOrder());
-    }
-
     bool isValid(int tileNo) {
         return b.isValid(tileNo);
     }

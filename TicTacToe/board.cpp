@@ -26,18 +26,16 @@ bool Board::isValid(int move) const
     return board[row][col] == ' ';
 }
 
-template<Player T>
-void Board::makeMove(int move, T player, Grid& board){
+void Board::makeMove(int move, int turn, Grid& board){
     //TODO: could remove repetition from this calculation
     int row = move / board.size();
     int col = move % board.size();
     if (isValid(move))
-        board[row][col] = player.getParity() ? 'x' : 'o';
+        board[row][col] = turn ? 'x' : 'o';
 }
 
-template<Player T>
-void Board::makeMove(int move, T player){
-    makeMove(move, player, board);
+void Board::makeMove(int move, int turn){
+    makeMove(move, turn, board);
 }
 
 vector<int> Board::getAvailableMoves() const
@@ -78,7 +76,7 @@ bool Board::checkDiagonals() const
     {
         if (elem2 != board[i][board.size() - 1 - i] || elem2 == ' ')
         {
-            winner2 = -false;
+            winner2 = false;
         }
         if (elem1 != board[i][i] || elem1 == ' ')
         {
@@ -99,18 +97,18 @@ bool Board::checkColumns() const
         {
             if (elem != row[c] || elem == ' ')
             {
-                winner = -1;
+                winner = false;
                 break;
             }
         }
 
-        if (winner != -1)
+        if (winner)
             return winner;
     }
     return false;
 }
 
-int Board::checkRows() const
+bool Board::checkRows() const
 {
     for (const auto& row : board)
     {
@@ -120,12 +118,12 @@ int Board::checkRows() const
         {
             if (elem != *col || elem == ' ')
             {
-                winner = -1;
+                winner = false;
                 break;
             }
         }
 
-        if (winner != -1)
+        if (winner)
             return winner;
     }
     return false;

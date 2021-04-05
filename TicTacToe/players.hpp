@@ -10,11 +10,15 @@
 
 using namespace std;
 
-template <Playble GameType>
-class Human
+const int MINIMIZER = -1;
+const int MAXIMIZER = 1;
+const int NEUTRAL = 0;
+
+template <Playable GameType>
+class Human {
     public:
-        Human(double t = 0.0)
-            : timeout(t)
+        Human(int i, double t = 0.0)
+            : parity(i), timeout(t)
         {}	
 
         typename GameType::move_t getStrategy(const GameType& state) {
@@ -30,23 +34,29 @@ class Human
         }
 
         int heuristic(const GameType& state) {
-            return 0;
+            if (state.isWinner()) {
+                if (this->getParity() == state.getTurnParity())
+                    return MINIMIZER;
+                else
+                    return MAXIMIZER;    
+            }
+            return NEUTRAL;
         }
        
     private:
-        double timeout;
 	int parity;	
+        double timeout;
 };
 
 template <Playable GameType>
 class Smart {
     public:
-        Smart(double t = 0.0)
-            : timeout(t)
+        Smart(int i, double t = 0.0)
+            : parity(i), timeout(t)
         {}	
 
         typename GameType::move_t getStrategy(const GameType& state) {
-              return getMinimaxTile(state);
+              return getMinimaxTile(state, *this);
         }
 
 	double getTimeout() {
@@ -58,12 +68,19 @@ class Smart {
         }
         
         int heuristic(const GameType& state) {
-            return 0;
+            if (state.isWinner()) {
+                if (this->getParity() == state.getTurnParity())
+                    return MAXIMIZER;
+                else
+                    return MINIMIZER;    
+            }
+            return NEUTRAL;
         }
 
     private:
+	int parity;	
         double timeout;
-        int parity;
 };
+
 
 #endif
