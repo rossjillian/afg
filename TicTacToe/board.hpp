@@ -18,12 +18,12 @@ class Board {
         void print(bool instructions) const;
         friend ostream& operator<<(ostream& os, const Board& board);
         bool isValid(int move) const;
-        void makeMove(int move, int player, Grid& board);
-        void makeMove(int move, int player);
-        void retractMove(int move, int player, Grid& board);
-        void retractMove(int move, int player);
+        template<Player T>
+        void makeMove(int move, T player, Grid& board);
+        template<Player T>
+        void makeMove(int move, T player);
         bool isFull() const;
-        int getWinningTurn() const;
+        bool isWinner() const;
         vector<int> getAvailableMoves() const;
 
     private:

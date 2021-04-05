@@ -35,47 +35,27 @@ struct TicTacToe {
 
     int getTurnParity() const { return turnCount % 2; } 
 
-    // getTurnPlayer
+    template <Player T>
+    T getTurnPlayer() const { }
 
     bool isWinner() const {
-        if (b.getWinningTurn() == -1)
-            return false;
-        return true;  
+        return b.isWinner();
     }
     
-    bool isWinner(Player<TicTacToe> p) const {
-        if (b.getWinningTurn() == p.getTurnOrder())
-            return true;
-        return false;
-    }
-
-    int getWinningTurn() const {
-        if (b.getWinningTurn() == -1) return false;
-    
-        return b.getWinningTurn();
-    }
-
     void print() {
         b.print(false);
     }
 
     void makeMove(int tileNo) {
-        b.makeMove(tileNo, turnCount++ % 2);
-        // Check before incrementing
+        b.makeMove(tileNo, turnCount % 2);
+        if (!b.isWinner())
+            turnCount += 1;
     }
     
     void makeMove(int tileNo, Player<TicTacToe> p) {
         b.makeMove(tileNo, p.getTurnOrder());
     }
 
-    void retractMove(int tileNo) {
-        b.retractMove(tileNo, turnCount++ % 2);
-    }
-    
-    void retractMove(int tileNo, Player<TicTacToe> p) {
-        b.retractMove(tileNo, p.getTurnOrder());
-    }
-    
     bool isValid(int tileNo) {
         return b.isValid(tileNo);
     }

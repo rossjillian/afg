@@ -26,26 +26,18 @@ bool Board::isValid(int move) const
     return board[row][col] == ' ';
 }
 
-void Board::makeMove(int move, int player, Grid& board){
+template<Player T>
+void Board::makeMove(int move, T player, Grid& board){
     //TODO: could remove repetition from this calculation
     int row = move / board.size();
     int col = move % board.size();
     if (isValid(move))
-        board[row][col] = player ? 'x' : 'o';
+        board[row][col] = player.getParity() ? 'x' : 'o';
 }
 
-void Board::makeMove(int move, int player){
+template<Player T>
+void Board::makeMove(int move, T player){
     makeMove(move, player, board);
-}
-
-void Board::retractMove(int move, int player, Grid& board) {
-    int row = move / board.size();
-    int col = move % board.size();
-    board[row][col] = ' ';
-}
-
-void Board::retractMove(int move, int player) {
-    retractMove(move, player, board);
 }
 
 vector<int> Board::getAvailableMoves() const
@@ -71,60 +63,38 @@ bool Board::isFull() const
     return true;
 }
 
-int Board::getWinningTurn() const
+bool Board::isWinner() const
 {
-    int rows = checkRows();
-    int columns = checkColumns();
-    int diagonals = checkDiagonals();
-    if (rows != -1)
-        return rows;
-    else if (columns != -1)
-        return columns;
-    else if (diagonals != -1)
-        return diagonals;
-    return -1;
+    return checkRows() || checkColumns() || checkDiagonals();
 }
 
-int Board::getTileTurn(char elem) const
-{
-    if (elem == 'x')
-        return 1;
-    else if (elem == 'o')
-        return 0;
-    return -1;
-}
-
-int Board::checkDiagonals() const
+bool Board::checkDiagonals() const
 {
     char elem1 = board[0][0];
     char elem2 = board[0][board.size() - 1];
-    int winner1 = getTileTurn(elem1);
-    int winner2 = getTileTurn(elem2);
+    bool winner1 = true;
+    bool winner2 = true;
     for (size_t i = 1; i < board.size(); i++)
     {
         if (elem2 != board[i][board.size() - 1 - i] || elem2 == ' ')
         {
-            winner2 = -1;
+            winner2 = -false;
         }
         if (elem1 != board[i][i] || elem1 == ' ')
         {
-            winner1 = -1;
+            winner1 = false;
         }
     }
-    if (winner1 != -1)
-        return winner1;
-    else if (winner2 != -1)
-        return winner2;
-    return -1;
+    return winner1 || winner2;
 }
 
 //TODO: maybe some way to reuse code?
-int Board::checkColumns() const
+bool Board::checkColumns() const
 {
     for (size_t c = 0; c < board.size(); c++)
     {
         char elem = board[0][c];
-        int winner = getTileTurn(elem);
+        bool winner = true;
         for (const auto& row : board)
         {
             if (elem != row[c] || elem == ' ')
@@ -137,7 +107,7 @@ int Board::checkColumns() const
         if (winner != -1)
             return winner;
     }
-    return -1;
+    return false;
 }
 
 int Board::checkRows() const
@@ -145,7 +115,7 @@ int Board::checkRows() const
     for (const auto& row : board)
     {
         char elem = *(row.begin());
-        int winner = getTileTurn(elem);
+        bool winner = true;
         for (auto col = row.begin() + 1; col != row.end(); ++col)
         {
             if (elem != *col || elem == ' ')
@@ -158,7 +128,7 @@ int Board::checkRows() const
         if (winner != -1)
             return winner;
     }
-    return -1;
+    return false;
 }
 
 ostream& operator<<(ostream& os, const Board& board){

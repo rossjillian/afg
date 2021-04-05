@@ -19,7 +19,6 @@ concept Playable = requires(T player, G m, G::move_t mv) {
         { m.makeMove(mv) } -> same_as<void>;
         { m.isValid(mv) } -> same_as<bool>;
         { m.setup() } -> same_as<void>;
-        //{ m.incrementTurnCount() } -> same_as<>;
 };
 
 template <class T, class G>
@@ -27,6 +26,7 @@ concept Player = requires(T player, G game) {
     Playable<G>;
     { player.getStrategy(game) } -> same_as<typename G::move_t>;
     { player.getTimeout() } -> same_as<double>;
+    { player.getParity() } -> same_as<int>;
 };
 
 template <class T, class G>
