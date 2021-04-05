@@ -12,7 +12,7 @@ LDLIBS =
 .PHONY:
 default: tictactoe model-check
 
-tictactoe: tictactoe.o board.o players.o strategy.o
+tictactoe: tictactoe.o board.o strategy.o
 
 model-check: model-check.o board.o
 
@@ -20,9 +20,7 @@ model-check.o: tictactoe.hpp
 
 tictactoe.o: tictactoe.hpp
 
-board.o: board.hpp
-
-players.o: players.hpp 
+board.o: board.hpp 
 
 strategy.o: strategy.hpp
 

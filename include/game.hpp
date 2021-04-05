@@ -8,39 +8,31 @@
 using namespace std;
 using namespace chrono;
 
-template <class T>
-concept Playable = requires(T m, T::move_t mv) {
-        typename Config<T>;
+template <class G, class T>
+concept Playable = requires(T player, G m, G::move_t mv) {
+        typename Config<G>;
         { m.isTerminal() } -> same_as<bool>;
-        { m.isWinner() } -> same_as<bool>;
+        { m.isWinner(player) } -> same_as<bool>; 
         { m.getTurnCount() } -> same_as<int>;
         { m.getCurrentTurn() } -> same_as<int>;
         { m.getAvailableMoves() } -> same_as<vector<typename T::move_t>>;
         { m.makeMove(mv) } -> same_as<void>;
         { m.isValid(mv) } -> same_as<bool>;
         { m.setup() } -> same_as<void>;
+        //{ m.incrementTurnCount() } -> same_as<>;
 };
 
-/*
 template <class T, class G>
 concept Player = requires(T player, G game) {
     Playable<G>;
     { player.getStrategy(game) } -> same_as<typename G::move_t>;
     { player.getTimeout() } -> same_as<double>;
-    { player.getTurnOrder() } -> same_as<int>;
 };
-*/
 
-template <class T>
-class Player {
-    public:
-        Player(int o, double t = 0.0) : timeout(t), turnOrder(o) {} 
-        typename T::move_t getStrategy(const T& state) { return state.getAvailableMoves()[0]; }
-        double getTimeout() const { return timeout; }
-        int getTurnOrder() const { return turnOrder; }
-    private:
-        double timeout;
-        int turnOrder;
+template <class T, class G>
+concept Intelligent = requires(T player, G game) {
+    Player<T>;
+    { player.heuristic(game) } -> same_as<int>;
 };
 
 template <Playable GameType>

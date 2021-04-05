@@ -10,28 +10,60 @@
 
 using namespace std;
 
-template <class T>
-class HumanPlayer : public Player<T> {
+template <Playble GameType>
+class Human
     public:
-	HumanPlayer(int o, double t = 0.0) : Player<T>(o, t) {}
-        typename T::move_t getStrategy(const T& state) { return io_tile(state); }
+        Human(double t = 0.0)
+            : timeout(t)
+        {}	
 
+        typename GameType::move_t getStrategy(const GameType& state) {
+            return getIOTile(state);
+        }
+
+	double getTimeout() {
+            return timeout;
+        }
+
+        int getParity() {
+            return parity;
+        }
+
+        int heuristic(const GameType& state) {
+            return 0;
+        }
+       
+    private:
+        double timeout;
+	int parity;	
 };
 
-template <class T>
-class StupidPlayer : public Player<T> {
+template <Playable GameType>
+class Smart {
     public:
-	StupidPlayer(int o, double t = 0.0) : Player<T>(o, t) {}
-        typename T::move_t getStrategy(const T& state) { return io_tile(state); }
+        Smart(double t = 0.0)
+            : timeout(t)
+        {}	
 
-};
+        typename GameType::move_t getStrategy(const GameType& state) {
+              return getMinimaxTile(state);
+        }
 
-template <class T>
-class SmartPlayer : public Player<T> {
-    public:
-	SmartPlayer(int o, double t = 0.0) : Player<T>(o, t) {}
-        typename T::move_t getStrategy(const T& state) { return io_tile(state); }
+	double getTimeout() {
+            return timeout;
+        }
+        
+        int getParity() {
+            return parity;
+        }
+        
+        int heuristic(const GameType& state) {
+            return 0;
+        }
 
+    private:
+        double timeout;
+        int parity;
 };
 
 #endif

@@ -9,8 +9,8 @@
 
 int main(int argc, char **argv)
 {
-    HumanPlayer<TicTacToe> p1(0);
-    SmartPlayer<TicTacToe> p2(1);
+    Player<TicTacToe> Human(0);
+    Player<TicTacToe> Smart(1);
 
     Config<TicTacToe> config {3};
 

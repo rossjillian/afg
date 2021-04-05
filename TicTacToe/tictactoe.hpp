@@ -33,7 +33,9 @@ struct TicTacToe {
 
     int getTurnCount() const { return turnCount; }
 
-    int getCurrentTurn() const { return turnCount % 2; }
+    int getTurnParity() const { return turnCount % 2; } 
+
+    // getTurnPlayer
 
     bool isWinner() const {
         if (b.getWinningTurn() == -1)
@@ -59,6 +61,7 @@ struct TicTacToe {
 
     void makeMove(int tileNo) {
         b.makeMove(tileNo, turnCount++ % 2);
+        // Check before incrementing
     }
     
     void makeMove(int tileNo, Player<TicTacToe> p) {
@@ -75,10 +78,6 @@ struct TicTacToe {
     
     bool isValid(int tileNo) {
         return b.isValid(tileNo);
-    }
-
-    int heuristic(Player<TicTacToe> p) {
-        return 0;
     }
 
     void setup() {
