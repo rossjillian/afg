@@ -4,7 +4,10 @@
 #include "tictactoe.hpp"
 
 int random_tile(const TicTacToe& state);
-int io_tile(const TicTacToe& state);
-int minimax_tile(const TicTacToe& state, int player = 0);
+
+template <class T>
+typename T::move_t io_tile(const T& state);
+
+int minimax_tile(const TicTacToe& state, Player<TicTacToe> player);
 
 #endif

@@ -23,14 +23,14 @@ class Board {
         void retractMove(int move, int player, Grid& board);
         void retractMove(int move, int player);
         bool isFull() const;
-        bool isTerminal() const;
-        bool isWinner() const;
+        int getWinningTurn() const;
         vector<int> getAvailableMoves() const;
 
     private:
-        bool checkColumns() const;
-        bool checkRows() const;
-        bool checkDiagonals() const;
+        int getTileTurn(char elem) const;
+        int checkColumns() const;
+        int checkRows() const;
+        int checkDiagonals() const;
 };
 
 #endif

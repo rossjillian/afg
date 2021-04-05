@@ -9,6 +9,7 @@
 
 using namespace std;
 
+/*
 int random_tile(const TicTacToe& state) {
     vector<int> possibleMoves = state.getAvailableMoves();
     auto rng = std::default_random_engine {};
@@ -17,11 +18,13 @@ int random_tile(const TicTacToe& state) {
 	
     return possibleMoves[0];
 }
+*/
 
-int io_tile(const TicTacToe& state) {
-    vector<int> possibleMoves = state.getAvailableMoves();
+template <class T>
+typename T::move_t io_tile(const T& state) {
+    vector<typename T::move_t> possibleMoves = state.getAvailableMoves();
     cout << "[ ";
-    for (int t : possibleMoves) {
+    for (typename T::move_t t : possibleMoves) {
         cout << t << ", ";
     }
     cout << "]" << endl;
@@ -33,7 +36,9 @@ int io_tile(const TicTacToe& state) {
     return tileNo;
 }
 
-int minimax_tile(const TicTacToe& state, int player) {
+/*
+int minimax_tile(const TicTacToe& state, Player<TicTacToe> player) {
     return AI::minimax(state, player);
 }
+*/
 

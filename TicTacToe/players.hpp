@@ -10,55 +10,28 @@
 
 using namespace std;
 
-template <class Player>
-class HumanPlayer {
+template <class T>
+class HumanPlayer : public Player<T> {
     public:
-        HumanPlayer(double t = 0.0)
-            : timeout(t)
-        {}	
+	HumanPlayer(int o, double t = 0.0) : Player<T>(o, t) {}
+        typename T::move_t getStrategy(const T& state) { return io_tile(state); }
 
-        int getStrategy(const TicTacToe& state);
-
-	double getTimeout() {
-            return timeout;
-        }
-
-    private:
-        double timeout;
 };
 
-template <class Player>
-class StupidPlayer {
+template <class T>
+class StupidPlayer : public Player<T> {
     public:
-        StupidPlayer(double t = 0.0)
-            : timeout(t)
-        {}	
-        
-        int getStrategy(const TicTacToe& state);
-	
-        double getTimeout() {
-            return timeout;
-        }
+	StupidPlayer(int o, double t = 0.0) : Player<T>(o, t) {}
+        typename T::move_t getStrategy(const T& state) { return io_tile(state); }
 
-    private:
-        double timeout;
 };
 
-template <class Player>
-class SmartPlayer {
+template <class T>
+class SmartPlayer : public Player<T> {
     public:
-        SmartPlayer(double t = 0.0)
-            : timeout(t)
-        {}	
-        
-        int getStrategy(const TicTacToe& state);
-        
-        double getTimeout() {
-            return timeout;
-        }
+	SmartPlayer(int o, double t = 0.0) : Player<T>(o, t) {}
+        typename T::move_t getStrategy(const T& state) { return io_tile(state); }
 
-    private:
-        double timeout;
 };
 
 #endif

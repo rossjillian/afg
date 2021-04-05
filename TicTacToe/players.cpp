@@ -1,20 +1,22 @@
 #include "players.hpp"
 #include "strategy.hpp"
 
-template<>
-int HumanPlayer<TicTacToe>::getStrategy(const TicTacToe& state) 
+/*
+template<class T>
+typename T::move_t HumanPlayer<T>::getStrategy(const T& state) 
 {
     return io_tile(state);
 }
 
-template<>
-int StupidPlayer<TicTacToe>::getStrategy(const TicTacToe& state)
+template<class T>
+typename T::move_t StupidPlayer<T>::getStrategy(const T& state)
 {
     return random_tile(state);
 }
 
-template<>
-int SmartPlayer<TicTacToe>::getStrategy(const TicTacToe& state)
+template<class T>
+typename T::move_t SmartPlayer<T>::getStrategy(const T& state)
 {
-    return minimax_tile(state);
+    return minimax_tile(state, *this);
 }
+*/

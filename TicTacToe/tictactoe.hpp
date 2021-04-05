@@ -4,9 +4,9 @@
 #include <vector>
 #include "config.hpp"
 #include "board.hpp"
+#include "game.hpp"
 
 using namespace std;
-
 
 struct TicTacToe;
 
@@ -28,21 +28,29 @@ struct TicTacToe {
     {}
 
     bool isTerminal() const {
-        return b.isWinner() || b.isFull();
+        return (b.getWinningTurn() != -1) || b.isFull();
     }
 
     int getTurnCount() const { return turnCount; }
 
-    int getCurrentPlayer() const { return turnCount % 2; }
+    int getCurrentTurn() const { return turnCount % 2; }
 
     bool isWinner() const {
-        return b.isWinner();
+        if (b.getWinningTurn() == -1)
+            return false;
+        return true;  
+    }
+    
+    bool isWinner(Player<TicTacToe> p) const {
+        if (b.getWinningTurn() == p.getTurnOrder())
+            return true;
+        return false;
     }
 
-    int getWinner() const {
-        if (!isWinner()) return false;
-
-        return (turnCount - 1) % 2;
+    int getWinningTurn() const {
+        if (b.getWinningTurn() == -1) return false;
+    
+        return b.getWinningTurn();
     }
 
     void print() {
@@ -53,20 +61,24 @@ struct TicTacToe {
         b.makeMove(tileNo, turnCount++ % 2);
     }
     
-    void makeMove(int tileNo, int player) {
-        b.makeMove(tileNo, player);
+    void makeMove(int tileNo, Player<TicTacToe> p) {
+        b.makeMove(tileNo, p.getTurnOrder());
     }
 
     void retractMove(int tileNo) {
         b.retractMove(tileNo, turnCount++ % 2);
     }
     
-    void retractMove(int tileNo, int player) {
-        b.retractMove(tileNo, player);
+    void retractMove(int tileNo, Player<TicTacToe> p) {
+        b.retractMove(tileNo, p.getTurnOrder());
     }
     
     bool isValid(int tileNo) {
         return b.isValid(tileNo);
+    }
+
+    int heuristic(Player<TicTacToe> p) {
+        return 0;
     }
 
     void setup() {
@@ -74,7 +86,7 @@ struct TicTacToe {
         b.print(true);
     }
 
-    vector<move_t> getAvailableMoves() const {
+    vector<int> getAvailableMoves() const {
         return b.getAvailableMoves();
     }
 

@@ -2,6 +2,7 @@
 #include <vector>
 #include <iomanip>
 #include "board.hpp"
+#include "game.hpp"
 
 using namespace std;
 
@@ -26,7 +27,7 @@ bool Board::isValid(int move) const
 }
 
 void Board::makeMove(int move, int player, Grid& board){
-    //TODO: could remove repition from this calculation
+    //TODO: could remove repetition from this calculation
     int row = move / board.size();
     int col = move % board.size();
     if (isValid(move))
@@ -70,76 +71,94 @@ bool Board::isFull() const
     return true;
 }
 
-// We will know who just went, so we just need to return whether there's a winner or not
-// This assumes that players alternate turns; might not be true in a game like checkers
-bool Board::isWinner() const
+int Board::getWinningTurn() const
 {
-    return checkRows() || checkColumns() || checkDiagonals();
+    int rows = checkRows();
+    int columns = checkColumns();
+    int diagonals = checkDiagonals();
+    if (rows != -1)
+        return rows;
+    else if (columns != -1)
+        return columns;
+    else if (diagonals != -1)
+        return diagonals;
+    return -1;
 }
 
-
-
-bool Board::checkDiagonals() const
+int Board::getTileTurn(char elem) const
 {
-    bool winner1 = true;
-    bool winner2 = true;
+    if (elem == 'x')
+        return 1;
+    else if (elem == 'o')
+        return 0;
+    return -1;
+}
+
+int Board::checkDiagonals() const
+{
     char elem1 = board[0][0];
     char elem2 = board[0][board.size() - 1];
+    int winner1 = getTileTurn(elem1);
+    int winner2 = getTileTurn(elem2);
     for (size_t i = 1; i < board.size(); i++)
     {
         if (elem2 != board[i][board.size() - 1 - i] || elem2 == ' ')
         {
-            winner2 = false;
+            winner2 = -1;
         }
         if (elem1 != board[i][i] || elem1 == ' ')
         {
-            winner1 = false;
+            winner1 = -1;
         }
     }
-    return winner1 || winner2;
+    if (winner1 != -1)
+        return winner1;
+    else if (winner2 != -1)
+        return winner2;
+    return -1;
 }
 
 //TODO: maybe some way to reuse code?
-bool Board::checkColumns() const
+int Board::checkColumns() const
 {
     for (size_t c = 0; c < board.size(); c++)
     {
-        bool winner = true;
         char elem = board[0][c];
+        int winner = getTileTurn(elem);
         for (const auto& row : board)
         {
             if (elem != row[c] || elem == ' ')
             {
-                winner = false;
+                winner = -1;
                 break;
             }
         }
 
-        if (winner)
+        if (winner != -1)
             return winner;
     }
-    return false;
+    return -1;
 }
 
-bool Board::checkRows() const
+int Board::checkRows() const
 {
     for (const auto& row : board)
     {
-        bool winner = true;
         char elem = *(row.begin());
+        int winner = getTileTurn(elem);
         for (auto col = row.begin() + 1; col != row.end(); ++col)
         {
             if (elem != *col || elem == ' ')
             {
-                winner = false;
+                winner = -1;
                 break;
             }
         }
 
-        if (winner)
+        if (winner != -1)
             return winner;
     }
-    return false;
+    return -1;
 }
 
 ostream& operator<<(ostream& os, const Board& board){
