@@ -12,6 +12,8 @@
 
 using namespace std;
 
+const int MAX_DEPTH = 9999;
+
 template <Playable GameType>
 typename GameType::move_t getRandomTile(const GameType& state) {
     vector<typename GameType::move_t> possibleMoves = state.getAvailableMoves();
@@ -40,7 +42,7 @@ typename GameType::move_t getIOTile(const GameType& state) {
 
 template <Playable GameType, IntelligentPlayer<GameType> P>
 typename GameType::move_t getMinimaxTile(const GameType& state, P player) {
-    return AI::minimax(state, player);
+    return AI::iterativeDeepening(state, player);
 }
 
 #endif
