@@ -19,8 +19,7 @@ concept Checkable = requires(T m, T other, T::move_t mv) {
 };
 
 template <class Function, class Model>
-concept Predicate = requires(Function f, Model m) {
-    Checkable<Model>;
+concept Predicate = Checkable<Model> && requires(Function f, Model m) {
     { f(m) } -> same_as<bool>;
 };
 
