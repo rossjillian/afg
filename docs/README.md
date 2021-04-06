@@ -40,7 +40,9 @@ Note that a player is defined with respect to a constrained game that must be `P
         { os << m };
         { os << mv };
     };
- 
+
+We provide the game dev with the option for an `IntelligentPlayer` to use (1) minimax with alpha beta pruning or (2) minimax with alpha beta pruning and iterative deepening via timeout. Minimax with alpha beta pruning decreases the number of states that need to be evaluated while ensuring that the optimal state is found. Minimax with iterative deepening adds an additional time constraint to the search of all possible states, which is important for maintaining playability in games with a large number of possible states. 
+
 Model Checking
 --------------
 Model checking involves employing a search agent to traverse the state space in
