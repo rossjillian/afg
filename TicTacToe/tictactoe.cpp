@@ -1,4 +1,5 @@
 #include <iostream>
+
 #include <vector>
 
 #include "game.hpp"
@@ -6,11 +7,10 @@
 #include "players.hpp"
 #include "model.hpp"
 
-
 int main(int argc, char **argv)
 {
     HumanPlayer<TicTacToe> p1(0);
-    SmartPlayer<TicTacToe> p2;
+    SmartPlayer<TicTacToe> p2(1);
 
     Config<TicTacToe> config {3};
 

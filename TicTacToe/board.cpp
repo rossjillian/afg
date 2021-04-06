@@ -2,6 +2,7 @@
 #include <vector>
 #include <iomanip>
 #include "board.hpp"
+#include "game.hpp"
 
 using namespace std;
 
@@ -25,26 +26,16 @@ bool Board::isValid(int move) const
     return board[row][col] == ' ';
 }
 
-void Board::makeMove(int move, int player, Grid& board){
-    //TODO: could remove repition from this calculation
+void Board::makeMove(int move, int turn, Grid& board){
+    //TODO: could remove repetition from this calculation
     int row = move / board.size();
     int col = move % board.size();
     if (isValid(move))
-        board[row][col] = player ? 'x' : 'o';
+        board[row][col] = turn ? 'x' : 'o';
 }
 
-void Board::makeMove(int move, int player){
-    makeMove(move, player, board);
-}
-
-void Board::retractMove(int move, int player, Grid& board) {
-    int row = move / board.size();
-    int col = move % board.size();
-    board[row][col] = ' ';
-}
-
-void Board::retractMove(int move, int player) {
-    retractMove(move, player, board);
+void Board::makeMove(int move, int turn){
+    makeMove(move, turn, board);
 }
 
 vector<int> Board::getAvailableMoves() const
@@ -70,21 +61,17 @@ bool Board::isFull() const
     return true;
 }
 
-// We will know who just went, so we just need to return whether there's a winner or not
-// This assumes that players alternate turns; might not be true in a game like checkers
 bool Board::isWinner() const
 {
     return checkRows() || checkColumns() || checkDiagonals();
 }
 
-
-
 bool Board::checkDiagonals() const
 {
-    bool winner1 = true;
-    bool winner2 = true;
     char elem1 = board[0][0];
     char elem2 = board[0][board.size() - 1];
+    bool winner1 = true;
+    bool winner2 = true;
     for (size_t i = 1; i < board.size(); i++)
     {
         if (elem2 != board[i][board.size() - 1 - i] || elem2 == ' ')
@@ -104,8 +91,8 @@ bool Board::checkColumns() const
 {
     for (size_t c = 0; c < board.size(); c++)
     {
-        bool winner = true;
         char elem = board[0][c];
+        bool winner = true;
         for (const auto& row : board)
         {
             if (elem != row[c] || elem == ' ')
@@ -125,8 +112,8 @@ bool Board::checkRows() const
 {
     for (const auto& row : board)
     {
-        bool winner = true;
         char elem = *(row.begin());
+        bool winner = true;
         for (auto col = row.begin() + 1; col != row.end(); ++col)
         {
             if (elem != *col || elem == ' ')

@@ -29,7 +29,7 @@ int main(int argc, char **argv) {
     /* Predicate #2: Find a TTT state where Player1 ('x') wins */
     predicates.push_back(
         [](const TicTacToe& st) {
-             return st.b.isWinner() && (st.getWinner() == 1);
+             return st.b.isWinner() && (st.getTurnParity() == 1); 
         }
     );
 

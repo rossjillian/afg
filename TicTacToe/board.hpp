@@ -2,6 +2,7 @@
 #define BOARD_HPP
 
 #include <vector>
+#include "game.hpp"
 
 using namespace std;
 
@@ -18,12 +19,9 @@ class Board {
         void print(bool instructions) const;
         friend ostream& operator<<(ostream& os, const Board& board);
         bool isValid(int move) const;
-        void makeMove(int move, int player, Grid& board);
-        void makeMove(int move, int player);
-        void retractMove(int move, int player, Grid& board);
-        void retractMove(int move, int player);
+        void makeMove(int move, int turn, Grid& board);
+        void makeMove(int move, int turn);
         bool isFull() const;
-        bool isTerminal() const;
         bool isWinner() const;
         vector<int> getAvailableMoves() const;
 

@@ -4,9 +4,9 @@
 #include <vector>
 #include "config.hpp"
 #include "board.hpp"
+#include "game.hpp"
 
 using namespace std;
-
 
 struct TicTacToe;
 
@@ -33,36 +33,20 @@ struct TicTacToe {
 
     int getTurnCount() const { return turnCount; }
 
-    int getCurrentPlayer() const { return turnCount % 2; }
+    int getTurnParity() const { return turnCount % 2; } 
 
     bool isWinner() const {
         return b.isWinner();
     }
-
-    int getWinner() const {
-        if (!isWinner()) return false;
-
-        return (turnCount - 1) % 2;
-    }
-
+    
     void print() {
         b.print(false);
     }
 
     void makeMove(int tileNo) {
-        b.makeMove(tileNo, turnCount++ % 2);
-    }
-    
-    void makeMove(int tileNo, int player) {
-        b.makeMove(tileNo, player);
-    }
-
-    void retractMove(int tileNo) {
-        b.retractMove(tileNo, turnCount++ % 2);
-    }
-    
-    void retractMove(int tileNo, int player) {
-        b.retractMove(tileNo, player);
+        b.makeMove(tileNo, turnCount % 2);
+        if (!b.isWinner())
+            turnCount += 1;
     }
     
     bool isValid(int tileNo) {
@@ -74,8 +58,18 @@ struct TicTacToe {
         b.print(true);
     }
 
-    vector<move_t> getAvailableMoves() const {
+    vector<int> getAvailableMoves() const {
         return b.getAvailableMoves();
+    }
+        
+    friend ostream& operator<<(ostream& os, const TicTacToe& t) {
+         os << t.b;    
+         return os;
+    }
+    
+    friend ostream& operator<<(ostream& os, const int mv) {
+         os << mv;    
+         return os;
     }
 
     bool operator==(const TicTacToe& other_ttt) const

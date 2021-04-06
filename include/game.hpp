@@ -8,17 +8,19 @@
 using namespace std;
 using namespace chrono;
 
-template <class T>
-concept Playable = requires(T m, T::move_t mv) {
-        typename Config<T>;
+template <class G>
+concept Playable = requires(G m, G::move_t mv, ostream& os) {
+        typename Config<G>;
         { m.isTerminal() } -> same_as<bool>;
-        { m.isWinner() } -> same_as<bool>;
+        { m.isWinner() } -> same_as<bool>; 
         { m.getTurnCount() } -> same_as<int>;
-        { m.getCurrentPlayer() } -> same_as<int>;
-        { m.getAvailableMoves() } -> same_as<vector<typename T::move_t>>;
+        { m.getTurnParity() } -> same_as<int>;
+        { m.getAvailableMoves() } -> same_as<vector<typename G::move_t>>;
         { m.makeMove(mv) } -> same_as<void>;
         { m.isValid(mv) } -> same_as<bool>;
         { m.setup() } -> same_as<void>;
+        { os << m };
+        { os << mv };
 };
 
 template <class T, class G>
@@ -26,9 +28,15 @@ concept Player = requires(T player, G game) {
     Playable<G>;
     { player.getStrategy(game) } -> same_as<typename G::move_t>;
     { player.getTimeout() } -> same_as<double>;
+    { player.getParity() } -> same_as<int>;
 };
 
-template <Playable GameType, Player<GameType> Player1Type, Player<GameType> Player2Type>
+template <class T, class G>
+concept IntelligentPlayer = Player<T, G> && requires(T player, G game) {
+    { player.heuristic(game) } -> same_as<int>;
+};
+
+template <Playable GameType, IntelligentPlayer<GameType> Player1Type, IntelligentPlayer<GameType> Player2Type>
 class TPGame {
     using game_t = GameType;
     using move_t = typename GameType::move_t;
@@ -54,16 +62,16 @@ class TPGame {
 
             while (!state.isTerminal())
             {
-                cout << "[ Turn " << state.getTurnCount() << " ] Player " << state.getCurrentPlayer() << " make a move!" << endl;
+                cout << "[ Turn " << state.getTurnCount() << " ] Player " << state.getTurnParity() << " make a move!" << endl;
                 state.print();
-                double timeout = (state.getCurrentPlayer()) ? p2.getTimeout() : p1.getTimeout();
+                double timeout = (state.getTurnParity()) ? p2.getTimeout() : p1.getTimeout();
                 auto t0 = high_resolution_clock::now();
-                move_t action = (state.getCurrentPlayer()) ? p2.getStrategy(state) : p1.getStrategy(state);
+                move_t action = (state.getTurnParity()) ? p2.getStrategy(state) : p1.getStrategy(state);
                 auto t1 = high_resolution_clock::now();
 
                 if (timeout && duration_cast<seconds>(t1 - t0) > duration_cast<seconds>(duration<double>(timeout))) {
-                    cout << "Player " << state.getCurrentPlayer() << " exceeded their time limit!" << endl;
-                    cout << "Player " << (state.getCurrentPlayer() ^ 1) << " wins!" << endl;
+                    cout << "Player " << state.getTurnParity() << " exceeded their time limit!" << endl;
+                    cout << "Player " << (state.getTurnParity() ^ 1) << " wins!" << endl;
                     return;
                 }
 
@@ -75,10 +83,11 @@ class TPGame {
                 }
             }
 
-            state.print();
+            // state.print();
+            cout << state << endl;
             if (state.isWinner())
             {
-                cout << "Player " << state.getWinner() << " wins!" << endl;
+                cout << "Player " << state.getTurnParity() << " wins!" << endl;
             } else {
                 cout << "It's a draw!" << endl;
             }

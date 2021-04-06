@@ -2,69 +2,62 @@
 #define AI_HPP
 
 #include <vector>
+#include <limits>
 #include "game.hpp"
 
-const int WIN = 1;
-const int LOSS = -1;
-const int NEUTRAL = 0;
-
 namespace AI {
-    template<Playable GameType>
-    int min_move(GameType& state, int& best_move);
+    template<Playable GameType, IntelligentPlayer<GameType> P>
+    int minimizer(GameType& state, int& bestMove, P player);
+	
+    template<Playable GameType, IntelligentPlayer<GameType> P>
+    int maximizer(GameType& state, int& bestMove, P player) {
+	if (state.isTerminal())
+            return player.heuristic(state);
 
-    template<Playable GameType>
-    int max_move(GameType& state, int& best_move) {
-        if (state.isWinner())
-            return LOSS;
-        else if (state.isTerminal())
-            return NEUTRAL;
-
-        int val = -100;
+        int val = std::numeric_limits<int>::min();
         vector<typename GameType::move_t> possibleMoves = state.getAvailableMoves();
         for (typename GameType::move_t move : possibleMoves) {
-            state.makeMove(move, 0);
-            int new_val = min_move(state, best_move);
-            if (new_val > val) {
-                val = new_val;
-                best_move = move;
+            GameType stateCopy = state;
+            stateCopy.makeMove(move);
+            int newVal = minimizer(stateCopy, bestMove, player);
+            if (newVal > val) {
+                val = newVal;
+                bestMove = move;
             }
-           state.retractMove(move, 0);
         }
         return val;
     }
 
-    template<Playable GameType>
-    int min_move(GameType& state, int& best_move) {
-        if (state.isWinner())
-           return WIN;
-        else if (state.isTerminal())
-           return NEUTRAL;
+    template<Playable GameType, IntelligentPlayer<GameType> P>
+    int minimizer(GameType& state, int& bestMove, P player) {
+        if (state.isTerminal())
+            return player.heuristic(state);
 
-        int val = 100;
+        int val = std::numeric_limits<int>::max();
         vector<typename GameType::move_t> possibleMoves = state.getAvailableMoves();
         for (typename GameType::move_t move : possibleMoves) {
-            state.makeMove(move, 1);
-            int new_val = max_move(state, best_move);
-            if (new_val < val) {
-                val = new_val;
-                best_move = move;
+            GameType stateCopy = state;
+            stateCopy.makeMove(move);
+            int newVal = maximizer(stateCopy, bestMove, player);
+            if (newVal < val) {
+                val = newVal;
+                bestMove = move;
             }
-            state.retractMove(move, 1);
         }
         return val;
     }
     
-    template<Playable GameType>
-    GameType::move_t minimax(const GameType& state, int player) {
-        int best_move;
-        GameType state_copy = state;
-        if (player == 1) {
-            max_move(state_copy, best_move);
+    template<Playable GameType, IntelligentPlayer<GameType> P>
+    GameType::move_t minimax(const GameType& state, P player) {
+        int bestMove;
+        GameType stateCopy = state;
+        if (player.getParity() == 1) {
+            maximizer(stateCopy, bestMove, player);
         }
         else {
-            min_move(state_copy, best_move);
+            minimizer(stateCopy, bestMove, player);
         }
-        return best_move;
+        return bestMove;
     }
 
 }

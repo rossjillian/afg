@@ -10,55 +10,77 @@
 
 using namespace std;
 
-template <class Player>
+const int MINIMIZER = -1;
+const int MAXIMIZER = 1;
+const int NEUTRAL = 0;
+
+template <Playable GameType>
 class HumanPlayer {
     public:
-        HumanPlayer(double t = 0.0)
-            : timeout(t)
+        HumanPlayer(int i, double t = 0.0)
+            : parity(i), timeout(t)
         {}	
-
-        int getStrategy(const TicTacToe& state);
+       
+        typename GameType::move_t getStrategy(const GameType& state) {
+            return getIOTile(state);
+        }
 
 	double getTimeout() {
             return timeout;
         }
 
-    private:
-        double timeout;
-};
-
-template <class Player>
-class StupidPlayer {
-    public:
-        StupidPlayer(double t = 0.0)
-            : timeout(t)
-        {}	
+        int getParity() {
+            return parity;
+        }
         
-        int getStrategy(const TicTacToe& state);
-	
-        double getTimeout() {
-            return timeout;
+        int heuristic(const GameType& state) {
+            if (state.isWinner()) {
+                if (this->getParity() == state.getTurnParity())
+                    return MINIMIZER;
+                else
+                    return MAXIMIZER;    
+            }
+            return NEUTRAL;
         }
 
     private:
+	int parity;	
         double timeout;
 };
 
-template <class Player>
+template <Playable GameType>
 class SmartPlayer {
     public:
-        SmartPlayer(double t = 0.0)
-            : timeout(t)
+        SmartPlayer(int i, double t = 0.0)
+            : parity(i), timeout(t)
         {}	
-        
-        int getStrategy(const TicTacToe& state);
-        
-        double getTimeout() {
-            return timeout;
+
+        typename GameType::move_t getStrategy(const GameType& state) {
+              return getMinimaxTile(state, *this);
         }
 
+	double getTimeout() {
+            return timeout;
+        }
+        
+        int getParity() {
+            return parity;
+        }
+
+        int heuristic(const GameType& state) {
+            if (state.isWinner()) {
+                if (this->getParity() == state.getTurnParity())
+                    return MAXIMIZER;
+                else
+                    return MINIMIZER;    
+            }
+            return NEUTRAL;
+        }
+        
     private:
+	int parity;	
         double timeout;
 };
+
 
 #endif
