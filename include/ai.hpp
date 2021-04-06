@@ -2,6 +2,7 @@
 #define AI_HPP
 
 #include <vector>
+#include <limits>
 #include "game.hpp"
 
 namespace AI {
@@ -13,8 +14,7 @@ namespace AI {
 	if (state.isTerminal())
             return player.heuristic(state);
 
-        // TODO: change to generic minimum heuristic
-        int val = -100;
+        int val = std::numeric_limits<int>::min();
         vector<typename GameType::move_t> possibleMoves = state.getAvailableMoves();
         for (typename GameType::move_t move : possibleMoves) {
             GameType stateCopy = state;
@@ -33,8 +33,7 @@ namespace AI {
         if (state.isTerminal())
             return player.heuristic(state);
 
-        // TODO: change to generic maximum heuristic
-        int val = 100;
+        int val = std::numeric_limits<int>::max();
         vector<typename GameType::move_t> possibleMoves = state.getAvailableMoves();
         for (typename GameType::move_t move : possibleMoves) {
             GameType stateCopy = state;
