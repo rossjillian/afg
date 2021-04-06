@@ -9,7 +9,7 @@ using namespace std;
 using namespace chrono;
 
 template <class G>
-concept Playable = requires(G m, G::move_t mv) {
+concept Playable = requires(G m, G::move_t mv, ostream& os) {
         typename Config<G>;
         { m.isTerminal() } -> same_as<bool>;
         { m.isWinner() } -> same_as<bool>; 
@@ -19,6 +19,8 @@ concept Playable = requires(G m, G::move_t mv) {
         { m.makeMove(mv) } -> same_as<void>;
         { m.isValid(mv) } -> same_as<bool>;
         { m.setup() } -> same_as<void>;
+        { os << m };
+        { os << mv };
 };
 
 template <class T, class G>
@@ -31,7 +33,6 @@ concept Player = requires(T player, G game) {
 
 template <class T, class G>
 concept Intelligent = Player<G, T> && requires(T player, G game) {
-
     { player.heuristic(game) } -> same_as<int>;
 };
 
@@ -82,7 +83,8 @@ class TPGame {
                 }
             }
 
-            state.print();
+            // state.print();
+            cout << state << endl;
             if (state.isWinner())
             {
                 cout << "Player " << state.getTurnParity() << " wins!" << endl;

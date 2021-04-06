@@ -35,8 +35,6 @@ struct TicTacToe {
 
     int getTurnParity() const { return turnCount % 2; } 
 
-    //Player<TicTacToe> getTurnPlayer() const { }
-
     bool isWinner() const {
         return b.isWinner();
     }
@@ -62,6 +60,16 @@ struct TicTacToe {
 
     vector<int> getAvailableMoves() const {
         return b.getAvailableMoves();
+    }
+        
+    friend ostream& operator<<(ostream& os, const TicTacToe& t) {
+         os << t.b;    
+         return os;
+    }
+    
+    friend ostream& operator<<(ostream& os, const int mv) {
+         os << mv;    
+         return os;
     }
 
     bool operator==(const TicTacToe& other_ttt) const

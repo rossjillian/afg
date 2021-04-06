@@ -26,13 +26,13 @@ template <Playable GameType>
 typename GameType::move_t getIOTile(const GameType& state) {
     vector<typename GameType::move_t> possibleMoves = state.getAvailableMoves();
     cout << "[ ";
-    for (typename GameType::move_t t : possibleMoves) {
+    for (auto t : possibleMoves) {
         cout << t << ", ";
     }
     cout << "]" << endl;
 
     cout << "Tile #: ";
-    int tileNo;
+    typename GameType::move_t tileNo;
     cin >> tileNo;
 
     return tileNo;
