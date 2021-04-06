@@ -9,12 +9,12 @@
 
 int main(int argc, char **argv)
 {
-    Human<TicTacToe> p1(0);
-    Smart<TicTacToe> p2(1);
+    HumanPlayer<TicTacToe> p1(0);
+    SmartPlayer<TicTacToe> p2(1);
 
     Config<TicTacToe> config {3};
 
-    TPGame<TicTacToe, Human<TicTacToe>, Smart<TicTacToe>> game(config, p1, p2);
+    TPGame<TicTacToe, HumanPlayer<TicTacToe>, SmartPlayer<TicTacToe>> game(config, p1, p2);
 
     game.play();
 

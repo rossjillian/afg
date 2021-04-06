@@ -38,7 +38,7 @@ typename GameType::move_t getIOTile(const GameType& state) {
     return tileNo;
 }
 
-template <Playable GameType, Player<GameType> P>
+template <Playable GameType, IntelligentPlayer<GameType> P>
 typename GameType::move_t getMinimaxTile(const GameType& state, P player) {
     return AI::minimax(state, player);
 }

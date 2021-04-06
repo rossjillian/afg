@@ -15,12 +15,12 @@ const int MAXIMIZER = 1;
 const int NEUTRAL = 0;
 
 template <Playable GameType>
-class Human {
+class HumanPlayer {
     public:
-        Human(int i, double t = 0.0)
+        HumanPlayer(int i, double t = 0.0)
             : parity(i), timeout(t)
         {}	
-
+       
         typename GameType::move_t getStrategy(const GameType& state) {
             return getIOTile(state);
         }
@@ -32,7 +32,7 @@ class Human {
         int getParity() {
             return parity;
         }
-
+        
         int heuristic(const GameType& state) {
             if (state.isWinner()) {
                 if (this->getParity() == state.getTurnParity())
@@ -42,16 +42,16 @@ class Human {
             }
             return NEUTRAL;
         }
-       
+
     private:
 	int parity;	
         double timeout;
 };
 
 template <Playable GameType>
-class Smart {
+class SmartPlayer {
     public:
-        Smart(int i, double t = 0.0)
+        SmartPlayer(int i, double t = 0.0)
             : parity(i), timeout(t)
         {}	
 
@@ -66,7 +66,7 @@ class Smart {
         int getParity() {
             return parity;
         }
-        
+
         int heuristic(const GameType& state) {
             if (state.isWinner()) {
                 if (this->getParity() == state.getTurnParity())
@@ -76,7 +76,7 @@ class Smart {
             }
             return NEUTRAL;
         }
-
+        
     private:
 	int parity;	
         double timeout;

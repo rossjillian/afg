@@ -5,10 +5,10 @@
 #include "game.hpp"
 
 namespace AI {
-    template<Playable GameType, Player<GameType> P>
+    template<Playable GameType, IntelligentPlayer<GameType> P>
     int minimizer(GameType& state, int& bestMove, P player);
 	
-    template<Playable GameType, Player<GameType> P>
+    template<Playable GameType, IntelligentPlayer<GameType> P>
     int maximizer(GameType& state, int& bestMove, P player) {
 	if (state.isTerminal())
             return player.heuristic(state);
@@ -28,7 +28,7 @@ namespace AI {
         return val;
     }
 
-    template<Playable GameType, Player<GameType> P>
+    template<Playable GameType, IntelligentPlayer<GameType> P>
     int minimizer(GameType& state, int& bestMove, P player) {
         if (state.isTerminal())
             return player.heuristic(state);
@@ -48,7 +48,7 @@ namespace AI {
         return val;
     }
     
-    template<Playable GameType, Player<GameType> P>
+    template<Playable GameType, IntelligentPlayer<GameType> P>
     GameType::move_t minimax(const GameType& state, P player) {
         int bestMove;
         GameType stateCopy = state;

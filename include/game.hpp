@@ -32,11 +32,11 @@ concept Player = requires(T player, G game) {
 };
 
 template <class T, class G>
-concept Intelligent = Player<G, T> && requires(T player, G game) {
+concept IntelligentPlayer = Player<T, G> && requires(T player, G game) {
     { player.heuristic(game) } -> same_as<int>;
 };
 
-template <Playable GameType, Player<GameType> Player1Type, Player<GameType> Player2Type>
+template <Playable GameType, IntelligentPlayer<GameType> Player1Type, IntelligentPlayer<GameType> Player2Type>
 class TPGame {
     using game_t = GameType;
     using move_t = typename GameType::move_t;
