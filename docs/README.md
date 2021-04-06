@@ -7,7 +7,40 @@ Game
 
 Artificial Intelligence
 -----------------------
+To employ a game player that uses AI algorithms like minimax, the game player needs to have a heuristic function that evaluates state. Thus, in order for the game dev to use minimax, we request a player that satisfies the constraints of the `IntelligentPlayer` concept:
 
+    template <class T, class G>
+    concept Player = requires(T player, G game) {
+        Playable<G>;
+        { player.getStrategy(game) } -> same_as<typename G::move_t>;
+        { player.getTimeout() } -> same_as<double>;
+        { player.getParity() } -> same_as<int>;
+    };
+
+    template <class T, class G>
+    concept IntelligentPlayer = Player<T, G> && requires(T player, G game) {
+        { player.heuristic(game) } -> same_as<int>;
+    };
+
+We employ template programming to specify to the game dev what functionality their player `T` needs to support in order to be hooked up to our AI framework. To use our AI algorithms, the game dev simply needs to add one additional function on top of the base three functions that any (intelligent or non-intelligent) player needs in order to be hooked into our game framework.
+
+Note that a player is defined with respect to a constrained game that must be `Playable`. This means that a player can use any of the functions requested by `Playable` when implementing their strategy and heuristic functions:
+
+    template <class G>
+    concept Playable = requires(G m, G::move_t mv, ostream& os) {
+        typename Config<G>;
+        { m.isTerminal() } -> same_as<bool>;
+        { m.isWinner() } -> same_as<bool>; 
+        { m.getTurnCount() } -> same_as<int>;
+        { m.getTurnParity() } -> same_as<int>;
+        { m.getAvailableMoves() } -> same_as<vector<typename G::move_t>>;
+        { m.makeMove(mv) } -> same_as<void>;
+        { m.isValid(mv) } -> same_as<bool>;
+        { m.setup() } -> same_as<void>;
+        { os << m };
+        { os << mv };
+    };
+ 
 Model Checking
 --------------
 Model checking involves employing a search agent to traverse the state space in
