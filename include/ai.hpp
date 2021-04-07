@@ -1,6 +1,7 @@
 #ifndef AI_HPP
 #define AI_HPP
 
+#include <iostream>
 #include <vector>
 #include <limits>
 #include <chrono>
@@ -12,7 +13,7 @@ namespace AI {
 	
     template<Playable GameType, IntelligentPlayer<GameType> P>
     int maximizer(GameType& state, typename GameType::move_t& bestMove, P player, int alpha, int beta, int depth) {
-	if (state.isTerminal() || depth == 0)
+	if (state.isTerminal() || depth == 0) 
             return player.heuristic(state);
 
         int val = std::numeric_limits<int>::min();
@@ -20,7 +21,8 @@ namespace AI {
         for (auto move : possibleMoves) {
             GameType stateCopy = state;
             stateCopy.makeMove(move);
-            int newVal = minimizer(stateCopy, bestMove, player, alpha, beta, depth-1);
+            typename GameType::move_t minimizerBestMove;
+            int newVal = minimizer(stateCopy, minimizerBestMove, player, alpha, beta, depth-1);
             if (newVal > val) {
                 val = newVal;
                 bestMove = move;
@@ -34,7 +36,7 @@ namespace AI {
 
     template<Playable GameType, IntelligentPlayer<GameType> P>
     int minimizer(GameType& state, typename GameType::move_t& bestMove, P player, int alpha, int beta, int depth) {
-        if (state.isTerminal() || depth == 0)
+        if (state.isTerminal() || depth == 0) 
             return player.heuristic(state);
 
         int val = std::numeric_limits<int>::max();
@@ -42,7 +44,8 @@ namespace AI {
         for (auto move : possibleMoves) {
             GameType stateCopy = state;
             stateCopy.makeMove(move);
-            int newVal = maximizer(stateCopy, bestMove, player, alpha, beta, depth-1);
+            typename GameType::move_t maximizerBestMove;
+            int newVal = maximizer(stateCopy, maximizerBestMove, player, alpha, beta, depth-1);
             if (newVal < val) {
                 val = newVal;
                 bestMove = move;
@@ -84,15 +87,17 @@ namespace AI {
     }
 
     template<Playable GameType, IntelligentPlayer<GameType> P>
-    GameType::move_t iterativeDeepening(const GameType& state, P player) {
+    GameType::move_t iterativeDeepening(const GameType& state, P player, int depth, double limit=0.5) {
         auto startTime = std::chrono::high_resolution_clock::now();
         typename GameType::move_t bestMove;
-        for (int i = 1; ((state.isWinner() == false) || (state.getTurnParity() != player.getParity())); i++) {
+        bool timeUp = false;
+        for (int i = 1; (i < depth) && (!timeUp); i++) {
             minimaxIterative(state, player, i, bestMove);
             auto finishTime = std::chrono::high_resolution_clock::now();
             std::chrono::duration<float> elapsed = finishTime - startTime;
-            if (elapsed.count() > 0.5) 
-                break;
+            if (elapsed.count() > limit) {
+                timeUp = true;
+            }
         }
         return bestMove;
     }
