@@ -38,6 +38,7 @@ int main(int argc, char **argv) {
 
     /* Print all boards that match predicate #1 */
     auto res = bfsFind(ttt, predicates[0], 10);
+    cout << res.success << endl;
     for (const auto& ttt : res.matches) {
         string repr;
         for (auto& row : ttt.b.board) {

@@ -84,11 +84,11 @@ bool pathExists(const GameType& initState,
                 const std::vector<Function>& predicates,
                 int depthLimit) {
 
-    if (depthLimit <= 0)
-        return false;
-
     if (!predicates.size())
         return true;
+
+    if (depthLimit <= 0)
+        return false;
 
     auto result = bfsFind(initState, predicates[0], depthLimit);
     if (!result.success)

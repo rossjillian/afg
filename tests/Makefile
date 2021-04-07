@@ -18,4 +18,4 @@ clean:
 	rm -rf *.o a.out *.dSYM model_unittests
 
 .PHONY:
-all: clean test_model 
+all: clean tests

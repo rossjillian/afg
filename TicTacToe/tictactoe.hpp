@@ -33,12 +33,12 @@ struct TicTacToe {
 
     int getTurnCount() const { return turnCount; }
 
-    int getTurnParity() const { return turnCount % 2; } 
+    int getTurnParity() const { return turnCount % 2; }
 
     bool isWinner() const {
         return b.isWinner();
     }
-    
+
     void print() {
         b.print(false);
     }
@@ -46,9 +46,9 @@ struct TicTacToe {
     void makeMove(int tileNo) {
         b.makeMove(tileNo, turnCount % 2);
         if (!b.isWinner())
-            turnCount += 1;
+            turnCount++;
     }
-    
+
     bool isValid(int tileNo) {
         return b.isValid(tileNo);
     }
@@ -61,14 +61,14 @@ struct TicTacToe {
     vector<int> getAvailableMoves() const {
         return b.getAvailableMoves();
     }
-        
+
     friend ostream& operator<<(ostream& os, const TicTacToe& t) {
-         os << t.b;    
+         os << t.b;
          return os;
     }
-    
+
     friend ostream& operator<<(ostream& os, const int mv) {
-         os << mv;    
+         os << mv;
          return os;
     }
 
