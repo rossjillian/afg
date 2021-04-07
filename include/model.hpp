@@ -7,7 +7,6 @@
 #include <functional>
 #include <vector>
 
-
 namespace afg {
 namespace model {
 
@@ -107,5 +106,6 @@ bool pathExists(const GameType& initState,
 
 } // namespace model
 } // namespace afg
+
 
 #endif

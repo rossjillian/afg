@@ -10,7 +10,7 @@ Artificial Intelligence
 
 Model
 -----
-The `afg::Model` namespace contains two concepts (`Checkable` and `Predicate`) along with two utilities `bfsFind()` and `pathExists()`.
+The `afg::model` namespace contains two concepts (`Checkable` and `Predicate`) along with two utilities `bfsFind()` and `pathExists()`.
 
 
 ### Checkable

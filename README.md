@@ -92,7 +92,7 @@ Now that you have TicTacToe pretty much implemented, you may now wish to write c
 
 See [TicTacToe/model-check.cpp](TicTacToe/model-check.cpp) for the full code.
 
-We must first make sure that TicTacToe satisfies the `Model::Checkable` concept. There's a lot of overlap with `Game::Playable`, except we'll also have to implement `std::hash<TicTacToe>` and `operator==` for TicTacToe. This is so the game state can be hashed into data structures used by the model checking algorithms.
+We must first make sure that TicTacToe satisfies the `afg::model::Checkable` concept. There's a lot of overlap with `afg::game::Playable`, except we'll also have to implement `std::hash<TicTacToe>` and `operator==` for TicTacToe. This is so the game state can be hashed into data structures used by the model checking algorithms.
 
 Once that's out of the way, we're ready to implement some simple model checking for TicTacToe! Let's choose two simple scenarios (predicates) to search for.
 
@@ -106,7 +106,7 @@ First, let's find a game board that looks like this:
 
 That is, there must be `x`'s in those three slots, but all the other slots don't matter. We can verify that at least one state like this exists by running
 
-      auto res = Model::bfsFind(ttt, threeXs, 10);
+      auto res = afg::model::bfsFind(ttt, threeXs, 10);
 
 Here, `ttt` is the initial state for TicTacToe, `10` is the depth limit, and `threeXs` is a lambda that returns `true` if it sees a state that matches the one above.
 
@@ -124,7 +124,7 @@ We now define one more predicate to test if the `x`-player won:
 
 With these two predicates, we can define a search to see if a path exists where we first reach a board configuration specified by `threeXs` and then go on to see the `x`-player win the game. By specifying a depth limit, we can find the minimum number of turns required to see this scenario happen. After putting the two predicates in a vector, we then call
 
-      bool exists = Model::pathExists(ttt, predicates, 7);
+      bool exists = afg::model::pathExists(ttt, predicates, 7);
 
 This line of code will see if the two predicates can happen within 7 moves.
 
