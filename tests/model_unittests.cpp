@@ -7,6 +7,7 @@
 #include "model.hpp"
 
 using namespace std;
+using namespace afg::model;
 
 struct CoinGame {
     int target;
@@ -103,28 +104,28 @@ void bfs_test() {
 
     cout << "[1] Only finds matches to predicate.." << endl;
     auto sumTen = [](const CoinGame& cg){return cg.getSum() == 10;};
-    auto result1 = Model::bfsFind(cg1, sumTen, 10);
+    auto result1 = bfsFind(cg1, sumTen, 10);
     assert(result1.success);
     assert(result1.matches.size() > 0);
     assert(all_of(result1.matches.begin(), result1.matches.end(), sumTen));
 
     cout << "[2] Finds shallowest match to predicate.." << endl;
-    auto result2 = Model::bfsFind(cg1, sumTen, 1);
+    auto result2 = bfsFind(cg1, sumTen, 1);
     assert(result2.success);
     assert(result2.matches.size() == 1);
     assert(sumTen(result2.matches[0]));
 
     cout << "[3] Enforces depth limit.." << endl;
-    auto result3 = Model::bfsFind(cg1, sumTen, 7);
+    auto result3 = bfsFind(cg1, sumTen, 7);
     assert(result3.success);
     assert(result3.matches.size() > 0);
     assert(all_of(result3.matches.begin(), result3.matches.end(),
-                     [](const CoinGame& cg){ return cg.getTurnCount() < 7; }));
+                  [](const CoinGame& cg){ return cg.getTurnCount() < 7; }));
 
     cout << "[4] Doesn't find solution if depth limit too low.." << endl;
 
     auto sumTwenty = [](const CoinGame& cg){return cg.getSum() == 20;};
-    auto result4 = Model::bfsFind(cg1, sumTwenty, 1);
+    auto result4 = bfsFind(cg1, sumTwenty, 1);
     assert(!result4.success);
     assert(result4.matches.size() == 0);
 
@@ -143,10 +144,10 @@ void path_test() {
     predicates.push_back(sumSixteen);
 
     cout << "[1] Finds path when depth limit isn't harsh.." << endl;
-    assert(Model::pathExists(cg1, predicates, 10));
+    assert(pathExists(cg1, predicates, 10));
 
     cout << "[2] Doesn't find path when depth limit is harsh.." << endl;
-    assert(!Model::pathExists(cg1, predicates, 2));
+    assert(!pathExists(cg1, predicates, 2));
 
     cout << "..OK!" << endl;
 }
