@@ -9,6 +9,7 @@
 
 using namespace std;
 using namespace chrono;
+using namespace afg::model;
 
 struct CoinGame {
     int target;
@@ -124,12 +125,17 @@ CGSearchResult cgBfsFind(CoinGame initState,
 
 
 int main(int argc, char **argv) {
-    CoinGame cg1(100, {1, 5});
+
+     if (argc != 2) {
+        cout << "usage: " << argv[0] << " <depth>" << endl;
+        exit(1);
+    }
 
     int depth = atoi(argv[1]);
+    CoinGame cg1(100, {1, 5});
     auto sum50 = [](const CoinGame& cg){return cg.getSum() >= 50;};
     auto t0 = high_resolution_clock::now();
-    auto result1 = Model::bfsFind(cg1, sum50, depth);
+    auto result1 = bfsFind(cg1, sum50, depth);
     auto t1 = high_resolution_clock::now();
 
     cout << "Templated: " << duration_cast<milliseconds>(t1 - t0).count() << endl;
