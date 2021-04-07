@@ -179,7 +179,7 @@ void iterative_test() {
 }
 
 int main() {
-    //minimax_test();
+    minimax_test();
     iterative_test();
     return 0;
 }
