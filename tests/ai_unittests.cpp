@@ -95,9 +95,9 @@ class TimedPlayer {
         int heuristic(const GameType& state) {
             if (state.isWinner()) {
                 if (this->getParity() == state.getTurnParity())
-                    return MAXIMIZER;
-                else
                     return MINIMIZER;
+                else
+                    return MAXIMIZER;
             }
             return NEUTRAL;
         }
@@ -111,10 +111,10 @@ class TimedPlayer {
 void minimax_test() {
     cout << "[unittest] Minimax" << endl;
     Config<TicTacToe> config {3};
-    SmartPlayer<TicTacToe> p0(0);
-    DumbPlayer<TicTacToe> p1(1);
+    SmartPlayer<TicTacToe> p1(1);
+    DumbPlayer<TicTacToe> p0(0);
     
-    cout << "[1] Minimax provides optimal solution and [2] Minimax does not cast an invalid move" << endl;
+    cout << "[1] Minimax provides optimal solution and [2] does not cast an invalid move" << endl;
     for (int i = 0; i < 1000; i++) {
         TicTacToe state(config);
         while (!state.isTerminal()) {
@@ -123,7 +123,7 @@ void minimax_test() {
                 assert(state.isValid(action));
             state.makeMove(action);
             if (state.isWinner())
-                assert(state.getTurnParity() == 0);
+                assert(state.getTurnParity() == 1);
         }
     }
     cout << "..OK!" << endl;
@@ -133,28 +133,53 @@ void minimax_test() {
 void iterative_test() {
     cout << "[unittest] Iterative Deepening" << endl;
     Config<TicTacToe> config {3};
-    TimedPlayer<TicTacToe> p0(0, pow(0.1, 10));
-    DumbPlayer<TicTacToe> p1(1);
-    cout << "[1] Iterative deepening finds optimal solution if time limit high enough" << endl;    
-    
+    TimedPlayer<TicTacToe> p0(0, 0.01);
+    SmartPlayer<TicTacToe> p1(1);
+    cout << "[1] Iterative deepening finds optimal solution if time limit high enough and [2] does not cast an invalid move" << endl;    
+     
     for (int i = 0; i < 1000; i++) {
         TicTacToe state(config);
+        state.makeMove(getRandomTile(state));
+        state.makeMove(getRandomTile(state));
         while (!state.isTerminal()) {
             int action = (state.getTurnParity()) ? p1.getStrategy(state) : p0.getStrategy(state);
             if (state.getTurnParity() == 0) {
                 assert(state.isValid(action));
             }
             state.makeMove(action);
-            if (state.isWinner())
+            if (state.isWinner()) {
                 assert(state.getTurnParity() == 0);
+            }
         }
     }
+
+    TimedPlayer<TicTacToe> p0Quick(0, 0.0001);
+    cout << "[3] Iterative deepening sometimes does not find optimal solution if time limit low enough but [4] still never casts an invalid move" << endl;    
+     
+    int losses = 0;
+    for (int i = 0; i < 1000; i++) {
+        TicTacToe state(config);
+        state.makeMove(getRandomTile(state));
+        state.makeMove(getRandomTile(state));
+        while (!state.isTerminal()) {
+            int action = (state.getTurnParity()) ? p1.getStrategy(state) : p0Quick.getStrategy(state);
+            if (state.getTurnParity() == 0) {
+                assert(state.isValid(action));
+            }
+            state.makeMove(action);
+            if (state.isWinner()) {
+                if (state.getTurnParity() == 1)
+                    losses += 1;
+            }
+        }
+    }
+    assert(losses > 0);
 
     cout << "..OK!" << endl;
 }
 
 int main() {
-    minimax_test();
+    //minimax_test();
     iterative_test();
     return 0;
 }

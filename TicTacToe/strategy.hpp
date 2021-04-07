@@ -17,9 +17,10 @@ const int MAX_DEPTH = 9999;
 template <Playable GameType>
 typename GameType::move_t getRandomTile(const GameType& state) {
     vector<typename GameType::move_t> possibleMoves = state.getAvailableMoves();
-    auto rng = std::default_random_engine {};
+    default_random_engine engine;
+    engine.seed(chrono::system_clock::now().time_since_epoch().count());
 	
-    std::shuffle(possibleMoves.begin(), possibleMoves.end(), rng);
+    std::shuffle(possibleMoves.begin(), possibleMoves.end(), engine);
 	
     return possibleMoves[0];
 }
