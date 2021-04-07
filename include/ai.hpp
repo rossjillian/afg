@@ -1,6 +1,7 @@
 #ifndef AI_HPP
 #define AI_HPP
 
+#include <iostream>
 #include <vector>
 #include <limits>
 #include <chrono>
@@ -84,15 +85,16 @@ namespace AI {
     }
 
     template<Playable GameType, IntelligentPlayer<GameType> P>
-    GameType::move_t iterativeDeepening(const GameType& state, P player) {
+    GameType::move_t iterativeDeepening(const GameType& state, P player, int depth, double limit=0.5) {
         auto startTime = std::chrono::high_resolution_clock::now();
         typename GameType::move_t bestMove;
-        for (int i = 1; ((state.isWinner() == false) || (state.getTurnParity() != player.getParity())); i++) {
+        for (int i = 1; i < depth; i++) {
             minimaxIterative(state, player, i, bestMove);
             auto finishTime = std::chrono::high_resolution_clock::now();
             std::chrono::duration<float> elapsed = finishTime - startTime;
-            if (elapsed.count() > 0.5) 
+            if (elapsed.count() > limit) {
                 break;
+            }
         }
         return bestMove;
     }
