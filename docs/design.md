@@ -95,18 +95,18 @@ example of explicit specialization when we implemented `hash` for `TicTacToe`:
 Finally, here are the two main model checking utilities.
 
     template<Checkable GameType, Predicate<GameType> Function>
-    SearchResult<GameType> bfsFind(GameType initState,
+    SearchResult<GameType> bfsFind(const GameType& initState,
                                    Function isGoal,
                                    int depthLimit);
 
 `bfsFind()` is a depth-limited BFS search that traverses the state space. We return a
 templatized `SearchResult` which contains some information about the search –
-success, number of states explored, and a vector of matches.
+success, number of states explored, and a vector of matches. It's important to enforce a depth limit for these kinds of searches given that they're undirected. The state space can, at times, expand exponentially every turn which will slow down the run time. `depthLimit` is there to encourage the programmar to think about what could be the shallowest depth they'll find their solution at.
 
 
     template<Checkable GameType, Predicate<GameType> Function>
     bool pathExists(const GameType& initState,
-                    vector<Function> predicates,
+                    const vector<Function>& predicates,
                     int depthLimit);
 
 `pathExists()` is meant to chain several `bfsFind()`s together by going through
