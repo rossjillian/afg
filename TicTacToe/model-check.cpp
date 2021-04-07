@@ -34,7 +34,7 @@ int main(int argc, char **argv) {
     );
 
     /* Print all boards that match predicate #1 */
-    auto res = Model::bfsFind(ttt, predicates[1], 10);
+    auto res = Model::bfsFind(ttt, predicates[0], 10);
     for (const auto& ttt : res.matches) {
         string repr;
         for (auto& row : ttt.b.board) {

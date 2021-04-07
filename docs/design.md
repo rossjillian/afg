@@ -2,6 +2,8 @@ Design Overview
 ===============
 This document presents an in-depth design overview of the major components of afg. Here we explain our rationale behind implementing these features and how we went about it in C++.
 
+A recurring theme throughout the library is that we chose to use templates as opposed to virtual base classes so we can have compile-time polymorphism. Templates allow us to have polymorphism like virtual classes, except the work needed to make them possible is done during compile-time. To improve typechecking, we employ C++20 Concepts to constrain our templates. Concepts are also great for documentation and present a clear interface to the library user.
+
 Game
 ----
 
@@ -118,8 +120,8 @@ The `Function` template parameter is constrained using the `Predicate` concept,
 just for the sake of adding better typechecking to the function. It has to take a state
 and return a bool, so that's what we mandate:
 
-    template <class Function, checkable Model>
-    concept Predicate = requires(Function f, Model m) {
+    template <class Function, class Model>
+    concept Predicate = Checkable<Model> && requires(Function f, Model m) {
         { f(m) } -> same_as<bool>;
     };
 

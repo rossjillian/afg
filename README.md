@@ -13,9 +13,12 @@ Table of Contents
     - [Intuitive Components](#intuitive-components)
     - [Compile-time Polymorphism](#compile-time-polymorphism)
   - [Installation](#installation)
-  - [Quick Guide](#quick-guide)
-  - [Examples](#examples)
+  - [Tutorial](#tutorial)
+    - [Game](#game)
+    - [AI](#ai)
+    - [Model Checking](#model-checking-1)
   - [Benchmarks](#benchmarks)
+  - [Manual](#manual)
   - [Contributors](#contributors)
 
 Overview
@@ -77,17 +80,63 @@ afg requires some C++20 support (mainly for concepts). See
 your system's compiler will support afg. `clang++-10` or `g++-10` are
 sufficient.
 
-Quick Guide
------------
-todo
-
-Examples
+Tutorial
 --------
-todo: Walkthrough of TTT
+
+### Game
+
+### AI
+
+### Model Checking
+Now that you have TicTacToe pretty much implemented, you may now wish to write code that will verify your implementation. You may also wish to explore some scenarios in the game but don't want to sit down and manually play the game to reach those scenarios. For testing and playing out scenarios, we now arrive to the final component of afg – model checking!
+
+See [TicTacToe/model-check.cpp](TicTacToe/model-check.cpp) for the full code.
+
+We must first make sure that TicTacToe satisfies the `Model::Checkable` concept. There's a lot of overlap with `Game::Playable`, except we'll also have to implement `std::hash<TicTacToe>` and `operator==` for TicTacToe. This is so the game state can be hashed into data structures used by the model checking algorithms.
+
+Once that's out of the way, we're ready to implement some simple model checking for TicTacToe! Let's choose two simple scenarios (predicates) to search for.
+
+First, let's find a game board that looks like this:
+
+      x | x | ?
+    -------------
+      ? | x | ?
+    -------------
+      ? | ? | ?
+
+That is, there must be `x`'s in those three slots, but all the other slots don't matter. We can verify that at least one state like this exists by running
+
+      auto res = Model::bfsFind(ttt, threeXs, 10);
+
+Here, `ttt` is the initial state for TicTacToe, `10` is the depth limit, and `threeXs` is a lambda that returns `true` if it sees a state that matches the one above.
+
+      auto threeXs = [](const TicTacToe& st) {
+          return (st.b.board[0][0] == 'x'
+                  && st.b.board[0][1] == 'x'
+                  && st.b.board[1][1] == 'x');
+      }
+
+We now define one more predicate to test if the `x`-player won:
+
+      auto xWon = [](const TicTacToe& st) {
+          return st.b.isWinner() && (st.getTurnParity() == 1); 
+      }
+
+With these two predicates, we can define a search to see if a path exists where we first reach a board configuration specified by `threeXs` and then go on to see the `x`-player win the game. By specifying a depth limit, we can find the minimum number of turns required to see this scenario happen. After putting the two predicates in a vector, we then call
+
+      bool exists = Model::pathExists(ttt, predicates, 7);
+
+This line of code will see if the two predicates can happen within 7 moves.
+
+The goal-based BFS searched are simple, but powerful tools when it comes to model checking complex game states. They make for great testing too!
 
 Benchmarks
 ----------
-todo
+See [here](docs/benchmarks.md) for more details. At a high-level, we made sure that we were not incurring overhead by mandating that a user hook in with our abstractions instead of just implementing everything themselves. Surely enough, afg follows through with the C++ principle of "Zero Cost Abstraction"!
+
+Manual
+------
+For in-depth documentation of afg, see [here](docs/manual.md)
 
 Contributors
 ------------
