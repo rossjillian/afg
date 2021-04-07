@@ -32,7 +32,7 @@ namespace Model {
     };
 
     template<Checkable GameType, Predicate<GameType> Function>
-    SearchResult<GameType> bfsFind(GameType initState,
+    SearchResult<GameType> bfsFind(const GameType& initState,
                                    Function isGoal,
                                    int depthLimit) {
         queue<GameType> frontier;
@@ -79,7 +79,7 @@ namespace Model {
 
     template<Checkable GameType, Predicate<GameType> Function>
     bool pathExists(const GameType& initState,
-                    vector<Function> predicates,
+                    const vector<Function>& predicates,
                     int depthLimit) {
 
         if (depthLimit <= 0)
