@@ -5,8 +5,10 @@
 #include "game.hpp"
 #include "amazons.hpp"
 #include "players.hpp"
-
 #include "board.hpp"
+
+using namespace afg::players;
+using namespace afg::game;
 
 int main(int argc, char **argv)
 {
