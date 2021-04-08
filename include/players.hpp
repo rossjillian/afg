@@ -1,6 +1,13 @@
-#include <iostream>
+#ifndef PLAYERS_HPP
+#define PLAYERS_HPP
 
+#include <iostream>
+#include <vector>
+
+#include "strategy.hpp"
 #include "game.hpp"
+
+using namespace std;
 
 const int MINIMIZER = -1;
 const int MAXIMIZER = 1;
@@ -14,11 +21,10 @@ class HumanPlayer {
         {}	
        
         typename GameType::move_t getStrategy(const GameType& state) {
-            //TODO
-            return ;
+            return getIOTile(state);
         }
 
-	double getTimeout() {
+	    double getTimeout() {
             return timeout;
         }
 
@@ -40,3 +46,40 @@ class HumanPlayer {
 	int parity;	
         double timeout;
 };
+
+template <Playable GameType>
+class SmartPlayer {
+    public:
+        SmartPlayer(int i, double t = 0.0)
+            : parity(i), timeout(t)
+        {}	
+
+        typename GameType::move_t getStrategy(const GameType& state) {
+              return getMinimaxTile(state, *this);
+        }
+
+	double getTimeout() {
+            return timeout;
+        }
+        
+        int getParity() {
+            return parity;
+        }
+
+        int heuristic(const GameType& state) {
+            if (state.isWinner()) {
+                if (this->getParity() == state.getTurnParity())
+                    return MAXIMIZER;
+                else
+                    return MINIMIZER;    
+            }
+            return NEUTRAL;
+        }
+        
+    private:
+	int parity;	
+        double timeout;
+};
+
+
+#endif

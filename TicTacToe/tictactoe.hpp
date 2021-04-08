@@ -54,32 +54,16 @@ struct TicTacToe {
 
     vector<int> getAvailableMoves() const {
         return b.getAvailableMoves();
-    }
-
-    friend ostream& operator<<(ostream& os, const TicTacToe& t) {
-         os << t.b;
-         return os;
-    }
-
-
-    friend ostream& operator<<(ostream& os, const move_t& mv) {
-         os << mv;
-         return os;
-    }
-
-    friend istream& operator>> (istream&in, move_t& mv) {
-        int m;
-        if (in >> m)
-        {
-            mv = m;
-        }
-        return in;
-    }
+    } 
 
     bool operator==(const TicTacToe& other_ttt) const
     {
         return b.board == other_ttt.b.board;
     }
+
+    friend ostream& operator<<(ostream& os, const TicTacToe& t);
+    friend ostream& operator<<(ostream& os, const move_t& mv);
+    friend istream& operator>> (istream&in, move_t& mv);
 };
 
 template<> // Explicit specialization of std::hash<T>
@@ -96,5 +80,26 @@ struct std::hash<TicTacToe> {
             return hash<string>()(repr);
         }
 };
+
+ostream& operator<<(ostream& os, const TicTacToe& t) {
+     os << t.b;
+     return os;
+}
+
+
+ostream& operator<<(ostream& os, const TicTacToe::move_t& mv) {
+     cout << "Tile #: ";
+     os << mv;
+     return os;
+}
+
+istream& operator>> (istream&in, TicTacToe::move_t& mv) {
+    int m;
+    if (in >> m)
+    {
+        mv = m;
+    }
+    return in;
+}
 
 #endif

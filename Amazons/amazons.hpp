@@ -9,19 +9,13 @@ using namespace std;
 
 struct Amazons;
 
-template<>
-struct Config<Amazons>
-{
-    int width;
-};
-
 struct Amazons {
     using move_t = Move;
     Board b;
     int turnCount;
 
-    Amazons(Config<Amazons> c) 
-        : b(), 
+    Amazons()
+        : b(),
         turnCount(0)
     {};
 
@@ -63,29 +57,11 @@ struct Amazons {
         return b.getAvailableMoves( turnCount % 2 );
     }
 
-    friend ostream& operator<<(ostream&os, const Amazons& a)
-    {
-        os << a.b;
-        return os;
-    }
+    friend ostream& operator<<(ostream&os, const Amazons& a);
 
-    friend ostream& operator<<(ostream&os, const move_t& mv)
-    {
-        os << "{ " << mv.turn << ", " << mv.queenStartingPos << ", " << mv.queenEndingPos << ", " << mv.firePos << " }";
-        return os;
-    }
+    friend ostream& operator<<(ostream&os, const move_t& mv);
 
-    
-    friend istream& operator>> (istream&in, move_t& mv) {
-        int qs, qe, f;
-        if (in >> qs >> qe >> f)
-        {
-            mv.queenStartingPos = qs;
-            mv.queenEndingPos = qe;
-            mv.firePos = f;
-        }
-        return in;
-    }
+    friend istream& operator>> (istream&in, move_t& mv);
 
     bool operator==(const Amazons& other_amazons) const
     {
@@ -93,5 +69,28 @@ struct Amazons {
     }
 };
 
+ostream& operator<<(ostream&os, const Amazons& a)
+{
+    os << a.b;
+    return os;
+}
+
+ostream& operator<<(ostream&os, const Amazons::move_t& mv)
+{
+    os << "{ " << mv.turn << ", " << mv.queenStartingPos << ", " << mv.queenEndingPos << ", " << mv.firePos << " }";
+    return os;
+}
+
+
+istream& operator>> (istream&in, Amazons::move_t& mv) {
+    int qs, qe, f;
+    if (in >> qs >> qe >> f)
+    {
+        mv.queenStartingPos = qs;
+        mv.queenEndingPos = qe;
+        mv.firePos = f;
+    }
+    return in;
+}
 
 #endif

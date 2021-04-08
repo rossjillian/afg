@@ -18,7 +18,7 @@ model-check: model-check.o board.o
 
 model-check.o: tictactoe.hpp
 
-tictactoe.o: tictactoe.hpp strategy.hpp players.hpp
+tictactoe.o: tictactoe.hpp
 
 board.o: board.hpp 
 
