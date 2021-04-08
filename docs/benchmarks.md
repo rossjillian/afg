@@ -6,7 +6,15 @@ All coding benchmarks were run on Linux Ubuntu 20.04, with 4 vCPUs and 4096MB of
 
 Abstraction
 -----------
-For the model checking implementation, we compared the execution speed for two variants of the implementation. We wanted to see if a non-templated version of the code would perform roughly the same as the templated version that afg offers.
+For the AI implementation, we compared the executation speed for two variants of the implementation. We wanted to confirm that a non-templated verison of the code would perform roughly the same as the templated version that afg offers.
+
+Here, we used the TicTacToe game as a basis. We ran a non-templated version of the minimax algorithm against the templated version; we compared times of over a number of game simulations where two SmartPlayers use minimax against each other.
+
+![ai_abstraction](./ai_abstraction.png)
+
+There is essentially no difference in performance between the templated version and the explicit implementation, thus supporting our claim that afg provides zero cost abstraction.
+
+For the model checking implementation, we compared the execution speed for two variants of the implementation. Like our comparison for the AI implementation, we wanted to see if a non-templated version of the code would perform roughly the same as the templated version that afg offers.
 
 Here, we implemented a simple coin adding game and explored all the different ways to sum to a large number using different denominations. This is guaranteed to produce a large search space, which is what we wanted here – to be able to extensively test the abstracted vs. explicit code. Here are the results (note that the number of nodes traversed is on the order of `O(2^d)`, where `d` is depth).
 

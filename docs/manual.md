@@ -64,7 +64,7 @@ We provide a generic `HumanPlayer`, which accepts the player's move from standar
 A `HumanPlayer` gets their move by calling `getIOMove()`, a function from `afg::strategy` which we will describe in the Strategy section of this manual.
 
 ### Smart Player
-We also provide a generic `SmartPlayer`, which determines the player's move from the minimax algorithm. Like `HumanPlayer`, `SmartPlayer` contains all of the functions required by the `Player` and `IntelligentPlayer` concepts defined in `afg__game`, which means that it can be easily plugged into other parts of our library.
+We also provide a generic `SmartPlayer`, which determines the player's move from the minimax algorithm. Like `HumanPlayer`, `SmartPlayer` contains all of the functions required by the `Player` concept defined in `afg::game`, which means that it can be easily plugged into other parts of our library. However, the `heuristic` function required by the `IntelligentPlayer` concept defined in `afg::game` still needs to be implemented by the game developer. We do this because the choice of the heuristic function is game-specific.
 
     template <Playable GameType>
     class SmartPlayer 
@@ -101,7 +101,7 @@ This function is a wrapper function that calls `iterativeDeepening()` from `afg:
 
 Artificial Intelligence
 -----------------------
-The `afg::AI` namespace contains two utilities `minimax()` and `iterativeDeepening()`.
+The `afg::AI` namespace contains two utilities `minimax()` and `iterativeDeepening()`, in additoin to three helper utilities `minimizer()`, `maximizer()`, and `minimaxIterative`.
 
 ### Minimax
 This function is the foundation of our game AI code. The minimax algorithm is a recursive algorithm that return the next best move for a player to make in a game. 
@@ -111,7 +111,13 @@ This function is the foundation of our game AI code. The minimax algorithm is a 
 
 The algorithm requires the `IntelligentPlayer` concept.
 
+We automatically include alpha beta pruning in our base minimax implementation. This is because alpha beta pruning retains the optimality guarantee while speeding up execution time.
+
 ### Iterative Deepening
+This function extends the minimax code to include a time component: the algorithm will iteratively search deeper and deeper down the search tree until the time limit is up. This algorithm is useful to use instead of our base minimax if the game's search space is large.
+
+    template<Playable GameType, IntelligentPlayer<GameType> P>
+    GameType::move_t iterativeDeepening(const GameType& state, P player, int depth, double limit=0.5)
 
 Model
 -----
