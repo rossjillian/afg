@@ -205,6 +205,14 @@ The full code for tictactoe can be found [here](TicTacToe/). We implemented this
 
 ### AI
 
+Now that you have your game set up, you probably want to make it a bit more interesting! This is where our AI library comes in. We provide you with a minimax implementation with alpha-beta pruning and a minimax implementation with alpha-beta pruning and iterative deepening. You should consider using our implementation with iterative deepning if the state space of your game is particularly large.  
+
+      afg::AI::minimax(state, player, depth);
+
+Here, `state` is just a `const GameType&`, which is the `GameType` you implemented previously.
+
+In Game, you have to enforce the `Player` concept. To build AI, you have to enforce the `IntelligentPlayer` concept, which requires the three functions of the `Player` concept and an additional function called the `heuristic` function. The heuristic function is game-specific and is the evaluation of a state. It should return a numerical value that predicts whose favor the state is in.
+
 ### Model Checking
 Now that you have TicTacToe pretty much implemented, you may now wish to write code that will verify your implementation. You may also wish to explore some scenarios in the game but don't want to sit down and manually play the game to reach those scenarios. For testing and playing out scenarios, we now arrive to the final component of afg – model checking!
 
