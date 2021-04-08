@@ -77,47 +77,293 @@ bool Board::isValid(Move move) const
     int max = BOARDSIZE * BOARDSIZE - 1;
     //No move can be outside the bounds of the board
     if (move.queenStartingPos > max || move.queenEndingPos > max || move.firePos > max)
+    {
+        cout << "Outside bounds" << endl;
         return false;
+    }
 
     //The queen starting position must indeed be occupied by a queen
     int qspRow = move.queenStartingPos / BOARDSIZE;
     int qspCol = move.queenStartingPos % BOARDSIZE;
     if (board[qspRow][qspCol] != 'w' && board[qspRow][qspCol] != 'b')
     {
+        cout << "invalid queen starting" << endl;
         return false;
     }
 
-    /*if (!isOnColumn(move.queenStartingPos, move.queenEndingPos))
+    //white cannot move black's queen and visa versa
+    if (board[qspRow][qspCol] == 'w' && move.turn == 1)
     {
-        cout << "col" << endl;
+        return false;
+    }
+
+    if (board[qspRow][qspCol] == 'b' && move.turn == 0)
+    {
+        return false;
+    }
+
+    //end and firing positions must be empty except if firing equal to starting pos
+    int qepRow = move.queenEndingPos / BOARDSIZE;
+    int qepCol = move.queenEndingPos % BOARDSIZE;
+
+    int fpRow = move.firePos / BOARDSIZE;
+    int fpCol = move.firePos % BOARDSIZE;
+    if (board[qepRow][qepCol] != ' ')
+    {
+        cout << "invalid queen ending" << endl;
+        return false;
+    }
+
+    if (board[fpRow][fpCol] != ' ' && move.queenStartingPos != move.firePos)
+    {
+        cout << "Invalid firing position" << endl;
+        return false;
+    }
+
+    //starting and ending positions cannot be equal, queen cannot fire on a spot she's on
+    if (move.queenStartingPos == move.queenEndingPos || move.queenEndingPos == move.firePos)
+    {
+        return false;
     }
     
-    if (!isOnRow(move.queenStartingPos, move.queenEndingPos))
+    //Check that the queen move is valid
+    if (!isValidMovement(move.queenStartingPos, move.queenEndingPos))
     {
-        cout << "row" << endl;
-    }*/
-
-    if (!isOnColumn(move.queenStartingPos, move.queenEndingPos) 
-        && !isOnRow(move.queenStartingPos, move.queenEndingPos) 
-        && !isOnDiagonals(move.queenStartingPos, move.queenEndingPos))
-    {
+        cout << "Invalid queen movement" << endl;
         return false;
     }
-    //
+
+    if (!isValidMovement(move.queenEndingPos, move.firePos))
+    {
+        cout << "Invalid firing" << endl;
+        return false;
+    }
+
     return true;
 }
 
-bool Board::isOnColumn(int start, int end) const
+vector<Move> Board::getAvailableMoves(int turn) const
 {
-    return (start / BOARDSIZE == end / BOARDSIZE);
+    vector<Move> moves;
+    //iterate through all possible queen positions, all possible firing positions for the player
+    for (int qstart = 0; qstart < BOARDSIZE * BOARDSIZE; qstart++)
+    {
+        for (int qend = 0; qend < BOARDSIZE * BOARDSIZE; qend++)
+        {
+            for (int firing = 0; firing < BOARDSIZE * BOARDSIZE; firing++)
+            {
+                Move move = {turn, qstart, qend, firing};
+                if (isValid(move))
+                {
+                    moves.push_back(move);
+                }
+            }
+        }
+    }
+    return moves;
+}
+
+bool Board::isWinner(int turn) const
+{
+    turn ^= 1;
+    if (getAvailableMoves(turn).size() == 0)
+    {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+void Board::makeMove(Move move, int turn)
+{
+    if (isValid(move))
+    {
+        //add the correct colored queen to the ending spot
+        int qerow = move.queenEndingPos / board.size();
+        int qecol = move.queenEndingPos % board.size();
+        board[qerow][qecol] = turn ? 'b' : 'w';
+
+        //clear the starting square
+        int qsrow = move.queenStartingPos / board.size();
+        int qscol = move.queenStartingPos % board.size();
+        board[qsrow][qscol] = ' ';
+
+        int frow = move.firePos / board.size();
+        int fcol = move.firePos % board.size();
+        board[frow][fcol] = 'x';
+    }
+}
+
+bool Board::isValidMovement(int start, int end) const
+{
+    if (isOnColumn(start, end))
+    {
+        if (obstructedColumn(start, end))
+        {
+            cout << "obstructed column" << endl;
+            return false;
+        }
+
+    } else if (isOnRow(start, end))
+    {
+        if (obstructedRow(start,end))
+        {
+            cout << "obstructed row" << endl;
+            return false;
+        }
+    } else if (isOnDiagonalUp(start, end))
+    {
+        cout << "On diagonal up" << endl;
+        if (obstructedDiagonalUp(start, end))
+        {
+            cout << "Obstructed diagonal up" << endl;
+            return false;
+        }
+    } else if (isOnDiagonalDown(start, end))
+    {
+        cout << "On diagonal down" << endl;
+        if (obstructedDiagonalDown(start, end))
+        {
+            cout << "Obstructed diagonal down" << endl;
+            return false;
+        }
+    } else {
+        return false;
+    }
+
+    return true;
 }
 
 bool Board::isOnRow(int start, int end) const
 {
+    return (start / BOARDSIZE == end / BOARDSIZE);
+}
+
+bool Board::isOnColumn(int start, int end) const
+{
     return (start % BOARDSIZE == end % BOARDSIZE);
 }
 
-bool Board::isOnDiagonals(int start, int end) const
+bool Board::isOnDiagonalUp(int start, int end) const
 {
+    if (start > end){
+        int temp = end;
+        end = start;
+        start = temp;
+    }
+
+    int startRow = start / BOARDSIZE;
+    int startCol = start % BOARDSIZE;
+
+    int endRow = end / BOARDSIZE;
+    int endCol = end % BOARDSIZE;
+    return startRow + startCol == endRow + endCol;
+}
+
+bool Board::isOnDiagonalDown(int start, int end) const
+{
+    if (start > end){
+        int temp = end;
+        end = start;
+        start = temp;
+    }
+
+    int startRow = start / BOARDSIZE;
+    int startCol = start % BOARDSIZE;
+
+    int endRow = end / BOARDSIZE;
+    int endCol = end % BOARDSIZE;
+    return abs(startRow - startCol) == abs(endRow - endCol);
+}
+
+bool Board::obstructedDiagonalDown(int start, int end) const
+{
+    if (start > end){
+        int temp = end;
+        end = start;
+        start = temp;
+    }
+
+    int startRow = start / BOARDSIZE;
+    int startCol = start % BOARDSIZE;
+
+    int endRow = end / BOARDSIZE;
+
+    for (int i = 1; i < endRow - startRow; i++)
+    {
+        cout << startRow + i;
+        cout << startCol + i;
+        if (board[startRow + i][startCol + i] != ' '){
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Board::obstructedDiagonalUp(int start, int end) const
+{
+    if (start > end){
+        int temp = end;
+        end = start;
+        start = temp;
+    }
+
+    int startRow = start / BOARDSIZE;
+    int startCol = start % BOARDSIZE;
+
+    int endRow = end / BOARDSIZE;
+
+    for (int i = 1; i < endRow - startRow; i++)
+    {
+        if (board[startRow + i][startCol - i] != ' '){
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Board::obstructedRow(int start, int end) const
+{
+    int colstart = 0;
+    int colend = 0;
+    int row = start / BOARDSIZE;
+    if (start < end)
+    {
+        colstart = start % BOARDSIZE;
+        colend = end % BOARDSIZE;
+    } else {
+        colstart = end % BOARDSIZE;
+        colend = start % BOARDSIZE;
+    }
+    for (int i = colstart + 1; i < colend; i++)
+    {
+        if (board[row][i] != ' ')
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Board::obstructedColumn(int start, int end) const
+{
+    int rowstart = 0;
+    int rowend = 0;
+    int col = start % BOARDSIZE;
+    if (start < end)
+    {
+        rowstart = start / BOARDSIZE;
+        rowend = end / BOARDSIZE;
+    } else {
+        rowstart = end / BOARDSIZE;
+        rowend = start / BOARDSIZE;
+    }
+    for (int i = rowstart + 1; i < rowend; i++)
+    {
+        if (board[i][col] != ' ')
+        {
+            return true;
+        }
+    }
     return false;
 }
