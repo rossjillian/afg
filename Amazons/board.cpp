@@ -368,7 +368,10 @@ bool Board::obstructedDiagonalDown(int start, int end) const
     {
         /* cout << startRow + i; */
         /* cout << startCol + i; */
-        if (board[startRow + i][startCol + i] != ' '){
+        int tile = start + (10 * i) + i;
+        /* cout << "r" << startRow + i << ", c" << startCol + i << endl; */
+        /* if (board[startRow + i][startCol + i] != ' '){ */
+        if (getTile(tile) != ' ') {
             return true;
         }
     }
@@ -441,4 +444,17 @@ bool Board::obstructedColumn(int start, int end) const
         }
     }
     return false;
+}
+
+char Board::getTile(int tileNo) const
+{
+
+    if (tileNo > BOARDSIZE * BOARDSIZE)
+        return 0;
+
+    int r = tileNo / BOARDSIZE;
+    int c = tileNo % BOARDSIZE;
+
+    return board[r][c];
+
 }

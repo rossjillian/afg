@@ -42,7 +42,12 @@ struct Amazons {
             turnCount += 1;
     }
 
-    bool isValid(Move move) {
+    char getTile(int tileNo) const
+    {
+        return b.getTile(tileNo);
+    }
+
+    bool isValid(const Move& move) const {
         return b.isValid(move, getTurnParity());
     }
 
