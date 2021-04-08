@@ -11,7 +11,6 @@ using Grid = vector<vector<char>>;
 void printBoard(const Grid& board, bool instructions);
 
 struct Move {
-    int turn;
     int queenStartingPos;
     int queenEndingPos;
     int firePos;
@@ -23,7 +22,7 @@ class Board {
         Board();
 
         void print(bool instructions) const;
-        bool isValid(Move move) const;
+        bool isValid(Move move, int turn) const;
         void makeMove(Move move, int turn);
         bool isWinner(int turn) const;
         vector<Move> getAvailableMoves(int turn) const;

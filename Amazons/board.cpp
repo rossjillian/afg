@@ -72,7 +72,7 @@ void Board::print(bool instructions) const
     printBoard(board, instructions);
 }
 
-bool Board::isValid(Move move) const 
+bool Board::isValid(Move move, int turn) const 
 {
     int max = BOARDSIZE * BOARDSIZE - 1;
     //No move can be outside the bounds of the board
@@ -90,12 +90,12 @@ bool Board::isValid(Move move) const
     }
 
     //white cannot move black's queen and visa versa
-    if (board[qspRow][qspCol] == 'w' && move.turn == 1)
+    if (board[qspRow][qspCol] == 'w' && turn == 1)
     {
         return false;
     }
 
-    if (board[qspRow][qspCol] == 'b' && move.turn == 0)
+    if (board[qspRow][qspCol] == 'b' && turn == 0)
     {
         return false;
     }
@@ -184,8 +184,8 @@ vector<Move> Board::getAvailableMoves(int turn) const
         {
             for (int firing = 0; firing < BOARDSIZE * BOARDSIZE; firing++)
             {
-                Move move = {turn, qstart, qend, firing};
-                if (isValid(move))
+                Move move = {qstart, qend, firing};
+                if (isValid(move, turn))
                 {
                     moves.push_back(move);
                 }
@@ -208,7 +208,7 @@ bool Board::isWinner(int turn) const
 
 void Board::makeMove(Move move, int turn)
 {
-    if (isValid(move))
+    if (isValid(move, turn))
     {
         //add the correct colored queen to the ending spot
         int qerow = move.queenEndingPos / board.size();
@@ -218,6 +218,7 @@ void Board::makeMove(Move move, int turn)
         //clear the starting square
         int qsrow = move.queenStartingPos / board.size();
         int qscol = move.queenStartingPos % board.size();
+
         board[qsrow][qscol] = ' ';
 
         int frow = move.firePos / board.size();

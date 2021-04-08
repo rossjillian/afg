@@ -43,7 +43,7 @@ struct Amazons {
     }
 
     bool isValid(Move move) {
-        return b.isValid(move);
+        return b.isValid(move, getTurnParity());
     }
 
     void setup() {
@@ -77,7 +77,7 @@ ostream& operator<<(ostream&os, const Amazons& a)
 
 ostream& operator<<(ostream&os, const Amazons::move_t& mv)
 {
-    os << "{ " << mv.turn << ", " << mv.queenStartingPos << ", " << mv.queenEndingPos << ", " << mv.firePos << " }";
+    os << "{ " << ", " << mv.queenStartingPos << ", " << mv.queenEndingPos << ", " << mv.firePos << " }";
     return os;
 }
 
