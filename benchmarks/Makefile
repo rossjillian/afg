@@ -1,5 +1,5 @@
-CC = g++-10.1 -std=c++20
-CXX = g++-10.1 -std=c++20
+CC = g++ -std=c++20
+CXX = g++ -std=c++20
 
 INCLUDES = -I../include -I../TicTacToe
 
@@ -14,7 +14,9 @@ model_abstraction:
 
 model_inline:
 
-ai_abstraction: ../TicTacToe/players.hpp ../TicTacToe/tictactoe.hpp
+ai_abstraction: ../TicTacToe/board.o ../TicTacToe/players.hpp ../TicTacToe/tictactoe.hpp
+
+../TicTacToe/board.o: ../TicTacToe/board.hpp
 
 .PHONY:
 clean:

@@ -1,12 +1,17 @@
 #include <iostream>
+
 #include <chrono>
 
 #include "ai.hpp"
 #include "players.hpp"
+#include "board.hpp"
 #include "tictactoe.hpp"
 
 using namespace std;
 using namespace chrono;
+
+class SmartPlayerTTT;
+int minimaxTTT(const TicTacToe& state, SmartPlayerTTT player, int depth);
 
 class SmartPlayerTTT {
     public:
@@ -15,7 +20,7 @@ class SmartPlayerTTT {
         {}	
 
         int getStrategy(const TicTacToe& state) {
-              return getMinimaxTile(state, *this);
+              return minimaxTTT(state, *this, MAX_DEPTH);
         }
 
 	double getTimeout() {
@@ -100,7 +105,7 @@ int minimaxTTT(const TicTacToe& state, SmartPlayerTTT player, int depth) {
     }
     return bestMove;
 }
-    
+ 
 int main(int argc, char** argv) {
     int gameIterations = atoi(argv[1]);
 
@@ -117,12 +122,29 @@ int main(int argc, char** argv) {
             auto t0 = high_resolution_clock::now();
             state.makeMove(action);
             auto t1 = high_resolution_clock::now();
-            double elapsed = duration_cast<milliseconds>(t1 - t0).count();
-            totalElapsed += elapsed;
+            duration<float> elapsed = t1 - t0;
+            totalElapsed += elapsed.count();
         }
     }
 
     cout << "Templated: " << totalElapsed << endl;
 
+    SmartPlayerTTT p2(0);
+    SmartPlayerTTT p3(1);
+
+    double totalElapsedExplicit = 0.0;
+    for (int i = 0; i < gameIterations; i++) {
+        TicTacToe state(config);
+        while(!state.isTerminal()) {
+            int action = (state.getTurnParity()) ? p3.getStrategy(state) : p2.getStrategy(state);
+            auto t0 = high_resolution_clock::now();
+            state.makeMove(action);
+            auto t1 = high_resolution_clock::now();
+            duration<float> elapsed = t1 - t0;
+            totalElapsedExplicit += elapsed.count();
+        }
+    }
+
+    cout << "Explicit: " << totalElapsedExplicit << endl;
 }
 
