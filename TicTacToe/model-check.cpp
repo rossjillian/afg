@@ -14,21 +14,21 @@ int main(int argc, char **argv) {
     vector<function<bool(const TicTacToe&)>> predicates;
 
     /* Predicate #1: Find TTT states that look like this:
-     *   x | x |
+     *   o | o |
      *  -----------
-     *     | x |
+     *     | o |
      *  -----------
      *     |   |
      */
     predicates.push_back(
         [](const TicTacToe& st) {
-            return (st.b.board[0][0] == 'x'
-                    && st.b.board[0][1] == 'x'
-                    && st.b.board[1][1] == 'x');
+            return (st.b.board[0][0] == 'o'
+                    && st.b.board[0][1] == 'o'
+                    && st.b.board[1][1] == 'o');
         }
     );
 
-    /* Predicate #2: Find a TTT state where Player1 ('x') wins */
+    /* Predicate #2: Find a TTT state where Player1 ('o') wins */
     predicates.push_back(
         [](const TicTacToe& st) {
             return st.b.isWinner() && (st.getTurnParity() == 0);
@@ -37,7 +37,6 @@ int main(int argc, char **argv) {
 
     /* Print all boards that match predicate #1 */
     auto res = bfsFind(ttt, predicates[0], 10);
-    cout << res.success << endl;
     for (const auto& ttt : res.matches) {
         string repr;
         for (auto& row : ttt.b.board) {
@@ -48,6 +47,8 @@ int main(int argc, char **argv) {
         cout << repr << endl;
     }
 
+    cout << "Count: " << res.matches.size() << endl;
+
     /* Check if it's possible to satisfy predicate #1 and #2 in 7 moves */
-    cout << pathExists(ttt, predicates, 7) << endl;
+    cout << "Reachable?: " << pathExists(ttt, predicates, 7) << endl;
 }

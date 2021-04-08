@@ -53,7 +53,6 @@ SearchResult<GameType> bfsFind(const GameType& initState,
         if (isGoal(st)) {
             result.success = true;
             result.matches.push_back(st);
-            continue;
         }
 
         if (st.getTurnCount() == depthLimit || st.isTerminal()) {
@@ -79,14 +78,16 @@ SearchResult<GameType> bfsFind(const GameType& initState,
 
 template<Checkable GameType, Predicate<GameType> Function>
 bool pathExists(const GameType& initState,
-                std::vector<Function> predicates,
+                const std::vector<Function>& predicates,
                 int depthLimit) {
 
     if (!predicates.size())
         return true;
 
-    if (depthLimit <= 0)
+    if (depthLimit < 0)
         return false;
+
+    auto isGoal = predicates[0];
 
     std::queue<GameType> frontier;
     std::unordered_set<GameType> visited;
@@ -94,7 +95,6 @@ bool pathExists(const GameType& initState,
     frontier.push(initState);
     visited.insert(initState);
 
-    auto isGoal = predicates[0];
 
     while(!frontier.empty()) {
         GameType st = frontier.front();
@@ -102,11 +102,9 @@ bool pathExists(const GameType& initState,
 
         if (isGoal(st)) {
             if (pathExists(st, std::vector<Function>(predicates.begin() + 1, predicates.end()),
-                           depthLimit - st.getTurnCount())) {
+                           (depthLimit - st.getTurnCount()) + 1)) {
                 return true;
             }
-
-            continue;
         }
 
         if (st.getTurnCount() == depthLimit || st.isTerminal()) {
