@@ -10,20 +10,14 @@ using namespace std;
 
 struct TicTacToe;
 
-template <>
-struct Config<TicTacToe>
-{
-    int width;
-};
-
 struct TicTacToe {
     using move_t = int;
 
     Board b;
     int turnCount;
 
-    TicTacToe(Config<TicTacToe> c)
-        : b(c.width),
+    TicTacToe(int width)
+        : b(width),
           turnCount(0)
     {}
 

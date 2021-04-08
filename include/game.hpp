@@ -45,14 +45,13 @@ class TPGame {
 
     private:
         game_t state;
-        Config<game_t> config;
         p1_t p1;
         p2_t p2;
 
     public:
         /* static_assert(has_config<gametype>); */
-        TPGame(Config<game_t> config, p1_t player1, p2_t player2)
-            : state(config),
+        TPGame(game_t game, p1_t player1, p2_t player2)
+            : state(game),
               p1(player1),
               p2(player2)
         { }
