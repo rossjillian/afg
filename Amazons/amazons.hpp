@@ -94,4 +94,19 @@ istream& operator>> (istream&in, Amazons::move_t& mv) {
     return in;
 }
 
+template<> // Explicit specialization of std::hash<T>
+struct std::hash<Amazons> {
+    size_t operator() (const Amazons& azns) const
+        {
+            string repr;
+            for (auto& row : azns.b.board) {
+                for (auto& c : row) {
+                    repr += c;
+                }
+            }
+
+            return hash<string>()(repr);
+        }
+};
+
 #endif

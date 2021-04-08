@@ -18,9 +18,11 @@ amazons.o: amazons.hpp
 
 board.o: board.hpp 
 
+model-check: board.o
+
 .PHONY:
 clean:
-	rm -rf *.o a.out *.dSYM amazons
+	rm -rf *.o a.out *.dSYM amazons model-check
 
 .PHONY:
 all: clean default

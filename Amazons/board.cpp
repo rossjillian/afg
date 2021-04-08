@@ -74,53 +74,53 @@ void Board::print(bool instructions) const
 
 bool Board::isValid(Move move, int turn) const 
 {
-    int max = BOARDSIZE * BOARDSIZE - 1;
-    //No move can be outside the bounds of the board
-    if (move.queenStartingPos > max || move.queenEndingPos > max || move.firePos > max)
-    {
-        return false;
-    }
+    /* int max = BOARDSIZE * BOARDSIZE - 1; */
+    /* //No move can be outside the bounds of the board */
+    /* if (move.queenStartingPos > max || move.queenEndingPos > max || move.firePos > max) */
+    /* { */
+    /*     return false; */
+    /* } */
 
-    //The queen starting position must indeed be occupied by a queen
-    int qspRow = move.queenStartingPos / BOARDSIZE;
-    int qspCol = move.queenStartingPos % BOARDSIZE;
-    if (board[qspRow][qspCol] != 'w' && board[qspRow][qspCol] != 'b')
-    {
-        return false;
-    }
+    /* //The queen starting position must indeed be occupied by a queen */
+    /* int qspRow = move.queenStartingPos / BOARDSIZE; */
+    /* int qspCol = move.queenStartingPos % BOARDSIZE; */
+    /* if (board[qspRow][qspCol] != 'w' && board[qspRow][qspCol] != 'b') */
+    /* { */
+    /*     return false; */
+    /* } */
 
-    //white cannot move black's queen and visa versa
-    if (board[qspRow][qspCol] == 'w' && turn == 1)
-    {
-        return false;
-    }
+    /* //white cannot move black's queen and visa versa */
+    /* if (board[qspRow][qspCol] == 'w' && turn == 1) */
+    /* { */
+    /*     return false; */
+    /* } */
 
-    if (board[qspRow][qspCol] == 'b' && turn == 0)
-    {
-        return false;
-    }
+    /* if (board[qspRow][qspCol] == 'b' && turn == 0) */
+    /* { */
+    /*     return false; */
+    /* } */
 
-    //end and firing positions must be empty except if firing equal to starting pos
-    int qepRow = move.queenEndingPos / BOARDSIZE;
-    int qepCol = move.queenEndingPos % BOARDSIZE;
+    /* //end and firing positions must be empty except if firing equal to starting pos */
+    /* int qepRow = move.queenEndingPos / BOARDSIZE; */
+    /* int qepCol = move.queenEndingPos % BOARDSIZE; */
 
-    int fpRow = move.firePos / BOARDSIZE;
-    int fpCol = move.firePos % BOARDSIZE;
-    if (board[qepRow][qepCol] != ' ')
-    {
-        return false;
-    }
+    /* int fpRow = move.firePos / BOARDSIZE; */
+    /* int fpCol = move.firePos % BOARDSIZE; */
+    /* if (board[qepRow][qepCol] != ' ') */
+    /* { */
+    /*     return false; */
+    /* } */
 
-    if (board[fpRow][fpCol] != ' ' && move.queenStartingPos != move.firePos)
-    {
-        return false;
-    }
+    /* if (board[fpRow][fpCol] != ' ' && move.queenStartingPos != move.firePos) */
+    /* { */
+    /*     return false; */
+    /* } */
 
-    //starting and ending positions cannot be equal, queen cannot fire on a spot she's on
-    if (move.queenStartingPos == move.queenEndingPos || move.queenEndingPos == move.firePos)
-    {
-        return false;
-    }
+    /* //starting and ending positions cannot be equal, queen cannot fire on a spot she's on */
+    /* if (move.queenStartingPos == move.queenEndingPos || move.queenEndingPos == move.firePos) */
+    /* { */
+    /*     return false; */
+    /* } */
     
     //Check that the queen move is valid
     if (!isValidMovement(move.queenStartingPos, move.queenEndingPos))
@@ -136,7 +136,7 @@ bool Board::isValid(Move move, int turn) const
     return true;
 }
 
-ostream& operator<<(ostream& os, const Board& board) 
+ostream& operator<<(ostream& os, const Board& board)
 {
     const Grid& grid = board.board;
     for (auto row = grid.begin(); row != grid.end(); ++row)
@@ -178,12 +178,42 @@ vector<Move> Board::getAvailableMoves(int turn) const
 {
     vector<Move> moves;
     //iterate through all possible queen positions, all possible firing positions for the player
+
     for (int qstart = 0; qstart < BOARDSIZE * BOARDSIZE; qstart++)
     {
+        int qspRow = qstart / BOARDSIZE;
+        int qspCol = qstart % BOARDSIZE;
+
+        if ((board[qspRow][qspCol] != 'w' && board[qspRow][qspCol] != 'b')
+            || (board[qspRow][qspCol] == 'w' && turn == 1)
+            || (board[qspRow][qspCol] == 'b' && turn == 0))
+            continue;
+
         for (int qend = 0; qend < BOARDSIZE * BOARDSIZE; qend++)
         {
+            int qepRow = qend / BOARDSIZE;
+            int qepCol = qend % BOARDSIZE;
+
+            if (board[qepRow][qepCol] != ' ')
+                continue;
+
+            if (qstart == qend)
+                continue;
+
+
             for (int firing = 0; firing < BOARDSIZE * BOARDSIZE; firing++)
             {
+
+                int fpRow = firing / BOARDSIZE;
+                int fpCol = firing % BOARDSIZE;
+
+
+                if (board[fpRow][fpCol] != ' ' && qstart != firing)
+                    continue;
+
+                if (qend == firing)
+                    continue;
+
                 Move move = {qstart, qend, firing};
                 if (isValid(move, turn))
                 {
@@ -198,12 +228,30 @@ vector<Move> Board::getAvailableMoves(int turn) const
 bool Board::isWinner(int turn) const
 {
     turn ^= 1;
-    if (getAvailableMoves(turn).size() == 0)
+    /* if (getAvailableMoves(turn).size() == 0) */
+    /* { */
+    /*     return true; */
+    /* } else { */
+    /*     return false; */
+    /* } */
+
+    for (int qstart = 0; qstart < BOARDSIZE * BOARDSIZE; qstart++)
     {
-        return true;
-    } else {
-        return false;
+        for (int qend = 0; qend < BOARDSIZE * BOARDSIZE; qend++)
+        {
+            for (int firing = 0; firing < BOARDSIZE * BOARDSIZE; firing++)
+            {
+                Move move = {qstart, qend, firing};
+                if (isValid(move, turn))
+                {
+                    /* moves.push_back(move); */
+                    return false;
+                }
+            }
+        }
     }
+
+    return true;
 }
 
 void Board::makeMove(Move move, int turn)

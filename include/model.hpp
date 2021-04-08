@@ -54,9 +54,10 @@ SearchResult<GameType> bfsFind(const GameType& initState,
             result.success = true;
             result.matches.push_back(st);
             continue;
+            /* return result; */
         }
 
-        if (st.isTerminal() || st.getTurnCount() == depthLimit) {
+        if (st.getTurnCount() == depthLimit || st.isTerminal()) {
             continue;
         }
 
