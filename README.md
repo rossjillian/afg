@@ -95,109 +95,109 @@ Let's say we wanted to use afg's game abstractions to implement a simple command
 
 The implementations of most of these functions are straighforward. We'll focus on isValid, makeMove and isWinner. For the sake of our tictactoe game, we will create a data structure called a board, which is a wrapper on a vector of vectors of chars which we'll refer to as a grid. In [TicTacToe/board.cpp](TicTacToe/board.cpp) I implemented a bunch of functions I'll need like some functions to print a tictactoe board on the command line. I also implement the isValid function:
 
-bool Board::isValid(int move) const
-{
-    int max = numTiles - 1;
-    if (move > max)
-        return false;
+   bool Board::isValid(int move) const
+   {
+      int max = numTiles - 1;
+      if (move > max)
+         return false;
 
-    int row = move / board.size();
-    int col = move % board.size();
+      int row = move / board.size();
+      int col = move % board.size();
 
-    return board[row][col] == ' ';
-}
+      return board[row][col] == ' ';
+   }
 
 which just checks that a proposed move is within the bounds of the board and is on an empty square. 
 
 And I implement the makeMove function:
 
-void Board::makeMove(int move, int turn, Grid& board){
-    int row = move / board.size();
-    int col = move % board.size();
-    if (isValid(move))
-        board[row][col] = turn ? 'x' : 'o';
-}
+   void Board::makeMove(int move, int turn, Grid& board){
+      int row = move / board.size();
+      int col = move % board.size();
+      if (isValid(move))
+         board[row][col] = turn ? 'x' : 'o';
+   }
 
 which checks if a move is valid, and if so, changes the symbol in that square to the appropriate one given which player's turn it is. 
 
-Finally, I implement a isWinner function:
+Finally, I implement an isWinner function:
 
-bool Board::isWinner() const
-{
-    return checkRows() || checkColumns() || checkDiagonals();
-}
+   bool Board::isWinner() const
+   {
+      return checkRows() || checkColumns() || checkDiagonals();
+   }
 
 which employs three helper function to check if someone has won on the rows, columns or diagonals. 
 
 Once we've written these functions, we simply wrap them in functions in our TicTacToe struct, and we satisfy the constraints of an afg game. Then our tictactoe game looks very simple:
 
-int main(int argc, char /*/*argv)
-{
-    HumanPlayer<TicTacToe> p1(0);
-    HumanPlayer<TicTacToe> p2(1);
+   int main(int argc, char /*/*argv)
+   {
+      HumanPlayer<TicTacToe> p1(0);
+      HumanPlayer<TicTacToe> p2(1);
 
-    TicTacToe ttt(3);
+      TicTacToe ttt(3);
 
-    TPGame<TicTacToe, HumanPlayer<TicTacToe>, HumanPlayer<TicTacToe>> game(ttt, p1, p2);
+      TPGame<TicTacToe, HumanPlayer<TicTacToe>, HumanPlayer<TicTacToe>> game(ttt, p1, p2);
 
-    game.play();
+      game.play();
 
-    return 0;
-}
+      return 0;
+   }
 
 All of the looping and setup for the game itself is done by afg (using the functions we wrote). The final game looks like:
 
-Refer to moves using the following chart: 
- 0 | 1 | 2
-------------
- 3 | 4 | 5
-------------
- 6 | 7 | 8
-[ Turn 0 ] Player 0 make a move!
-   |   |  
-------------
-   |   |  
-------------
-   |   |  
+   Refer to moves using the following chart: 
+   0 | 1 | 2
+   ------------
+   3 | 4 | 5
+   ------------
+   6 | 7 | 8
+   [ Turn 0 ] Player 0 make a move!
+      |   |  
+   ------------
+      |   |  
+   ------------
+      |   |  
 
-[ 0, 1, 2, 3, 4, 5, 6, 7, 8, ]
-Tile #: 4
-[ Turn 1 ] Player 1 make a move!
-   |   |  
-------------
-   | o |  
-------------
-   |   |  
+   [ 0, 1, 2, 3, 4, 5, 6, 7, 8, ]
+   Tile #: 4
+   [ Turn 1 ] Player 1 make a move!
+      |   |  
+   ------------
+      | o |  
+   ------------
+      |   |  
 
-[ 0, 1, 2, 3, 5, 6, 7, 8, ]
-Tile #: 3
-[ Turn 2 ] Player 0 make a move!
-   |   |  
-------------
- x | o |  
-------------
-   |   |  
+   [ 0, 1, 2, 3, 5, 6, 7, 8, ]
+   Tile #: 3
+   [ Turn 2 ] Player 0 make a move!
+      |   |  
+   ------------
+   x | o |  
+   ------------
+      |   |  
 
-[ 0, 1, 2, 5, 6, 7, 8, ]
-Tile #: 5
-[ Turn 3 ] Player 1 make a move!
-   |   |  
-------------
- x | o | o
-------------
-   |   |  
+   [ 0, 1, 2, 5, 6, 7, 8, ]
+   Tile #: 5
+   [ Turn 3 ] Player 1 make a move!
+      |   |  
+   ------------
+   x | o | o
+   ------------
+      |   |  
 
-[ 0, 1, 2, 6, 7, 8, ]
-Tile #: 7
-[ Turn 4 ] Player 0 make a move!
-   |   |  
-------------
- x | o | o
-------------
-   | x |  
+   [ 0, 1, 2, 6, 7, 8, ]
+   Tile #: 7
+   [ Turn 4 ] Player 0 make a move!
+      |   |  
+   ------------
+   x | o | o
+   ------------
+      | x |  
 
-[ 0, 1, 2, 6, 8, ]
-Tile #:
+   [ 0, 1, 2, 6, 8, ]
+   Tile #:
 
 And so on...
 
