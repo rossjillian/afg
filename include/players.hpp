@@ -13,10 +13,6 @@ using namespace afg::strategy;
 namespace afg {
 namespace players {
 
-const int MINIMIZER = -1;
-const int MAXIMIZER = 1;
-const int NEUTRAL = 0;
-
 template <Playable GameType>
 class HumanPlayer {
     public:
@@ -36,15 +32,7 @@ class HumanPlayer {
             return parity;
         }
         
-        int heuristic(const GameType& state) {
-            if (state.isWinner()) {
-                if (this->getParity() == state.getTurnParity())
-                    return MINIMIZER;
-                else
-                    return MAXIMIZER;    
-            }
-            return NEUTRAL;
-        }
+        int heuristic(const GameType& state);
 
     private:
 	int parity;	
@@ -70,16 +58,8 @@ class SmartPlayer {
             return parity;
         }
 
-        int heuristic(const GameType& state) {
-            if (state.isWinner()) {
-                if (this->getParity() == state.getTurnParity())
-                    return MAXIMIZER;
-                else
-                    return MINIMIZER;    
-            }
-            return NEUTRAL;
-        }
-        
+        int heuristic(const GameType& state);
+
     private:
 	int parity;	
         double timeout;
