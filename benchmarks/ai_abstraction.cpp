@@ -1,5 +1,4 @@
 #include <iostream>
-
 #include <chrono>
 
 #include "ai.hpp"
@@ -114,37 +113,31 @@ int main(int argc, char** argv) {
 
     Config<TicTacToe> config {3};
 
-    double totalElapsed = 0.0;
+    auto t0 = high_resolution_clock::now();
     for (int i = 0; i < gameIterations; i++) {
         TicTacToe state(config);
         while(!state.isTerminal()) {
             int action = (state.getTurnParity()) ? p1.getStrategy(state) : p0.getStrategy(state);
-            auto t0 = high_resolution_clock::now();
             state.makeMove(action);
-            auto t1 = high_resolution_clock::now();
-            duration<float> elapsed = t1 - t0;
-            totalElapsed += elapsed.count();
         }
     }
+    auto t1 = high_resolution_clock::now();
 
-    cout << "Templated: " << totalElapsed << endl;
+    cout << "Templated: " << duration_cast<milliseconds>(t1 - t0).count() << endl;
 
     SmartPlayerTTT p2(0);
     SmartPlayerTTT p3(1);
 
-    double totalElapsedExplicit = 0.0;
+    auto t2 = high_resolution_clock::now();
     for (int i = 0; i < gameIterations; i++) {
         TicTacToe state(config);
         while(!state.isTerminal()) {
             int action = (state.getTurnParity()) ? p3.getStrategy(state) : p2.getStrategy(state);
-            auto t0 = high_resolution_clock::now();
             state.makeMove(action);
-            auto t1 = high_resolution_clock::now();
-            duration<float> elapsed = t1 - t0;
-            totalElapsedExplicit += elapsed.count();
         }
     }
+    auto t3 = high_resolution_clock::now();
 
-    cout << "Explicit: " << totalElapsedExplicit << endl;
+    cout << "Explicit: " << duration_cast<milliseconds>(t3 - t2).count() << endl;
 }
 
