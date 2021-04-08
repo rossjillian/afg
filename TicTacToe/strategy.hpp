@@ -43,7 +43,7 @@ typename GameType::move_t getIOTile(const GameType& state) {
 
 template <Playable GameType, IntelligentPlayer<GameType> P>
 typename GameType::move_t getMinimaxTile(const GameType& state, P player) {
-    return AI::iterativeDeepening(state, player);
+    return AI::minimax(state, player, MAX_DEPTH);
 }
 
 #endif
