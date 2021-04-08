@@ -4,7 +4,7 @@ CXX = g++ -std=c++20
 INCLUDES = -I../include
 
 CFLAGS = -g -Wall $(INCLUDES)
-CXXFLAGS = -fconcepts-diagnostics-depth=2 -g -Wall -O2 $(INCLUDES)
+CXXFLAGS = -g -Wall -O2 $(INCLUDES)
 
 LDFLAGS = 
 LDLIBS = 

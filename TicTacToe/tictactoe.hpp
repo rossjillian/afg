@@ -8,10 +8,16 @@
 
 using namespace std;
 
-struct TicTacToe;
+struct Move {
+    int tileNo;
+
+    Move(int t = -1)
+        : tileNo(t)
+    {}
+};
 
 struct TicTacToe {
-    using move_t = int;
+    using move_t = Move;
 
     Board b;
     int turnCount;
@@ -37,13 +43,15 @@ struct TicTacToe {
         b.print(false);
     }
 
-    void makeMove(int tileNo) {
+    void makeMove(const struct Move& mv) {
+        int tileNo = mv.tileNo;
         b.makeMove(tileNo, turnCount % 2);
         if (!b.isWinner())
             turnCount++;
     }
 
-    bool isValid(int tileNo) {
+    bool isValid(const struct Move& mv) {
+        int tileNo = mv.tileNo;
         return b.isValid(tileNo);
     }
 
@@ -52,9 +60,14 @@ struct TicTacToe {
         b.print(true);
     }
 
-    vector<int> getAvailableMoves() const {
-        return b.getAvailableMoves();
-    } 
+    vector<move_t> getAvailableMoves() const {
+        vector<move_t> tiles;
+        for (const auto& t : b.getAvailableMoves()) {
+            tiles.push_back(Move{t});
+        }
+
+        return tiles;
+    }
 
     bool operator==(const TicTacToe& other_ttt) const
     {
@@ -89,7 +102,7 @@ ostream& operator<<(ostream& os, const TicTacToe& t) {
 
 ostream& operator<<(ostream& os, const TicTacToe::move_t& mv) {
      cout << "Tile #: ";
-     os << mv;
+     os << mv.tileNo;
      return os;
 }
 
@@ -97,7 +110,7 @@ istream& operator>> (istream&in, TicTacToe::move_t& mv) {
     int m;
     if (in >> m)
     {
-        mv = m;
+        mv.tileNo = m;
     }
     return in;
 }
