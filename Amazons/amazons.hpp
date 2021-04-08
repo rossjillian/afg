@@ -76,6 +76,18 @@ struct Amazons {
         return os;
     }
 
+    
+    friend istream& operator>> (istream&in, move_t& mv) {
+        int qs, qe, f;
+        if (in >> qs >> qe >> f)
+        {
+            mv.queenStartingPos = qs;
+            mv.queenEndingPos = qe;
+            mv.firePos = f;
+        }
+        return in;
+    }
+
     bool operator==(const Amazons& other_amazons) const
     {
         return b.board == other_amazons.b.board;

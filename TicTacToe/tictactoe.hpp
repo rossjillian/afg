@@ -61,9 +61,18 @@ struct TicTacToe {
          return os;
     }
     
-    friend ostream& operator<<(ostream& os, const int mv) {
+    friend ostream& operator<<(ostream& os, const move_t& mv) {
          os << mv;    
          return os;
+    }
+
+    friend istream& operator>> (istream&in, move_t& mv) {
+        int m;
+        if (in >> m)
+        {
+            mv = m;
+        }
+        return in;
     }
 
     bool operator==(const TicTacToe& other_ttt) const
