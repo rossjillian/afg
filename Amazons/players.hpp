@@ -9,8 +9,8 @@
 #include "game.hpp"
 
 using namespace std;
-
 /*
+
 template <Playable GameType>
 class HumanPlayer {
     public: 
@@ -39,7 +39,7 @@ class HumanPlayer {
                     return MAXIMIZER;
             }
         }
-};*/
+};
 
-
+*/
 #endif

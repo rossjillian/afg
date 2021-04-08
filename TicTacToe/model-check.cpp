@@ -9,8 +9,7 @@ using namespace std;
 using namespace afg::model;
 
 int main(int argc, char **argv) {
-    Config<TicTacToe> config {3};
-    TicTacToe ttt(config);
+    TicTacToe ttt(3);
 
     vector<function<bool(const TicTacToe&)>> predicates;
 

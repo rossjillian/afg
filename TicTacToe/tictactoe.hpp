@@ -10,20 +10,14 @@ using namespace std;
 
 struct TicTacToe;
 
-template <>
-struct Config<TicTacToe>
-{
-    int width;
-};
-
 struct TicTacToe {
     using move_t = int;
 
     Board b;
     int turnCount;
 
-    TicTacToe(Config<TicTacToe> c)
-        : b(c.width),
+    TicTacToe(int width)
+        : b(width),
           turnCount(0)
     {}
 
@@ -67,9 +61,19 @@ struct TicTacToe {
          return os;
     }
 
-    friend ostream& operator<<(ostream& os, const int mv) {
+
+    friend ostream& operator<<(ostream& os, const move_t& mv) {
          os << mv;
          return os;
+    }
+
+    friend istream& operator>> (istream&in, move_t& mv) {
+        int m;
+        if (in >> m)
+        {
+            mv = m;
+        }
+        return in;
     }
 
     bool operator==(const TicTacToe& other_ttt) const

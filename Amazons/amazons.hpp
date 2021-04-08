@@ -17,6 +17,7 @@ struct Config<Amazons>
 };
 
 struct Amazons {
+    using move_t = Move;
     Board b;
     int turnCount;
 
@@ -26,7 +27,7 @@ struct Amazons {
     {};
 
     bool isTerminal() const {
-        return b.isWinner(1) || b.isWinner(0);
+        return b.isWinner(getTurnParity());
     }
 
     int getTurnCount() const { return turnCount; }
@@ -34,7 +35,7 @@ struct Amazons {
     int getTurnParity() const { return turnCount % 2; }
 
     bool isWinner() const {
-        return b.isWinner(1) || b.isWinner(0);
+        return b.isWinner(getTurnParity());
     }
 
     void print() {
@@ -73,6 +74,18 @@ struct Amazons {
     {
         os << "{ " << mv.turn << ", " << mv.queenStartingPos << ", " << mv.queenEndingPos << ", " << mv.firePos << " }";
         return os;
+    }
+
+    
+    friend istream& operator>> (istream&in, move_t& mv) {
+        int qs, qe, f;
+        if (in >> qs >> qe >> f)
+        {
+            mv.queenStartingPos = qs;
+            mv.queenEndingPos = qe;
+            mv.firePos = f;
+        }
+        return in;
     }
 
     bool operator==(const Amazons& other_amazons) const

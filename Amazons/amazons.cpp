@@ -14,7 +14,7 @@ int main(int argc, char **argv)
     //HumanPlayer<Amazons> p1(0);
     //HumanPlayer<Amazons> p2(0);
 
-    /*Board board;
+    Board board;
     board.print(true);
     board.print(false);
     Move move = {1, 3, 14, 15};
@@ -27,7 +27,7 @@ int main(int argc, char **argv)
     board.print(false);
 
     vector<Move> moves = board.getAvailableMoves(1);
-    for (Move move : moves)
+    /*for (Move move : moves)
     {
         cout << move.queenStartingPos << ", " << move.queenEndingPos << ", " << move.firePos << endl;
     }*/
