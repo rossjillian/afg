@@ -4,7 +4,7 @@ CXX = g++ -std=c++20
 INCLUDES = -I../include
 
 CFLAGS = -g -Wall $(INCLUDES)
-CXXFLAGS = -g -Wall -O2 $(INCLUDES)
+CXXFLAGS = -fconcepts-diagnostics-depth=2 -g -Wall -O2 $(INCLUDES)
 
 LDFLAGS = 
 LDLIBS = 
@@ -14,7 +14,7 @@ default: amazons
 
 amazons: amazons.o board.o 
 
-amazons.o: amazons.hpp strategy.hpp players.hpp
+amazons.o: amazons.hpp
 
 board.o: board.hpp 
 

@@ -69,7 +69,7 @@ struct Amazons {
         return os;
     }
 
-    friend ostream& operator<<(ostream&os, const Move mv)
+    friend ostream& operator<<(ostream&os, const move_t& mv)
     {
         os << "{ " << mv.turn << ", " << mv.queenStartingPos << ", " << mv.queenEndingPos << ", " << mv.firePos << " }";
         return os;

@@ -11,13 +11,8 @@
 
 int main(int argc, char **argv)
 {
-    Board board;
-    board.print(false);
-    Move move = {3, 12, 3};
-    cout << board.isValid(move) << endl;
-
-    /*HumanPlayer<TicTacToe> p1(0);
-    SmartPlayer<TicTacToe> p2(1);
+    HumanPlayer<Amazons> p1(0);
+    /*SmartPlayer<TicTacToe> p2(1);
 
     Config<TicTacToe> config {3};
 
