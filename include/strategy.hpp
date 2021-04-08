@@ -13,6 +13,9 @@ using namespace afg::AI;
 
 const int MAX_DEPTH = 9999;
 
+namespace afg {
+namespace strategy {
+
 template <Playable GameType>
 typename GameType::move_t getRandomMove(const GameType& state) {
     vector<typename GameType::move_t> possibleMoves = state.getAvailableMoves();
@@ -43,4 +46,6 @@ typename GameType::move_t getIterativeMove(const GameType& state, P player) {
     return iterativeDeepening(state, player, MAX_DEPTH);
 }
 
+} // namespace strategy
+} // namespace afg
 #endif

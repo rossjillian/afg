@@ -1,6 +1,5 @@
 Manual
 ======
-todo
 
 Game
 ----
@@ -42,6 +41,16 @@ This concept builds upon our `Player` concept to also require a heuristic functi
         { player.heuristic(game) } -> same_as<int>;
     };
 
+### TPGame
+The `TPGame` class is an abstraction of a two player game. We require the game to be `Playable` and to have two `IntelligentPlayer`s. 
+
+    template <Playable GameType, IntelligentPlayer<GameType> Player1Type, IntelligentPlayer<GameType> Player2Type>
+    class TPGame 
+
+In `TPGame`, we provide a `play` function. This function prints to standard output instructions on whose player it is and execute their strategy. It also enforces a timeout and ensures that the moves each player cast are valid. Once there is a winner or draw in the game, the function prints to standard output the outcome and terminates. All of this functionality is built in by simply enforcing the `Playable` and `IntelligentPlayer` concepts.
+
+    void play();
+
 Players
 -------
 The `afg::players` namespace contains two generic player classes `HumanPlayer` and `SmartPlayer`. 
@@ -52,21 +61,50 @@ We provide a generic `HumanPlayer`, which accepts the player's move from standar
     template <Playable GameType>
     class HumanPlayer 
 
+A `HumanPlayer` gets their move by calling `getIOMove()`, a function from `afg::strategy` which we will describe in the Strategy section of this manual.
+
 ### Smart Player
 We also provide a generic `SmartPlayer`, which determines the player's move from the minimax algorithm. Like `HumanPlayer`, `SmartPlayer` contains all of the functions required by the `Player` and `IntelligentPlayer` concepts defined in `afg__game`, which means that it can be easily plugged into other parts of our library.
 
     template <Playable GameType>
     class SmartPlayer 
 
+A `SmartPlayer` gets their move by calling `getMinimaxMove()`, a function from `afg::strategy` which we will describe in the Strategy and Artificial Intellligence sections of this manual.
+
 Strategy
 --------
+The `afg::strategy` namespace contains four utilities `getRandomMove()`, `getIOMove()`, `getMinimaxMove()`, and `getIterativeMove()`.
+
+### Random Move
+This function takes in a generic game state and picks a random valid move. The function is seeded using `std::chrono:system_clock::now().time_since_epoch()`, which ensures randomness between runs.
+
+    template <Playable GameType>
+    typename GameType::move_t getRandomMove(const GameType& state)
+
+### IO Move
+This fnction takes in a move from standard input and puts it into the generic game move `GameType::move_t`.
+
+    template <Playable GameType>
+    typename GameType::move_t getIOMove(const GameType& state)
+
+### Minimax Move
+This function is a wrapper function that calls `minimax()` from `afg::AI`.
+
+    template <Playable GameType, IntelligentPlayer<GameType> P>
+    typename GameType::move_t getMinimaxMove(const GameType& state, P player)
+
+### Iterative Move
+This function is a wrapper function that calls `iterativeDeepening()` from `afg::AI`.
+
+    template <Playable GameType, IntelligentPlayer<GameType> P>
+    typename GameType::move_t getIterativeMove(const GameType& state, P player)
 
 Artificial Intelligence
 -----------------------
 The `afg::AI` namespace contains two utilities `minimax()` and `iterativeDeepening()`.
 
 ### Minimax
-This is the foundation of our game AI code. The minimax algorithm is a recursive algorithm that return the next best move for a player to make in a game. 
+This function is the foundation of our game AI code. The minimax algorithm is a recursive algorithm that return the next best move for a player to make in a game. 
     
     template<Playable GameType, IntelligentPlayer<GameType> P>
     GameType::move_t minimax(const GameType& state, P player, int depth) {

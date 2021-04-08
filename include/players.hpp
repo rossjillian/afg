@@ -8,6 +8,7 @@
 #include "game.hpp"
 
 using namespace std;
+using namespace afg::strategy;
 
 namespace afg {
 namespace players {
