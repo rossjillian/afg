@@ -1,12 +1,117 @@
 Manual
 ======
-todo
 
 Game
 ----
+The `afg::game` namespace contains three concepts `Playable`, `Player`, and `IntelligentPlayer` and one generic two player game class `TPGame`.
+
+### Playable	
+This concept specifies what is necessary for a game `G` to be playable in our library. We require that the game `G` and the generic move of the game `G` needs `operator<<` in order for the game to communicate with standard output.
+
+     template <class G>
+     concept Playable = requires(G m, typename G::move_t mv, ostream& os) {
+        { m.isTerminal() } -> same_as<bool>;
+        { m.isWinner() } -> same_as<bool>; 
+        { m.getTurnCount() } -> same_as<int>;
+        { m.getTurnParity() } -> same_as<int>;
+        { m.getAvailableMoves() } -> same_as<vector<typename G::move_t>>;
+        { m.makeMove(mv) } -> same_as<void>;
+        { m.isValid(mv) } -> same_as<bool>;
+        { m.setup() } -> same_as<void>;
+        { os << m };
+        { os << mv };
+    };
+
+### Player
+This concept specifies what is necessary for a player to participate in a game that uses our library. We require that the player `T` has some sort of strategy to  choose a move (it does not necessarily have to be a good strategy!), that the player has a timeout, and that the player knows what order it plays.
+
+    template <class T, class G>
+    concept Player = requires(T player, G game) {
+        Playable<G>;
+        { player.getStrategy(game) } -> same_as<typename G::move_t>;
+        { player.getTimeout() } -> same_as<double>;
+        { player.getParity() } -> same_as<int>;
+    };
+
+### IntelligentPlayer
+This concept builds upon our `Player` concept to also require a heuristic function. This is important if we want `getStrategy` to be intelligent and use the algorithms given by `afg::AI`.
+
+    template <class T, class G>
+    concept IntelligentPlayer = Player<T, G> && requires(T player, G game) {
+        { player.heuristic(game) } -> same_as<int>;
+    };
+
+### TPGame
+The `TPGame` class is an abstraction of a two player game. We require the game to be `Playable` and to have two `IntelligentPlayer`s. 
+
+    template <Playable GameType, IntelligentPlayer<GameType> Player1Type, IntelligentPlayer<GameType> Player2Type>
+    class TPGame 
+
+In `TPGame`, we provide a `play` function. This function prints to standard output instructions on whose player it is and execute their strategy. It also enforces a timeout and ensures that the moves each player cast are valid. Once there is a winner or draw in the game, the function prints to standard output the outcome and terminates. All of this functionality is built in by simply enforcing the `Playable` and `IntelligentPlayer` concepts.
+
+    void play();
+
+Players
+-------
+The `afg::players` namespace contains two generic player classes `HumanPlayer` and `SmartPlayer`. 
+
+### Human Player
+We provide a generic `HumanPlayer`, which accepts the player's move from standard input. It contains all of the functions required by the `Player` and `IntelligentPlayer` concepts defined in `afg::game`, which means that it can be easily plugged into other parts of our library.
+
+    template <Playable GameType>
+    class HumanPlayer 
+
+A `HumanPlayer` gets their move by calling `getIOMove()`, a function from `afg::strategy` which we will describe in the Strategy section of this manual.
+
+### Smart Player
+We also provide a generic `SmartPlayer`, which determines the player's move from the minimax algorithm. Like `HumanPlayer`, `SmartPlayer` contains all of the functions required by the `Player` and `IntelligentPlayer` concepts defined in `afg__game`, which means that it can be easily plugged into other parts of our library.
+
+    template <Playable GameType>
+    class SmartPlayer 
+
+A `SmartPlayer` gets their move by calling `getMinimaxMove()`, a function from `afg::strategy` which we will describe in the Strategy and Artificial Intellligence sections of this manual.
+
+Strategy
+--------
+The `afg::strategy` namespace contains four utilities `getRandomMove()`, `getIOMove()`, `getMinimaxMove()`, and `getIterativeMove()`.
+
+### Random Move
+This function takes in a generic game state and picks a random valid move. The function is seeded using `std::chrono:system_clock::now().time_since_epoch()`, which ensures randomness between runs.
+
+    template <Playable GameType>
+    typename GameType::move_t getRandomMove(const GameType& state)
+
+### IO Move
+This fnction takes in a move from standard input and puts it into the generic game move `GameType::move_t`.
+
+    template <Playable GameType>
+    typename GameType::move_t getIOMove(const GameType& state)
+
+### Minimax Move
+This function is a wrapper function that calls `minimax()` from `afg::AI`.
+
+    template <Playable GameType, IntelligentPlayer<GameType> P>
+    typename GameType::move_t getMinimaxMove(const GameType& state, P player)
+
+### Iterative Move
+This function is a wrapper function that calls `iterativeDeepening()` from `afg::AI`.
+
+    template <Playable GameType, IntelligentPlayer<GameType> P>
+    typename GameType::move_t getIterativeMove(const GameType& state, P player)
 
 Artificial Intelligence
 -----------------------
+The `afg::AI` namespace contains two utilities `minimax()` and `iterativeDeepening()`.
+
+### Minimax
+This function is the foundation of our game AI code. The minimax algorithm is a recursive algorithm that return the next best move for a player to make in a game. 
+    
+    template<Playable GameType, IntelligentPlayer<GameType> P>
+    GameType::move_t minimax(const GameType& state, P player, int depth) {
+
+The algorithm requires the `IntelligentPlayer` concept.
+
+### Iterative Deepening
 
 Model
 -----
@@ -15,7 +120,6 @@ The `afg::model` namespace contains two concepts (`Checkable` and `Predicate`) a
 
 ### Checkable
 This concepts specifies an interface for what constitutes a searchable state. In addition to methods needed to expand the search space, we also need `operator==` and `hash<T>` in order to hash the state object into data structures used in the state traversal algorithms.
-
 
     template <class T>
     concept Checkable = requires(T m, T other, T::move_t mv) {

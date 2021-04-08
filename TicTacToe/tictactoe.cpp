@@ -7,6 +7,9 @@
 #include "players.hpp"
 #include "model.hpp"
 
+using namespace afg::game;
+using namespace afg::players;
+
 int main(int argc, char **argv)
 {
     HumanPlayer<TicTacToe> p1(0);

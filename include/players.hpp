@@ -8,6 +8,10 @@
 #include "game.hpp"
 
 using namespace std;
+using namespace afg::strategy;
+
+namespace afg {
+namespace players {
 
 const int MINIMIZER = -1;
 const int MAXIMIZER = 1;
@@ -55,7 +59,7 @@ class SmartPlayer {
         {}	
 
         typename GameType::move_t getStrategy(const GameType& state) {
-              return getMinimaxTile(state, *this);
+              return getMinimaxMove(state, *this);
         }
 
 	double getTimeout() {
@@ -81,5 +85,7 @@ class SmartPlayer {
         double timeout;
 };
 
+} // namespace players
+} // namespace afg
 
 #endif
