@@ -360,17 +360,12 @@ bool Board::obstructedDiagonalDown(int start, int end) const
     }
 
     int startRow = start / BOARDSIZE;
-    int startCol = start % BOARDSIZE;
 
     int endRow = end / BOARDSIZE;
 
     for (int i = 1; i < endRow - startRow; i++)
     {
-        /* cout << startRow + i; */
-        /* cout << startCol + i; */
         int tile = start + (10 * i) + i;
-        /* cout << "r" << startRow + i << ", c" << startCol + i << endl; */
-        /* if (board[startRow + i][startCol + i] != ' '){ */
         if (getTile(tile) != ' ') {
             return true;
         }
