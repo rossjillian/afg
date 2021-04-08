@@ -7,6 +7,9 @@
 using namespace std;
 using namespace chrono;
 
+namespace afg {
+namespace game {
+
 template <class G>
 concept Playable = requires(G m, typename G::move_t mv, ostream& os) {
         { m.isTerminal() } -> same_as<bool>;
@@ -89,5 +92,8 @@ class TPGame {
         }
 
 };
+
+} // namespace game
+} // namespace afg
 
 #endif
