@@ -17,7 +17,68 @@ struct Config<Amazons>
 };
 
 struct Amazons {
-    using move_t = int;
+    Board b;
+    int turnCount;
+
+    Amazons(Config<Amazons> c) 
+        : b(), 
+        turnCount(0)
+    {};
+
+    bool isTerminal() const {
+        return b.isWinner(1) || b.isWinner(0);
+    }
+
+    int getTurnCount() const { return turnCount; }
+
+    int getTurnParity() const { return turnCount % 2; }
+
+    bool isWinner() const {
+        return b.isWinner(1) || b.isWinner(0);
+    }
+
+    void print() {
+        b.print(false);
+    }
+
+    void makeMove(Move move)
+    {
+        b.makeMove(move, turnCount % 2);
+        if (!b.isWinner(turnCount % 2 ))
+            turnCount += 1;
+    }
+
+    bool isValid(Move move) {
+        return b.isValid(move);
+    }
+
+    void setup() {
+        cout << "Refer to moves using the following chart: " << endl;
+        b.print(true);
+        cout << "Please specify the square of the queen you would like to move, "
+        << "followed by the square you would like to move it to, followed by the square to shoot";
+    }
+
+    vector<Move> getAvailableMoves() const {
+        return b.getAvailableMoves( turnCount % 2 );
+    }
+
+    friend ostream& operator<<(ostream&os, const Amazons& a)
+    {
+        os << a.b;
+        return os;
+    }
+
+    friend ostream& operator<<(ostream&os, const Move mv)
+    {
+        os << "{ " << mv.turn << ", " << mv.queenStartingPos << ", " << mv.queenEndingPos << ", " << mv.firePos << " }";
+        return os;
+    }
+
+    bool operator==(const Amazons& other_amazons) const
+    {
+        return b.board == other_amazons.b.board;
+    }
 };
 
 

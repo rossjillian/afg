@@ -27,6 +27,7 @@ class Board {
         void makeMove(Move move, int turn);
         bool isWinner(int turn) const;
         vector<Move> getAvailableMoves(int turn) const;
+        friend ostream& operator<<(ostream& os, const Board& board);
 
     private:
         bool isValidMovement(int start, int end) const;

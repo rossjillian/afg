@@ -25,7 +25,7 @@ class HumanPlayer {
             return getIOTile(state);
         }
 
-	double getTimeout() {
+	    double getTimeout() {
             return timeout;
         }
 

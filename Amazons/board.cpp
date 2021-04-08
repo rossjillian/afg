@@ -142,6 +142,44 @@ bool Board::isValid(Move move) const
     return true;
 }
 
+ostream& operator<<(ostream& os, const Board& board) 
+{
+    const Grid& grid = board.board;
+    for (auto row = grid.begin(); row != grid.end(); ++row)
+    {
+        string baseline;
+        for (auto col = row->begin(); col != row->end(); ++col)
+        {
+            baseline += "----";
+        }
+        os << baseline << endl;
+        os << "|";
+        for (auto col = row->begin(); col != row->end(); ++col)
+        {
+
+            if (*col == 'w')
+            {
+                os << setw(CELLWIDTH) << " \U00002655" << setw(CELLWIDTH);
+            } else if (*col == 'b')
+            {
+                os << setw(CELLWIDTH) << " \U0000265B" << setw(CELLWIDTH);
+            } 
+            else {
+                os << setw(CELLWIDTH) << *col << setw(CELLWIDTH);
+            }
+
+            os << "|";
+
+        }
+        os << endl;
+        if (row+1 == grid.end())
+        {
+            os << baseline << endl;
+        }
+    }
+    return os;
+}
+
 vector<Move> Board::getAvailableMoves(int turn) const
 {
     vector<Move> moves;
