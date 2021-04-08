@@ -78,7 +78,7 @@ SearchResult<GameType> bfsFind(const GameType& initState,
 }
 
 template<Checkable GameType, Predicate<GameType> Function>
-bool pathExists(const GameType& initState,
+bool pathExistsOld(const GameType& initState,
                 const std::vector<Function>& predicates,
                 int depthLimit) {
 
@@ -94,7 +94,7 @@ bool pathExists(const GameType& initState,
 
     for (const auto& match : result.matches) {
         if (pathExists(match,
-                       std::vector<std::function<bool(const GameType&)>>(predicates.begin() + 1, predicates.end()),
+                       std::vector<Function>(predicates.begin() + 1, predicates.end()),
                        depthLimit - match.getTurnCount())) {
             return true;
         }
@@ -102,6 +102,61 @@ bool pathExists(const GameType& initState,
 
     return false;
 }
+
+template<Checkable GameType, Predicate<GameType> Function>
+bool pathExists(const GameType& initState,
+                std::vector<Function> predicates,
+                int depthLimit) {
+
+    if (!predicates.size())
+        return true;
+
+    if (depthLimit <= 0)
+        return false;
+
+    std::queue<GameType> frontier;
+    std::unordered_set<GameType> visited;
+
+    frontier.push(initState);
+    visited.insert(initState);
+
+    auto isGoal = predicates[0];
+
+    while(!frontier.empty()) {
+        GameType st = frontier.front();
+        frontier.pop();
+
+        if (isGoal(st)) {
+            /* result.success = true; */
+            /* result.matches.push_back(st); */
+            if (pathExists(st, std::vector<Function>(predicates.begin() + 1, predicates.end()),
+                           depthLimit - st.getTurnCount())) {
+                return true;
+            }
+
+            continue;
+        }
+
+        if (st.getTurnCount() == depthLimit || st.isTerminal()) {
+            continue;
+        }
+
+        for (const auto& mv : st.getAvailableMoves()) {
+            GameType neighbor(st);
+            neighbor.makeMove(mv);
+
+            if (visited.find(neighbor) != visited.end()) {
+                continue;
+            }
+
+            visited.insert(neighbor);
+            frontier.push(neighbor);
+        }
+    }
+
+    return false;
+}
+
 
 } // namespace model
 } // namespace afg

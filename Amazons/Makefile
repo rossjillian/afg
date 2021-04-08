@@ -1,3 +1,4 @@
+CC = g++ -std=c++20
 CXX = g++ -std=c++20
 
 INCLUDES = -I../include
