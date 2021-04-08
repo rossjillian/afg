@@ -74,3 +74,5 @@ There are times where one desires to check the existence of several states in se
                     int depthLimit);
 
 `depthLimit` is meant to be cumulative for the entire scenario search. That is, if the first predicate is satisfied at depth `d`, then the remaining predicates must be satisfied within `depthLimit - d` turns.
+Unlike `bfsFind()`, `pathExists()` is not necessarily an exhaustive search. It uses backtracking in order to find the shallowest solution first. In other words, `pathExists()` starts looking for `predicate[i + 1]`
+once `predicate[i]` is satisfied. It does not wait until it finds all states that satisfy `predicates[i]` before searching for all states that satisfy `predicates[i + 1]`.
