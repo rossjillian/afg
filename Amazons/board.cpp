@@ -78,7 +78,6 @@ bool Board::isValid(Move move) const
     //No move can be outside the bounds of the board
     if (move.queenStartingPos > max || move.queenEndingPos > max || move.firePos > max)
     {
-        cout << "Outside bounds" << endl;
         return false;
     }
 
@@ -87,7 +86,6 @@ bool Board::isValid(Move move) const
     int qspCol = move.queenStartingPos % BOARDSIZE;
     if (board[qspRow][qspCol] != 'w' && board[qspRow][qspCol] != 'b')
     {
-        cout << "invalid queen starting" << endl;
         return false;
     }
 
@@ -110,13 +108,11 @@ bool Board::isValid(Move move) const
     int fpCol = move.firePos % BOARDSIZE;
     if (board[qepRow][qepCol] != ' ')
     {
-        cout << "invalid queen ending" << endl;
         return false;
     }
 
     if (board[fpRow][fpCol] != ' ' && move.queenStartingPos != move.firePos)
     {
-        cout << "Invalid firing position" << endl;
         return false;
     }
 
@@ -129,13 +125,11 @@ bool Board::isValid(Move move) const
     //Check that the queen move is valid
     if (!isValidMovement(move.queenStartingPos, move.queenEndingPos))
     {
-        cout << "Invalid queen movement" << endl;
         return false;
     }
 
     if (!isValidMovement(move.queenEndingPos, move.firePos))
     {
-        cout << "Invalid firing" << endl;
         return false;
     }
 
@@ -238,7 +232,6 @@ bool Board::isValidMovement(int start, int end) const
     {
         if (obstructedColumn(start, end))
         {
-            cout << "obstructed column" << endl;
             return false;
         }
 
@@ -246,23 +239,18 @@ bool Board::isValidMovement(int start, int end) const
     {
         if (obstructedRow(start,end))
         {
-            cout << "obstructed row" << endl;
             return false;
         }
     } else if (isOnDiagonalUp(start, end))
     {
-        cout << "On diagonal up" << endl;
         if (obstructedDiagonalUp(start, end))
         {
-            cout << "Obstructed diagonal up" << endl;
             return false;
         }
     } else if (isOnDiagonalDown(start, end))
     {
-        cout << "On diagonal down" << endl;
         if (obstructedDiagonalDown(start, end))
         {
-            cout << "Obstructed diagonal down" << endl;
             return false;
         }
     } else {
