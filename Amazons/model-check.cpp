@@ -15,5 +15,4 @@ int main() {
     auto res = bfsFind(azns, st_93_83_93, 1);
     cout << res.success << endl;
     cout << res.explored << endl;
-    cout << res.matches.size() << endl;
 }

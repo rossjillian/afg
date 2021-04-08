@@ -78,32 +78,6 @@ SearchResult<GameType> bfsFind(const GameType& initState,
 }
 
 template<Checkable GameType, Predicate<GameType> Function>
-bool pathExistsOld(const GameType& initState,
-                const std::vector<Function>& predicates,
-                int depthLimit) {
-
-    if (!predicates.size())
-        return true;
-
-    if (depthLimit <= 0)
-        return false;
-
-    auto result = bfsFind(initState, predicates[0], depthLimit);
-    if (!result.success)
-        return false;
-
-    for (const auto& match : result.matches) {
-        if (pathExists(match,
-                       std::vector<Function>(predicates.begin() + 1, predicates.end()),
-                       depthLimit - match.getTurnCount())) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-template<Checkable GameType, Predicate<GameType> Function>
 bool pathExists(const GameType& initState,
                 std::vector<Function> predicates,
                 int depthLimit) {
@@ -127,8 +101,6 @@ bool pathExists(const GameType& initState,
         frontier.pop();
 
         if (isGoal(st)) {
-            /* result.success = true; */
-            /* result.matches.push_back(st); */
             if (pathExists(st, std::vector<Function>(predicates.begin() + 1, predicates.end()),
                            depthLimit - st.getTurnCount())) {
                 return true;
