@@ -21,7 +21,7 @@ class HumanPlayer {
         {}	
        
         typename GameType::move_t getStrategy(const GameType& state) {
-            return getIOTile(state);
+            return getIOMove(state);
         }
 
 	    double getTimeout() {

@@ -50,7 +50,7 @@ struct Amazons {
         cout << "Refer to moves using the following chart: " << endl;
         b.print(true);
         cout << "Please specify the square of the queen you would like to move, "
-        << "followed by the square you would like to move it to, followed by the square to shoot";
+        << "followed by the square you would like to move it to, followed by the square to shoot" << endl;
     }
 
     vector<Move> getAvailableMoves() const {
@@ -84,6 +84,7 @@ ostream& operator<<(ostream&os, const Amazons::move_t& mv)
 
 istream& operator>> (istream&in, Amazons::move_t& mv) {
     int qs, qe, f;
+    cout << "<start> <end> <fire-pos>: ";
     if (in >> qs >> qe >> f)
     {
         mv.queenStartingPos = qs;

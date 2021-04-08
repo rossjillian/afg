@@ -61,8 +61,8 @@ class TPGame {
 
             while (!state.isTerminal())
             {
-                cout << "[ Turn " << state.getTurnCount() << " ] Player " << state.getTurnParity() << " make a move!" << endl;
                 cout << state << endl;
+                cout << "[ Turn " << state.getTurnCount() << " ] Player " << state.getTurnParity() << " make a move!" << endl;
                 double timeout = (state.getTurnParity()) ? p2.getTimeout() : p1.getTimeout();
                 auto t0 = high_resolution_clock::now();
                 move_t action = (state.getTurnParity()) ? p2.getStrategy(state) : p1.getStrategy(state);

@@ -26,19 +26,19 @@ typename GameType::move_t getRandomTile(const GameType& state) {
 }
 
 template <Playable GameType>
-typename GameType::move_t getIOTile(const GameType& state) {
+typename GameType::move_t getIOMove(const GameType& state) {
     vector<typename GameType::move_t> possibleMoves = state.getAvailableMoves();
-    cout << "[ ";
-    for (auto t : possibleMoves) {
-        cout << t << ", ";
-    }
-    cout << "]" << endl;
+    /* cout << "[ "; */
+    /* for (auto t : possibleMoves) { */
+    /*     cout << t << ", "; */
+    /* } */
+    /* cout << "]" << endl; */
 
-    cout << "Tile #: ";
-    typename GameType::move_t tileNo;
-    cin >> tileNo;
+    /* cout << "Tile #: "; */
+    typename GameType::move_t mv;
+    cin >> mv;
 
-    return tileNo;
+    return mv;
 }
 
 template <Playable GameType, IntelligentPlayer<GameType> P>

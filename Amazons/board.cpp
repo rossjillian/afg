@@ -317,8 +317,8 @@ bool Board::obstructedDiagonalDown(int start, int end) const
 
     for (int i = 1; i < endRow - startRow; i++)
     {
-        cout << startRow + i;
-        cout << startCol + i;
+        /* cout << startRow + i; */
+        /* cout << startCol + i; */
         if (board[startRow + i][startCol + i] != ' '){
             return true;
         }
