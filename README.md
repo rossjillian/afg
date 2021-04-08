@@ -153,7 +153,7 @@ int main(int argc, char **argv)
 }
 ```
 
-All of the looping and setup for the game itself is done by afg (using the functions we wrote). The final game looks like:
+Note that we provide two basic players, `HumanPlayer` and `IntelligentPlayer`. `HumanPlayer` can be used out-of-the-box and does not require any additional coding on the part of the game developer. Using `HumanPlayer`, the game accepts moves from standard input on the command line. All of the looping and setup for the game itself is done by afg (using the functions we wrote). The final game looks like:
 
 ```
 Refer to moves using the following chart: 
@@ -221,11 +221,12 @@ Now that you have your game set up, you probably want to make it a bit more inte
 
 Here, `state` is just a `const GameType&`, which is the `GameType` you implemented previously.
 
-In Game, you have to enforce the `Player` concept. To build AI, you have to enforce the `IntelligentPlayer` concept, which requires the three functions of the `Player` concept and an additional function called the `heuristic` function. The heuristic function is game-specific and is the evaluation of a state. It should return a numerical value that predicts whose favor the state is in.
+In Game, you have to enforce the `Player` concept; this is alreay done for you in the provided `HumanPlayer` and `SmartPlayer`. To use our AI functions, you have to additionally enforce the `IntelligentPlayer` concept, which requires an additional function called the `heuristic` function. The heuristic function is game-specific and is the evaluation of a state; it is up to you as the game developer to define. All that we require is that the heuristic function should return an integer.
 
-In our generic SmartPlayer in the library, you can see that we have implemented a very simple heuristic function. This heuristic function takes advantage of the zero sum nature of TicTacToe (so each player can maximize its own score).
+In our TicTacToe implementation, you can see that we have implemented a very simple heuristic function. This heuristic function takes advantage of the zero sum nature of TicTacToe (so each player can maximize its own score).
   
-      int heuristic(const GameType& state) {
+      template<>
+      int SmartPlayer<TicTacToe>::heuristic(const TicTacToe& state) {
           if (state.isWinner()) {
               if (this->getParity() == state.getTurnParity())
                   return MAXIMIZER;
