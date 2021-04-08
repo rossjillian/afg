@@ -3,14 +3,12 @@
 
 #include <iostream>
 #include <chrono>
-#include "config.hpp"
 
 using namespace std;
 using namespace chrono;
 
 template <class G>
-concept Playable = requires(G m, G::move_t mv, ostream& os) {
-        typename Config<G>;
+concept Playable = requires(G m, typename G::move_t mv, ostream& os) {
         { m.isTerminal() } -> same_as<bool>;
         { m.isWinner() } -> same_as<bool>; 
         { m.getTurnCount() } -> same_as<int>;
@@ -49,7 +47,6 @@ class TPGame {
         p2_t p2;
 
     public:
-        /* static_assert(has_config<gametype>); */
         TPGame(game_t game, p1_t player1, p2_t player2)
             : state(game),
               p1(player1),

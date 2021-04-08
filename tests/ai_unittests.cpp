@@ -110,15 +110,14 @@ class TimedPlayer {
 
 void minimax_test() {
     cout << "[unittest] Minimax" << endl;
-    Config<TicTacToe> config {3};
     SmartPlayer<TicTacToe> p1(1);
     DumbPlayer<TicTacToe> p0(0);
     
     cout << "[1] Minimax provides optimal solution and [2] does not cast an invalid move" << endl;
     for (int i = 0; i < 1000; i++) {
-        TicTacToe state(config);
+        TicTacToe state(3);
         while (!state.isTerminal()) {
-            int action = (state.getTurnParity()) ? p1.getStrategy(state) : p0.getStrategy(state);
+            int action = ((state.getTurnParity()) ? p1.getStrategy(state) : p0.getStrategy(state)).tileNo;
             if (state.getTurnParity() == 0)
                 assert(state.isValid(action));
             state.makeMove(action);
@@ -132,17 +131,16 @@ void minimax_test() {
 
 void iterative_test() {
     cout << "[unittest] Iterative Deepening" << endl;
-    Config<TicTacToe> config {3};
     TimedPlayer<TicTacToe> p0(0, 0.01);
     SmartPlayer<TicTacToe> p1(1);
     cout << "[1] Iterative deepening finds optimal solution if time limit high enough and [2] does not cast an invalid move" << endl;    
      
     for (int i = 0; i < 1000; i++) {
-        TicTacToe state(config);
+        TicTacToe state(3);
         state.makeMove(getRandomTile(state));
         state.makeMove(getRandomTile(state));
         while (!state.isTerminal()) {
-            int action = (state.getTurnParity()) ? p1.getStrategy(state) : p0.getStrategy(state);
+            int action = ((state.getTurnParity()) ? p1.getStrategy(state) : p0.getStrategy(state)).tileNo;
             if (state.getTurnParity() == 0) {
                 assert(state.isValid(action));
             }
@@ -158,11 +156,11 @@ void iterative_test() {
      
     int losses = 0;
     for (int i = 0; i < 1000; i++) {
-        TicTacToe state(config);
+        TicTacToe state(3);
         state.makeMove(getRandomTile(state));
         state.makeMove(getRandomTile(state));
         while (!state.isTerminal()) {
-            int action = (state.getTurnParity()) ? p1.getStrategy(state) : p0Quick.getStrategy(state);
+            int action = ((state.getTurnParity()) ? p1.getStrategy(state) : p0Quick.getStrategy(state)).tileNo;
             if (state.getTurnParity() == 0) {
                 assert(state.isValid(action));
             }

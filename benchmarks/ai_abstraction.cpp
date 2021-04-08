@@ -10,7 +10,7 @@ using namespace std;
 using namespace chrono;
 
 class SmartPlayerTTT;
-int minimaxTTT(const TicTacToe& state, SmartPlayerTTT player, int depth);
+TicTacToe::move_t minimaxTTT(const TicTacToe& state, SmartPlayerTTT player, int depth);
 
 class SmartPlayerTTT {
     public:
@@ -18,7 +18,7 @@ class SmartPlayerTTT {
             : parity(i), timeout(t)
         {}	
 
-        int getStrategy(const TicTacToe& state) {
+        TicTacToe::move_t getStrategy(const TicTacToe& state) {
               return minimaxTTT(state, *this, MAX_DEPTH);
         }
 
@@ -45,18 +45,18 @@ class SmartPlayerTTT {
         double timeout;
 };
 
-int minimizerTTT(TicTacToe& state, int& bestMove, SmartPlayerTTT player, int alpha, int beta, int depth);
+int minimizerTTT(TicTacToe& state, TicTacToe::move_t& bestMove, SmartPlayerTTT player, int alpha, int beta, int depth);
 
-int maximizerTTT(TicTacToe& state, int& bestMove, SmartPlayerTTT player, int alpha, int beta, int depth) {
+int maximizerTTT(TicTacToe& state, TicTacToe::move_t& bestMove, SmartPlayerTTT player, int alpha, int beta, int depth) {
     if (state.isTerminal() || depth == 0) 
         return player.heuristic(state);
 
     int val = numeric_limits<int>::min();
-    vector<int> possibleMoves = state.getAvailableMoves();
-    for (auto move : possibleMoves) {
+    vector<TicTacToe::move_t> possibleMoves = state.getAvailableMoves();
+    for (const auto& move : possibleMoves) {
         TicTacToe stateCopy = state;
         stateCopy.makeMove(move);
-        int minimizerBestMove;
+        TicTacToe::move_t minimizerBestMove;
         int newVal = minimizerTTT(stateCopy, minimizerBestMove, player, alpha, beta, depth-1);
         if (newVal > val) {
 	    val = newVal;
@@ -69,16 +69,16 @@ int maximizerTTT(TicTacToe& state, int& bestMove, SmartPlayerTTT player, int alp
     return val;
 }
 
-int minimizerTTT(TicTacToe& state, int& bestMove, SmartPlayerTTT player, int alpha, int beta, int depth) {
-    if (state.isTerminal() || depth == 0) 
+int minimizerTTT(TicTacToe& state, TicTacToe::move_t& bestMove, SmartPlayerTTT player, int alpha, int beta, int depth) {
+    if (state.isTerminal() || depth == 0)
         return player.heuristic(state);
 
     int val = numeric_limits<int>::max();
-    vector<int> possibleMoves = state.getAvailableMoves();
-    for (auto move : possibleMoves) {
+    vector<TicTacToe::move_t> possibleMoves = state.getAvailableMoves();
+    for (const auto& move : possibleMoves) {
         TicTacToe stateCopy = state;
         stateCopy.makeMove(move);
-        int maximizerBestMove;
+        TicTacToe::move_t maximizerBestMove;
         int newVal = maximizerTTT(stateCopy, maximizerBestMove, player, alpha, beta, depth-1);
         if (newVal < val) {
 	    val = newVal;
@@ -91,9 +91,9 @@ int minimizerTTT(TicTacToe& state, int& bestMove, SmartPlayerTTT player, int alp
     return val;
 }
 
-int minimaxTTT(const TicTacToe& state, SmartPlayerTTT player, int depth) {
-    int bestMove;
-    int alpha = numeric_limits<int>::min(); 
+TicTacToe::move_t minimaxTTT(const TicTacToe& state, SmartPlayerTTT player, int depth) {
+    TicTacToe::move_t bestMove;
+    int alpha = numeric_limits<int>::min();
     int beta = numeric_limits<int>::max();
     TicTacToe stateCopy = state;
     if (player.getParity() == 1) {
@@ -106,18 +106,22 @@ int minimaxTTT(const TicTacToe& state, SmartPlayerTTT player, int depth) {
 }
  
 int main(int argc, char** argv) {
+
+    if (argc != 2) {
+        cout << "usage: " << argv[0] << " <iterations>" << endl;
+        exit(1);
+    }
+
     int gameIterations = atoi(argv[1]);
 
     SmartPlayer<TicTacToe> p0(0);
     SmartPlayer<TicTacToe> p1(1);
 
-    Config<TicTacToe> config {3};
-
     auto t0 = high_resolution_clock::now();
     for (int i = 0; i < gameIterations; i++) {
-        TicTacToe state(config);
+        TicTacToe state(3);
         while(!state.isTerminal()) {
-            int action = (state.getTurnParity()) ? p1.getStrategy(state) : p0.getStrategy(state);
+            auto action = (state.getTurnParity()) ? p1.getStrategy(state) : p0.getStrategy(state);
             state.makeMove(action);
         }
     }
@@ -130,9 +134,9 @@ int main(int argc, char** argv) {
 
     auto t2 = high_resolution_clock::now();
     for (int i = 0; i < gameIterations; i++) {
-        TicTacToe state(config);
+        TicTacToe state(3);
         while(!state.isTerminal()) {
-            int action = (state.getTurnParity()) ? p3.getStrategy(state) : p2.getStrategy(state);
+            auto action = (state.getTurnParity()) ? p3.getStrategy(state) : p2.getStrategy(state);
             state.makeMove(action);
         }
     }

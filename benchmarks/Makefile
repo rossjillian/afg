@@ -14,7 +14,7 @@ model_abstraction:
 
 model_inline:
 
-ai_abstraction: ../TicTacToe/board.o ../TicTacToe/players.hpp ../TicTacToe/tictactoe.hpp
+ai_abstraction: ../TicTacToe/board.o
 
 ../TicTacToe/board.o: ../TicTacToe/board.hpp
 

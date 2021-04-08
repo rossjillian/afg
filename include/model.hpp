@@ -11,7 +11,7 @@ namespace afg {
 namespace model {
 
 template <class T>
-concept Checkable = requires(T m, T other, T::move_t mv) {
+concept Checkable = requires(T m, T other, typename T::move_t mv) {
         { m.isTerminal() } -> std::same_as<bool>;
         { m.getTurnCount() } -> std::same_as<int>;
         { m.getAvailableMoves() } -> std::same_as<std::vector<typename T::move_t>>;
@@ -54,7 +54,6 @@ SearchResult<GameType> bfsFind(const GameType& initState,
             result.success = true;
             result.matches.push_back(st);
             continue;
-            /* return result; */
         }
 
         if (st.getTurnCount() == depthLimit || st.isTerminal()) {
@@ -77,7 +76,6 @@ SearchResult<GameType> bfsFind(const GameType& initState,
     result.success = !result.matches.empty();
     return result;
 }
-
 
 template<Checkable GameType, Predicate<GameType> Function>
 bool pathExists(const GameType& initState,
