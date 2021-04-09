@@ -67,7 +67,7 @@ class TPGame {
                 auto t0 = high_resolution_clock::now();
                 move_t action = (state.getTurnParity()) ? p2.getStrategy(state) : p1.getStrategy(state);
                 auto t1 = high_resolution_clock::now();
-
+                
                 if (timeout && duration_cast<seconds>(t1 - t0) > duration_cast<seconds>(duration<double>(timeout))) {
                     cout << "Player " << state.getTurnParity() << " exceeded their time limit!" << endl;
                     cout << "Player " << (state.getTurnParity() ^ 1) << " wins!" << endl;

@@ -1,13 +1,16 @@
 #ifndef AI_HPP
 #define AI_HPP
 
+#include <stdexcept>
 #include <iostream>
 #include <vector>
 #include <limits>
 #include <chrono>
+#include <sys/time.h>
 
 #include "game.hpp"
-//#include "players.hpp"
+
+bool DONE = false;
 
 using namespace afg::game;
 
@@ -19,7 +22,7 @@ namespace AI {
 	
     template<Playable GameType, IntelligentPlayer<GameType> P>
     int maximizer(GameType& state, typename GameType::move_t& bestMove, P player, int alpha, int beta, int depth) {
-	if (state.isTerminal() || depth == 0) 
+	if (state.isTerminal() || depth == 0 || DONE) 
             return player.heuristic(state);
 
         int val = std::numeric_limits<int>::min();
@@ -34,7 +37,7 @@ namespace AI {
                 bestMove = move;
             }
             alpha = std::max(alpha, val);
-            if (alpha >= beta)
+            if ((alpha >= beta) || DONE)
                 break;
         }
         return val;
@@ -42,7 +45,7 @@ namespace AI {
 
     template<Playable GameType, IntelligentPlayer<GameType> P>
     int minimizer(GameType& state, typename GameType::move_t& bestMove, P player, int alpha, int beta, int depth) {
-        if (state.isTerminal() || depth == 0) 
+        if (state.isTerminal() || depth == 0 || DONE) 
             return player.heuristic(state);
 
         int val = std::numeric_limits<int>::max();
@@ -57,7 +60,7 @@ namespace AI {
                 bestMove = move;
             }
             beta = std::min(beta, val);
-            if (beta <= alpha)
+            if ((beta <= alpha) || DONE)
                 break;
         }
         return val;
@@ -92,17 +95,24 @@ namespace AI {
         return bestMove;
     }
 
+    void alarmHandler(int sig) { 
+        DONE = true;    
+    }
+
     template<Playable GameType, IntelligentPlayer<GameType> P>
     GameType::move_t iterativeDeepening(const GameType& state, P player, int depth, double limit=0.5) {
-        auto startTime = std::chrono::high_resolution_clock::now();
+        struct itimerval it_val;
+        signal(SIGALRM, alarmHandler);
+        it_val.it_value.tv_sec = 1;
+        it_val.it_value.tv_usec = 0;  
+        it_val.it_interval = it_val.it_value;        
+        setitimer(ITIMER_REAL, &it_val, NULL);
         typename GameType::move_t bestMove;
-        bool timeUp = false;
-        for (int i = 1; (i < depth) && (!timeUp); i++) {
-            minimaxIterative(state, player, i, bestMove);
-            auto finishTime = std::chrono::high_resolution_clock::now();
-            std::chrono::duration<float> elapsed = finishTime - startTime;
-            if (elapsed.count() > limit) {
-                timeUp = true;
+        DONE = false;
+        for (int i = 1; i < depth; i++) {
+	    minimaxIterative(state, player, i, bestMove);
+            if (DONE) {
+                break;
             }
         }
         return bestMove;
