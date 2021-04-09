@@ -65,6 +65,33 @@ class SmartPlayer {
         double timeout;
 };
 
+template <Playable GameType>
+class QuickPlayer {
+    public:
+        QuickPlayer(int i, double t = 0.0)
+            : parity(i), timeout(t)
+        {}	
+
+        typename GameType::move_t getStrategy(const GameType& state) {
+              return getIterativeMove(state, *this);
+        }
+
+	double getTimeout() {
+            return timeout;
+        }
+        
+        int getParity() {
+            return parity;
+        }
+
+        int heuristic(const GameType& state);
+
+    private:
+	int parity;	
+        double timeout;
+};
+
+
 } // namespace players
 } // namespace afg
 

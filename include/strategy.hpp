@@ -11,7 +11,7 @@
 
 using namespace afg::AI;
 
-const int MAX_DEPTH = 9999;
+const int MAX_DEPTH = 20;
 
 namespace afg {
 namespace strategy {
