@@ -8,10 +8,10 @@
 #include "game.hpp"
 
 using namespace std;
+using namespace afg::strategy;
 
-const int MINIMIZER = -1;
-const int MAXIMIZER = 1;
-const int NEUTRAL = 0;
+namespace afg {
+namespace players {
 
 template <Playable GameType>
 class HumanPlayer {
@@ -32,15 +32,7 @@ class HumanPlayer {
             return parity;
         }
         
-        int heuristic(const GameType& state) {
-            if (state.isWinner()) {
-                if (this->getParity() == state.getTurnParity())
-                    return MINIMIZER;
-                else
-                    return MAXIMIZER;    
-            }
-            return NEUTRAL;
-        }
+        int heuristic(const GameType& state);
 
     private:
 	int parity;	
@@ -55,7 +47,7 @@ class SmartPlayer {
         {}	
 
         typename GameType::move_t getStrategy(const GameType& state) {
-              return getMinimaxTile(state, *this);
+              return getMinimaxMove(state, *this);
         }
 
 	double getTimeout() {
@@ -66,20 +58,14 @@ class SmartPlayer {
             return parity;
         }
 
-        int heuristic(const GameType& state) {
-            if (state.isWinner()) {
-                if (this->getParity() == state.getTurnParity())
-                    return MAXIMIZER;
-                else
-                    return MINIMIZER;    
-            }
-            return NEUTRAL;
-        }
-        
+        int heuristic(const GameType& state);
+
     private:
 	int parity;	
         double timeout;
 };
 
+} // namespace players
+} // namespace afg
 
 #endif

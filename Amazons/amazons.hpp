@@ -61,6 +61,10 @@ struct Amazons {
     vector<Move> getAvailableMoves() const {
         return b.getAvailableMoves( turnCount % 2 );
     }
+    
+    vector<Move> getAvailableMoves(int parity) const {
+        return b.getAvailableMoves(parity);
+    }
 
     friend ostream& operator<<(ostream&os, const Amazons& a);
 

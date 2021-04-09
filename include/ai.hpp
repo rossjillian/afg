@@ -5,9 +5,15 @@
 #include <vector>
 #include <limits>
 #include <chrono>
-#include "game.hpp"
 
+#include "game.hpp"
+#include "players.hpp"
+
+using namespace afg::game;
+
+namespace afg {
 namespace AI {
+
     template<Playable GameType, IntelligentPlayer<GameType> P>
     int minimizer(GameType& state, typename GameType::move_t& bestMove, P player, int alpha, int beta, int depth);
 	
@@ -102,6 +108,7 @@ namespace AI {
         return bestMove;
     }
 
-}
+} // namespace AI
+} // namespace afg
 
 #endif
