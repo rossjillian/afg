@@ -11,7 +11,7 @@ namespace afg {
 namespace game {
 
 template <class G>
-concept Playable = requires(G m, typename G::move_t mv, ostream& os) {
+concept Playable = requires(G m, typename G::move_t mv, ostream& os, istream& is) {
         { m.isTerminal() } -> same_as<bool>;
         { m.isWinner() } -> same_as<bool>; 
         { m.getTurnCount() } -> same_as<int>;
@@ -22,6 +22,7 @@ concept Playable = requires(G m, typename G::move_t mv, ostream& os) {
         { m.setup() } -> same_as<void>;
         { os << m };
         { os << mv };
+        { is >> mv };
 };
 
 template <class T, class G>
