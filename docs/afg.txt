@@ -11,8 +11,9 @@ Design Doc: https://github.com/rossjillian/afg/blob/main/docs/design.md
 
 Code: https://github.com/rossjillian/afg/tree/main/include
 
-Measurements/Benchmarks: https://github.com/rossjillian/afg/tree/main/benchmarks
-                         https://github.com/rossjillian/afg/blob/main/docs/benchmarks.md
+Measurements/Benchmarks:
+https://github.com/rossjillian/afg/tree/main/benchmarks
+https://github.com/rossjillian/afg/blob/main/docs/benchmarks.md
 
 Tutorial: https://github.com/rossjillian/afg#tutorial
 
