@@ -316,12 +316,12 @@ one above.
 
 We now define one more predicate to test if the `o`-player won:
 
-      auto xWon = [](const TicTacToe& st) {
+      auto oWon = [](const TicTacToe& st) {
           return st.b.isWinner() && (st.getTurnParity() == 0); 
       }
 
 With these two predicates, we can define a search to see if a path exists where
-we first reach a board configuration specified by `threeXs` and then go on to
+we first reach a board configuration specified by `threeOs` and then go on to
 see the `o`-player win the game. By specifying a depth limit, we can find the
 minimum number of turns required to see this scenario happen. After putting the
 two predicates in a vector, we then call
