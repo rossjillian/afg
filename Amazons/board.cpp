@@ -72,56 +72,9 @@ void Board::print(bool instructions) const
     printBoard(board, instructions);
 }
 
-bool Board::isValid(Move move, int turn) const 
+bool Board::isValid(Move move, int turn) const
 {
-    /* int max = BOARDSIZE * BOARDSIZE - 1; */
-    /* //No move can be outside the bounds of the board */
-    /* if (move.queenStartingPos > max || move.queenEndingPos > max || move.firePos > max) */
-    /* { */
-    /*     return false; */
-    /* } */
 
-    /* //The queen starting position must indeed be occupied by a queen */
-    /* int qspRow = move.queenStartingPos / BOARDSIZE; */
-    /* int qspCol = move.queenStartingPos % BOARDSIZE; */
-    /* if (board[qspRow][qspCol] != 'w' && board[qspRow][qspCol] != 'b') */
-    /* { */
-    /*     return false; */
-    /* } */
-
-    /* //white cannot move black's queen and visa versa */
-    /* if (board[qspRow][qspCol] == 'w' && turn == 1) */
-    /* { */
-    /*     return false; */
-    /* } */
-
-    /* if (board[qspRow][qspCol] == 'b' && turn == 0) */
-    /* { */
-    /*     return false; */
-    /* } */
-
-    /* //end and firing positions must be empty except if firing equal to starting pos */
-    /* int qepRow = move.queenEndingPos / BOARDSIZE; */
-    /* int qepCol = move.queenEndingPos % BOARDSIZE; */
-
-    /* int fpRow = move.firePos / BOARDSIZE; */
-    /* int fpCol = move.firePos % BOARDSIZE; */
-    /* if (board[qepRow][qepCol] != ' ') */
-    /* { */
-    /*     return false; */
-    /* } */
-
-    /* if (board[fpRow][fpCol] != ' ' && move.queenStartingPos != move.firePos) */
-    /* { */
-    /*     return false; */
-    /* } */
-
-    /* //starting and ending positions cannot be equal, queen cannot fire on a spot she's on */
-    /* if (move.queenStartingPos == move.queenEndingPos || move.queenEndingPos == move.firePos) */
-    /* { */
-    /*     return false; */
-    /* } */
-    
     //Check that the queen move is valid
     if (!isValidMovement(move.queenStartingPos, move.queenEndingPos))
     {
@@ -228,12 +181,6 @@ vector<Move> Board::getAvailableMoves(int turn) const
 bool Board::isWinner(int turn) const
 {
     turn ^= 1;
-    /* if (getAvailableMoves(turn).size() == 0) */
-    /* { */
-    /*     return true; */
-    /* } else { */
-    /*     return false; */
-    /* } */
 
     for (int qstart = 0; qstart < BOARDSIZE * BOARDSIZE; qstart++)
     {
@@ -244,7 +191,6 @@ bool Board::isWinner(int turn) const
                 Move move = {qstart, qend, firing};
                 if (isValid(move, turn))
                 {
-                    /* moves.push_back(move); */
                     return false;
                 }
             }
@@ -321,7 +267,7 @@ bool Board::isOnColumn(int start, int end) const
 
 bool Board::isOnDiagonalUp(int start, int end) const
 {
-    if (start > end){
+    if (start > end) {
         int temp = end;
         end = start;
         start = temp;
@@ -337,7 +283,7 @@ bool Board::isOnDiagonalUp(int start, int end) const
 
 bool Board::isOnDiagonalDown(int start, int end) const
 {
-    if (start > end){
+    if (start > end) {
         int temp = end;
         end = start;
         start = temp;
@@ -353,22 +299,20 @@ bool Board::isOnDiagonalDown(int start, int end) const
 
 bool Board::obstructedDiagonalDown(int start, int end) const
 {
-    if (start > end){
+    if (start > end) {
         int temp = end;
         end = start;
         start = temp;
     }
 
     int startRow = start / BOARDSIZE;
-    int startCol = start % BOARDSIZE;
 
     int endRow = end / BOARDSIZE;
 
     for (int i = 1; i < endRow - startRow; i++)
     {
-        /* cout << startRow + i; */
-        /* cout << startCol + i; */
-        if (board[startRow + i][startCol + i] != ' '){
+        int tile = start + (10 * i) + i;
+        if (getTile(tile) != ' ') {
             return true;
         }
     }
@@ -377,7 +321,7 @@ bool Board::obstructedDiagonalDown(int start, int end) const
 
 bool Board::obstructedDiagonalUp(int start, int end) const
 {
-    if (start > end){
+    if (start > end) {
         int temp = end;
         end = start;
         start = temp;
@@ -441,4 +385,17 @@ bool Board::obstructedColumn(int start, int end) const
         }
     }
     return false;
+}
+
+char Board::getTile(int tileNo) const
+{
+
+    if (tileNo > BOARDSIZE * BOARDSIZE)
+        return 0;
+
+    int r = tileNo / BOARDSIZE;
+    int c = tileNo % BOARDSIZE;
+
+    return board[r][c];
+
 }
