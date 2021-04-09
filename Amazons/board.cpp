@@ -72,7 +72,7 @@ void Board::print(bool instructions) const
     printBoard(board, instructions);
 }
 
-bool Board::isValid(Move move, int turn) const 
+bool Board::isValid(Move move, int turn) const
 {
     int max = BOARDSIZE * BOARDSIZE - 1;
     //No move can be outside the bounds of the board
@@ -228,12 +228,6 @@ vector<Move> Board::getAvailableMoves(int turn) const
 bool Board::isWinner(int turn) const
 {
     turn ^= 1;
-    /* if (getAvailableMoves(turn).size() == 0) */
-    /* { */
-    /*     return true; */
-    /* } else { */
-    /*     return false; */
-    /* } */
 
     for (int qstart = 0; qstart < BOARDSIZE * BOARDSIZE; qstart++)
     {
@@ -244,7 +238,6 @@ bool Board::isWinner(int turn) const
                 Move move = {qstart, qend, firing};
                 if (isValid(move, turn))
                 {
-                    /* moves.push_back(move); */
                     return false;
                 }
             }
@@ -321,7 +314,7 @@ bool Board::isOnColumn(int start, int end) const
 
 bool Board::isOnDiagonalUp(int start, int end) const
 {
-    if (start > end){
+    if (start > end) {
         int temp = end;
         end = start;
         start = temp;
@@ -337,7 +330,7 @@ bool Board::isOnDiagonalUp(int start, int end) const
 
 bool Board::isOnDiagonalDown(int start, int end) const
 {
-    if (start > end){
+    if (start > end) {
         int temp = end;
         end = start;
         start = temp;
@@ -353,22 +346,20 @@ bool Board::isOnDiagonalDown(int start, int end) const
 
 bool Board::obstructedDiagonalDown(int start, int end) const
 {
-    if (start > end){
+    if (start > end) {
         int temp = end;
         end = start;
         start = temp;
     }
 
     int startRow = start / BOARDSIZE;
-    int startCol = start % BOARDSIZE;
 
     int endRow = end / BOARDSIZE;
 
     for (int i = 1; i < endRow - startRow; i++)
     {
-        /* cout << startRow + i; */
-        /* cout << startCol + i; */
-        if (board[startRow + i][startCol + i] != ' '){
+        int tile = start + (10 * i) + i;
+        if (getTile(tile) != ' ') {
             return true;
         }
     }
@@ -377,7 +368,7 @@ bool Board::obstructedDiagonalDown(int start, int end) const
 
 bool Board::obstructedDiagonalUp(int start, int end) const
 {
-    if (start > end){
+    if (start > end) {
         int temp = end;
         end = start;
         start = temp;
@@ -441,4 +432,17 @@ bool Board::obstructedColumn(int start, int end) const
         }
     }
     return false;
+}
+
+char Board::getTile(int tileNo) const
+{
+
+    if (tileNo > BOARDSIZE * BOARDSIZE)
+        return 0;
+
+    int r = tileNo / BOARDSIZE;
+    int c = tileNo % BOARDSIZE;
+
+    return board[r][c];
+
 }

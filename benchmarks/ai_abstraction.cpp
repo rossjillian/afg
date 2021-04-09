@@ -16,16 +16,16 @@ class SmartPlayerTTT {
     public:
         SmartPlayerTTT(int i, double t = 0.0)
             : parity(i), timeout(t)
-        {}	
+        {}
 
         TicTacToe::move_t getStrategy(const TicTacToe& state) {
-              return minimaxTTT(state, *this, MAX_DEPTH);
+            return minimaxTTT(state, *this, MAX_DEPTH);
         }
 
-	double getTimeout() {
+        double getTimeout() {
             return timeout;
         }
-        
+
         int getParity() {
             return parity;
         }
@@ -35,13 +35,13 @@ class SmartPlayerTTT {
                 if (this->getParity() == state.getTurnParity())
                     return MAXIMIZER;
                 else
-                    return MINIMIZER;    
+                    return MINIMIZER;
             }
             return NEUTRAL;
         }
-        
+
     private:
-	int parity;	
+        int parity;
         double timeout;
 };
 
@@ -59,12 +59,12 @@ int maximizerTTT(TicTacToe& state, TicTacToe::move_t& bestMove, SmartPlayerTTT p
         TicTacToe::move_t minimizerBestMove;
         int newVal = minimizerTTT(stateCopy, minimizerBestMove, player, alpha, beta, depth-1);
         if (newVal > val) {
-	    val = newVal;
-	    bestMove = move;
+            val = newVal;
+            bestMove = move;
         }
         alpha = max(alpha, val);
         if (alpha >= beta)
-	    break;
+            break;
     }
     return val;
 }
@@ -81,12 +81,12 @@ int minimizerTTT(TicTacToe& state, TicTacToe::move_t& bestMove, SmartPlayerTTT p
         TicTacToe::move_t maximizerBestMove;
         int newVal = maximizerTTT(stateCopy, maximizerBestMove, player, alpha, beta, depth-1);
         if (newVal < val) {
-	    val = newVal;
-	    bestMove = move;
+            val = newVal;
+            bestMove = move;
         }
         beta = min(beta, val);
         if (beta <= alpha)
-	    break;
+            break;
     }
     return val;
 }
@@ -104,7 +104,7 @@ TicTacToe::move_t minimaxTTT(const TicTacToe& state, SmartPlayerTTT player, int 
     }
     return bestMove;
 }
- 
+
 int main(int argc, char** argv) {
 
     if (argc != 2) {

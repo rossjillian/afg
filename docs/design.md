@@ -163,8 +163,15 @@ success, number of states explored, and a vector of matches. It's important to e
                     const vector<Function>& predicates,
                     int depthLimit);
 
-`pathExists()` is meant to chain several `bfsFind()`s together by going through
-the vector of predicates and successively applying them.
+`pathExists()` essentially chains several `bfsFind()`s together by going through
+the vector of predicates and successively applying them in a backtracking search.
+I would've liked to implement `bfsFind()` as a generator using coroutines, but it seems
+that compiler support for coroutines is still very experimental. Since `bfsFind()` is an
+exhaustive search, it is infeasible to use directly in `pathExists()`, as I would like to
+greedily find states that satisfy all the predicates instead of slowly finding all states that
+satisfy each predicate. As such `pathExists()` is implemented similarly to `bfsFind()`, except that
+it recurses once it finds a match in order to search searching for a state that satisfies the next
+predicate.
 
 Both `bfsFind()` and `pathExists()` are available as simple templated functions
 in the `Model` namespace. No extra object creation required to use these
