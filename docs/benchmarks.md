@@ -72,16 +72,24 @@ exhaustive searches only increases as the depth of the space increases.
 
 LOC
 ---
-### Game
 
-### Artificial Intelligence
-Assuming the game is set up, we compared the lines of code that a programmer
-would have to write to implement minimax with the lines of code that a
-programmer would have to write to use `afg::AI::minimax`. To use
-`afg::AI::minimax`, a programmer would just need 1 line of code. We looked at
-several C++ implementations of minimax, which used on average 268 lines of code. 
+We dug around Github to find terminal-based implementations of TicTacToe to compare with our own.
+Since we want to convice users to use our library instead of implementing everything from scratch,
+we need to be sure that we're not bloating the code and that writing it with afg is actually simpler.
 
-Note that both of these numbers assume helper functions, such as heuristic, are
-implemented (implementing heuristic would require the same lines of code with
-`afg::AI::minimax` as a minimax implemented from scratch).
+Below are the results:
 
+| Implementation                | Game LOC | AI LOC |
+|-------------------------------|----------|--------|
+| [GeorgeSeif/Tic-Tac-Toe-AI]   |  261     |  70    |
+| [lukechu10/TicTacToe-Minimax] |  180     | 190    |
+| [Prajwal-P/TicTacToe-with-AI] |  200     |  97    |
+| [afg/TicTacToe]               |  189     |  \<10  |
+
+We found that afg's requirement of writing code to fill in concept requirements produced more organized code. On average,
+less code needed to be written for TicTacToe if you're hooking it into afg's framework. More often than not, the AI and the game mechanics were mixed in together which is bound to increase the code complexity. afg mandates the separation of game mechanics and AI. That's why the afg implementation of TicTacToe was on the shorter side. Additionally, you get a whole lot more features for the 189 LOC. The bulk of the AI work is done for you. All that's left is to supply an evaluation function. You also get the model checking code once you hook into afg!
+
+[GeorgeSeif/Tic-Tac-Toe-AI]: https://github.com/GeorgeSeif/Tic-Tac-Toe-AI
+[lukechu10/TicTacToe-Minimax]: https://github.com/lukechu10/TicTacToe-Minimax
+[Prajwal-P/TicTacToe-with-AI]: https://github.com/Prajwal-P/TicTacToe-with-AI
+[afg/TicTacToe]: https://github.com/rossjillian/afg
