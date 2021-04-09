@@ -27,7 +27,6 @@ bool Board::isValid(int move) const
 }
 
 void Board::makeMove(int move, int turn, Grid& board){
-    //TODO: could remove repetition from this calculation
     int row = move / board.size();
     int col = move % board.size();
     if (isValid(move))
@@ -40,7 +39,7 @@ void Board::makeMove(int move, int turn){
 
 vector<int> Board::getAvailableMoves() const
 {
-    vector<int> moves; // vector<Move> moves;
+    vector<int> moves;
     for (size_t i = 0; i < numTiles; i++)
     {
         if (isValid(i))
@@ -86,7 +85,6 @@ bool Board::checkDiagonals() const
     return winner1 || winner2;
 }
 
-//TODO: maybe some way to reuse code?
 bool Board::checkColumns() const
 {
     for (size_t c = 0; c < board.size(); c++)
