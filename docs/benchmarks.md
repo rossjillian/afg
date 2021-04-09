@@ -73,9 +73,10 @@ exhaustive searches only increases as the depth of the space increases.
 LOC
 ---
 
-We dug around Github to find terminal-based implementations of TicTacToe to compare with our own.
-Since we want to convice users to use our library instead of implementing everything from scratch,
-we need to be sure that we're not bloating the code and that writing it with afg is actually simpler.
+We dug around Github to find terminal-based implementations of TicTacToe to
+compare with our own.  Since we want to convice users to use our library instead
+of implementing everything from scratch, we need to be sure that we're not
+bloating the code and that writing it with afg is actually simpler.
 
 Below are the results:
 
@@ -86,8 +87,15 @@ Below are the results:
 | [Prajwal-P/TicTacToe-with-AI] |  200     |  97    |
 | [afg/TicTacToe]               |  189     |  \<10  |
 
-We found that afg's requirement of writing code to fill in concept requirements produced more organized code. On average,
-less code needed to be written for TicTacToe if you're hooking it into afg's framework. More often than not, the AI and the game mechanics were mixed in together which is bound to increase the code complexity. afg mandates the separation of game mechanics and AI. That's why the afg implementation of TicTacToe was on the shorter side. Additionally, you get a whole lot more features for the 189 LOC. The bulk of the AI work is done for you. All that's left is to supply an evaluation function. You also get the model checking code once you hook into afg!
+We found that afg's requirement of writing code to fill in concept requirements
+produced more organized code. On average, less code needed to be written for
+TicTacToe if you're hooking it into afg's framework. More often than not, the AI
+and the game mechanics were mixed in together which is bound to increase the
+code complexity. afg mandates the separation of game mechanics and AI. That's
+why the afg implementation of TicTacToe was on the shorter side. Additionally,
+you get a whole lot more features for the 189 LOC. The bulk of the AI work is
+done for you. All that's left is to supply an evaluation function. You also get
+the model checking code once you hook into afg!
 
 [GeorgeSeif/Tic-Tac-Toe-AI]: https://github.com/GeorgeSeif/Tic-Tac-Toe-AI
 [lukechu10/TicTacToe-Minimax]: https://github.com/lukechu10/TicTacToe-Minimax
