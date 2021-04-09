@@ -6,6 +6,60 @@ A recurring theme throughout the library is that we chose to use templates as op
 
 Game
 ----
+We supply for a user boilerplate code that will setup the game, run the main game loop, and keep track of game state, player turns, etc. For this, we require that the game satisfy the `Playable` concept: 
+
+```
+concept Playable = requires(G m, typename G::move_t mv, ostream& os) {
+        { m.isTerminal() } -> same_as<bool>;
+        { m.isWinner() } -> same_as<bool>; 
+        { m.getTurnCount() } -> same_as<int>;
+        { m.getTurnParity() } -> same_as<int>;
+        { m.getAvailableMoves() } -> same_as<vector<typename G::move_t>>;
+        { m.makeMove(mv) } -> same_as<void>;
+        { m.isValid(mv) } -> same_as<bool>;
+        { m.setup() } -> same_as<void>;
+        { os << m };
+        { os << mv };
+};
+```
+The programmer defines these functions, and we use them to run the game logic. Once the user has defined a struct that meets these requirements, the code to actually play the game will look like:
+
+```
+    // Create two players for the game
+    HumanPlayer<GameType> p1(0);
+    SmartPlayer<GameType> p2(0);
+    GameType gameType;
+
+    TPGame<GameType, HumanPlayer<GameType>, SmartPlayer<GameType>> game(gameType, p1, p2);
+
+    game.play();
+
+    return 0;
+```
+They create a concrete instance of their game struct to create a TPGame. Running `game.play()` will run the game loop and will use the functions they implemented to keep track of game state, interate across player turns and stop when the game is over. 
+
+The `play()` function first calls the `setup()` function defined by the game programmer, and then begins a loop that terminates the players' `isTerminal()` function returns true - in otherwords whenever the game is over.
+
+Within this loop, we prompt players to choose a move. We keep track of the time allotted for both players and end the game if a player runs out of time. We keep track of time using the chrono library:
+
+```
+double timeout = (state.getTurnParity()) ? p2.getTimeout() : p1.getTimeout();
+auto t0 = high_resolution_clock::now();
+move_t action = (state.getTurnParity()) ? p2.getStrategy(state) : p1.getStrategy(state);
+auto t1 = high_resolution_clock::now();
+
+if (timeout && duration_cast<seconds>(t1 - t0) > duration_cast<seconds>(duration<double>(timeout))) {
+    cout << "Player " << state.getTurnParity() << " exceeded their time limit!" << endl;
+    cout << "Player " << (state.getTurnParity() ^ 1) << " wins!" << endl;
+    return;
+}
+```
+
+We check the validity of a players' move using the `isValid()` function supplied by the game programmer, and then make the move using the `makeMove()` function. If we ever reach a terminal state, we check if there is a winner using `isWinner()` and announce the end of the game if so. 
+
+We found that adversarial games tend to follow a similar structure. Players make moves on their turn, and as long as the move is valid, the state changes and the turns are switched. When a state is reached such that someone has won or a tie occurs, the game ends. With our library, players do not have to write this repeitive code themselves, and can simply plug in the functions that they would most likely write otherwise. We tried only to require functions that were necessary for our boilerplate - only the most fundamental aspects of an adversarial game. Input and output can be customized by the game programmer's implementation of put-to and get-from operators. 
+
+Using concepts rather than inheritance allows us to avoid run-time polymorphism, so that we can upfront to compilation what might otherwise be done during runtime. 
 
 Artificial Intelligence
 -----------------------
@@ -109,8 +163,15 @@ success, number of states explored, and a vector of matches. It's important to e
                     const vector<Function>& predicates,
                     int depthLimit);
 
-`pathExists()` is meant to chain several `bfsFind()`s together by going through
-the vector of predicates and successively applying them.
+`pathExists()` essentially chains several `bfsFind()`s together by going through
+the vector of predicates and successively applying them in a backtracking search.
+I would've liked to implement `bfsFind()` as a generator using coroutines, but it seems
+that compiler support for coroutines is still very experimental. Since `bfsFind()` is an
+exhaustive search, it is infeasible to use directly in `pathExists()`, as I would like to
+greedily find states that satisfy all the predicates instead of slowly finding all states that
+satisfy each predicate. As such `pathExists()` is implemented similarly to `bfsFind()`, except that
+it recurses once it finds a match in order to search searching for a state that satisfies the next
+predicate.
 
 Both `bfsFind()` and `pathExists()` are available as simple templated functions
 in the `Model` namespace. No extra object creation required to use these
