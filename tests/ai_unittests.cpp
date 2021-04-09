@@ -2,13 +2,14 @@
 #include <cmath>
 #include <iostream>
 
-#include "ai.hpp"
 #include "board.hpp"
 #include "tictactoe.hpp"
 #include "strategy.hpp"
 #include "game.hpp"
 
 using namespace std;
+using namespace afg::game;
+using namespace afg::strategy;
 
 const int GUARANTEED_DEPTH = 10000;
 const int MINIMIZER = -1;
@@ -23,7 +24,7 @@ class DumbPlayer {
         {}
 
         typename GameType::move_t getStrategy(const GameType& state) {
-            return getRandomTile(state);    
+            return getRandomMove(state);    
         }
 
         double getTimeout() {
@@ -47,7 +48,7 @@ class SmartPlayer {
         {}
 
         typename GameType::move_t getStrategy(const GameType& state) {
-            return AI::minimax(state, *this, GUARANTEED_DEPTH);    
+            return getMinimaxMove(state, *this);    
         }
 
         double getTimeout() {
@@ -81,7 +82,7 @@ class TimedPlayer {
         {}
 
         typename GameType::move_t getStrategy(const GameType& state) {
-            return AI::iterativeDeepening(state, *this, depth, timeout);    
+            return getIterativeMove(state, *this);    
         }
 
         double getTimeout() {
@@ -137,8 +138,8 @@ void iterative_test() {
      
     for (int i = 0; i < 1000; i++) {
         TicTacToe state(3);
-        state.makeMove(getRandomTile(state));
-        state.makeMove(getRandomTile(state));
+        state.makeMove(getRandomMove(state));
+        state.makeMove(getRandomMove(state));
         while (!state.isTerminal()) {
             int action = ((state.getTurnParity()) ? p1.getStrategy(state) : p0.getStrategy(state)).tileNo;
             if (state.getTurnParity() == 0) {
@@ -157,8 +158,8 @@ void iterative_test() {
     int losses = 0;
     for (int i = 0; i < 1000; i++) {
         TicTacToe state(3);
-        state.makeMove(getRandomTile(state));
-        state.makeMove(getRandomTile(state));
+        state.makeMove(getRandomMove(state));
+        state.makeMove(getRandomMove(state));
         while (!state.isTerminal()) {
             int action = ((state.getTurnParity()) ? p1.getStrategy(state) : p0Quick.getStrategy(state)).tileNo;
             if (state.getTurnParity() == 0) {
