@@ -40,7 +40,7 @@ the player has a timeout, and that the player knows what order it plays.
     };
 
 ### IntelligentPlayer
-This concept builds upon our `Player` concept to also require a heuristic
+This concept builds upon our `Player` concept and also requires a heuristic
 function. This is important if we want `getStrategy` to be intelligent and use
 the algorithms given by `afg::AI`.
 
@@ -59,8 +59,7 @@ to be `Playable` and to have two `IntelligentPlayer`s.
 In `TPGame`, we provide a `play` function. This function prints to standard
 output instructions on whose player it is and execute their strategy. It also
 enforces a timeout and ensures that the moves each player cast are valid. Once
-there is a winner or draw in the game, the function prints to standard output
-the outcome and terminates. All of this functionality is built in by simply
+there is a winner or draw in the game, the function prints the outcome to standard output and terminates. All of this functionality is built in by simply
 enforcing the `Playable` and `IntelligentPlayer` concepts.
 
     void play();

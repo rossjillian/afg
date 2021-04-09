@@ -89,7 +89,7 @@ Below are the results:
 
 We found that afg's requirement of writing code to fill in concept requirements
 produced more organized code. On average, less code needed to be written for
-TicTacToe if you're hooking it into afg's framework. More often than not, the AI
+TicTacToe if you're hooking it into afg's framework (although it's important to keep in mind the small sample size). More often than not, the AI
 and the game mechanics were mixed in together which is bound to increase the
 code complexity. afg mandates the separation of game mechanics and AI. That's
 why the afg implementation of TicTacToe was on the shorter side. Additionally,

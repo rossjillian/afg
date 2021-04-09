@@ -13,7 +13,7 @@ also great for documentation and present a clear interface to the library user.
 
 Game
 ----
-We supply for a user boilerplate code that will setup the game, run the main
+We supply boilerplate code for a game programmer that will setup the game, run the main
 game loop, and keep track of game state, player turns, etc. For this, we require
 that the game satisfy the `Playable` concept: 
 
@@ -47,14 +47,14 @@ actually play the game will look like:
 
     return 0;
 ```
-They create a concrete instance of their game struct to create a TPGame. Running
+The game programmer creates a concrete instance of their game struct to create a TPGame. Running
 `game.play()` will run the game loop and will use the functions they implemented
 to keep track of game state, interate across player turns and stop when the game
 is over. 
 
 The `play()` function first calls the `setup()` function defined by the game
-programmer, and then begins a loop that terminates the players' `isTerminal()`
-function returns true - in otherwords whenever the game is over.
+programmer, and then begins a loop that terminates if the `isTerminal()`
+function returns true - in other words whenever the game is over.
 
 Within this loop, we prompt players to choose a move. We keep track of the time
 allotted for both players and end the game if a player runs out of time. We keep
@@ -76,10 +76,10 @@ if (timeout && duration_cast<seconds>(t1 - t0) > duration_cast<seconds>(duration
 We check the validity of a players' move using the `isValid()` function supplied
 by the game programmer, and then make the move using the `makeMove()` function.
 If we ever reach a terminal state, we check if there is a winner using
-`isWinner()` and announce the end of the game if so. 
+`isWinner()` and announce the winner if so. 
 
 We found that adversarial games tend to follow a similar structure. Players make
-moves on their turn, and as long as the move is valid, the state changes and the
+moves on their turns, and as long as a move is valid, the state changes and the
 turns are switched. When a state is reached such that someone has won or a tie
 occurs, the game ends. With our library, players do not have to write this
 repetitive code themselves, and can simply plug in the functions that they would
@@ -216,10 +216,10 @@ solution at.
 
 `pathExists()` essentially chains several `bfsFind()`s together by going through
 the vector of predicates and successively applying them in a backtracking
-search.  I would've liked to implement `bfsFind()` as a generator using
+search.  We would've liked to implement `bfsFind()` as a generator using
 coroutines, but it seems that compiler support for coroutines is still very
 experimental. Since `bfsFind()` is an exhaustive search, it is infeasible to use
-directly in `pathExists()`, as I would like to greedily find states that satisfy
+directly in `pathExists()`, as we would like to greedily find states that satisfy
 all the predicates instead of slowly finding all states that satisfy each
 predicate. As such `pathExists()` is implemented similarly to `bfsFind()`,
 except that it recurses once it finds a match in order to search searching for a
@@ -238,7 +238,7 @@ a state and return a bool, so that's what we mandate:
         { f(m) } -> same_as<bool>;
     };
 
-I originally used `std::function<bool(const Model&)>` but found that that didn't
-work too well whenever I used lambdas. I suppose the phase of the compiler that
+We originally used `std::function<bool(const Model&)>` but found that that didn't
+work too well whenever we used lambdas. I suppose the phase of the compiler that
 does template computations happens before the phase were lambdas are typechecked
 to see if they can be converted to an equivalent type.
