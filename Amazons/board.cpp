@@ -74,54 +74,54 @@ void Board::print(bool instructions) const
 
 bool Board::isValid(Move move, int turn) const 
 {
-    /* int max = BOARDSIZE * BOARDSIZE - 1; */
-    /* //No move can be outside the bounds of the board */
-    /* if (move.queenStartingPos > max || move.queenEndingPos > max || move.firePos > max) */
-    /* { */
-    /*     return false; */
-    /* } */
+    int max = BOARDSIZE * BOARDSIZE - 1;
+    //No move can be outside the bounds of the board
+    if (move.queenStartingPos > max || move.queenEndingPos > max || move.firePos > max)
+    {
+        return false;
+    }
 
-    /* //The queen starting position must indeed be occupied by a queen */
-    /* int qspRow = move.queenStartingPos / BOARDSIZE; */
-    /* int qspCol = move.queenStartingPos % BOARDSIZE; */
-    /* if (board[qspRow][qspCol] != 'w' && board[qspRow][qspCol] != 'b') */
-    /* { */
-    /*     return false; */
-    /* } */
+    //The queen starting position must indeed be occupied by a queen
+    int qspRow = move.queenStartingPos / BOARDSIZE;
+    int qspCol = move.queenStartingPos % BOARDSIZE;
+    if (board[qspRow][qspCol] != 'w' && board[qspRow][qspCol] != 'b')
+    {
+        return false;
+    }
 
-    /* //white cannot move black's queen and visa versa */
-    /* if (board[qspRow][qspCol] == 'w' && turn == 1) */
-    /* { */
-    /*     return false; */
-    /* } */
+    //white cannot move black's queen and visa versa
+    if (board[qspRow][qspCol] == 'w' && turn == 1)
+    {
+        return false;
+    }
 
-    /* if (board[qspRow][qspCol] == 'b' && turn == 0) */
-    /* { */
-    /*     return false; */
-    /* } */
+    if (board[qspRow][qspCol] == 'b' && turn == 0)
+    {
+        return false;
+    }
 
-    /* //end and firing positions must be empty except if firing equal to starting pos */
-    /* int qepRow = move.queenEndingPos / BOARDSIZE; */
-    /* int qepCol = move.queenEndingPos % BOARDSIZE; */
+    //end and firing positions must be empty except if firing equal to starting pos
+    int qepRow = move.queenEndingPos / BOARDSIZE;
+    int qepCol = move.queenEndingPos % BOARDSIZE;
 
-    /* int fpRow = move.firePos / BOARDSIZE; */
-    /* int fpCol = move.firePos % BOARDSIZE; */
-    /* if (board[qepRow][qepCol] != ' ') */
-    /* { */
-    /*     return false; */
-    /* } */
+    int fpRow = move.firePos / BOARDSIZE;
+    int fpCol = move.firePos % BOARDSIZE;
+    if (board[qepRow][qepCol] != ' ')
+    {
+        return false;
+    }
 
-    /* if (board[fpRow][fpCol] != ' ' && move.queenStartingPos != move.firePos) */
-    /* { */
-    /*     return false; */
-    /* } */
+    if (board[fpRow][fpCol] != ' ' && move.queenStartingPos != move.firePos)
+    {
+        return false;
+    }
 
-    /* //starting and ending positions cannot be equal, queen cannot fire on a spot she's on */
-    /* if (move.queenStartingPos == move.queenEndingPos || move.queenEndingPos == move.firePos) */
-    /* { */
-    /*     return false; */
-    /* } */
-    
+    //starting and ending positions cannot be equal, queen cannot fire on a spot she's on */
+    if (move.queenStartingPos == move.queenEndingPos || move.queenEndingPos == move.firePos)
+    {
+        return false;
+    }
+
     //Check that the queen move is valid
     if (!isValidMovement(move.queenStartingPos, move.queenEndingPos))
     {
