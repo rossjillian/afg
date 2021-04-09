@@ -1,12 +1,21 @@
 Design Overview
 ===============
-This document presents an in-depth design overview of the major components of afg. Here we explain our rationale behind implementing these features and how we went about it in C++.
+This document presents an in-depth design overview of the major components of
+afg. Here we explain our rationale behind implementing these features and how we
+went about it in C++.
 
-A recurring theme throughout the library is that we chose to use templates as opposed to virtual base classes so we can have compile-time polymorphism. Templates allow us to have polymorphism like virtual classes, except the work needed to make them possible is done during compile-time. To improve typechecking, we employ C++20 Concepts to constrain our templates. Concepts are also great for documentation and present a clear interface to the library user.
+A recurring theme throughout the library is that we chose to use templates as
+opposed to virtual base classes so we can have compile-time polymorphism.
+Templates allow us to have polymorphism like virtual classes, except the work
+needed to make them possible is done during compile-time. To improve
+typechecking, we employ C++20 Concepts to constrain our templates. Concepts are
+also great for documentation and present a clear interface to the library user.
 
 Game
 ----
-We supply for a user boilerplate code that will setup the game, run the main game loop, and keep track of game state, player turns, etc. For this, we require that the game satisfy the `Playable` concept: 
+We supply for a user boilerplate code that will setup the game, run the main
+game loop, and keep track of game state, player turns, etc. For this, we require
+that the game satisfy the `Playable` concept: 
 
 ```
 concept Playable = requires(G m, typename G::move_t mv, ostream& os) {
@@ -22,7 +31,9 @@ concept Playable = requires(G m, typename G::move_t mv, ostream& os) {
         { os << mv };
 };
 ```
-The programmer defines these functions, and we use them to run the game logic. Once the user has defined a struct that meets these requirements, the code to actually play the game will look like:
+The programmer defines these functions, and we use them to run the game logic.
+Once the user has defined a struct that meets these requirements, the code to
+actually play the game will look like:
 
 ```
     // Create two players for the game
@@ -36,11 +47,18 @@ The programmer defines these functions, and we use them to run the game logic. O
 
     return 0;
 ```
-They create a concrete instance of their game struct to create a TPGame. Running `game.play()` will run the game loop and will use the functions they implemented to keep track of game state, interate across player turns and stop when the game is over. 
+They create a concrete instance of their game struct to create a TPGame. Running
+`game.play()` will run the game loop and will use the functions they implemented
+to keep track of game state, interate across player turns and stop when the game
+is over. 
 
-The `play()` function first calls the `setup()` function defined by the game programmer, and then begins a loop that terminates the players' `isTerminal()` function returns true - in otherwords whenever the game is over.
+The `play()` function first calls the `setup()` function defined by the game
+programmer, and then begins a loop that terminates the players' `isTerminal()`
+function returns true - in otherwords whenever the game is over.
 
-Within this loop, we prompt players to choose a move. We keep track of the time allotted for both players and end the game if a player runs out of time. We keep track of time using the chrono library:
+Within this loop, we prompt players to choose a move. We keep track of the time
+allotted for both players and end the game if a player runs out of time. We keep
+track of time using the chrono library:
 
 ```
 double timeout = (state.getTurnParity()) ? p2.getTimeout() : p1.getTimeout();
@@ -55,15 +73,31 @@ if (timeout && duration_cast<seconds>(t1 - t0) > duration_cast<seconds>(duration
 }
 ```
 
-We check the validity of a players' move using the `isValid()` function supplied by the game programmer, and then make the move using the `makeMove()` function. If we ever reach a terminal state, we check if there is a winner using `isWinner()` and announce the end of the game if so. 
+We check the validity of a players' move using the `isValid()` function supplied
+by the game programmer, and then make the move using the `makeMove()` function.
+If we ever reach a terminal state, we check if there is a winner using
+`isWinner()` and announce the end of the game if so. 
 
-We found that adversarial games tend to follow a similar structure. Players make moves on their turn, and as long as the move is valid, the state changes and the turns are switched. When a state is reached such that someone has won or a tie occurs, the game ends. With our library, players do not have to write this repeitive code themselves, and can simply plug in the functions that they would most likely write otherwise. We tried only to require functions that were necessary for our boilerplate - only the most fundamental aspects of an adversarial game. Input and output can be customized by the game programmer's implementation of put-to and get-from operators. 
+We found that adversarial games tend to follow a similar structure. Players make
+moves on their turn, and as long as the move is valid, the state changes and the
+turns are switched. When a state is reached such that someone has won or a tie
+occurs, the game ends. With our library, players do not have to write this
+repeitive code themselves, and can simply plug in the functions that they would
+most likely write otherwise. We tried only to require functions that were
+necessary for our boilerplate - only the most fundamental aspects of an
+adversarial game. Input and output can be customized by the game programmer's
+implementation of put-to and get-from operators. 
 
-Using concepts rather than inheritance allows us to avoid run-time polymorphism, so that we can upfront to compilation what might otherwise be done during runtime. 
+Using concepts rather than inheritance allows us to avoid run-time polymorphism,
+so that we can upfront to compilation what might otherwise be done during
+runtime. 
 
 Artificial Intelligence
 -----------------------
-To employ a game player that uses AI algorithms like minimax, the game player needs to have a heuristic function that evaluates state. Thus, in order for the game dev to use minimax, we request a player that satisfies the constraints of the `IntelligentPlayer` concept:
+To employ a game player that uses AI algorithms like minimax, the game player
+needs to have a heuristic function that evaluates state. Thus, in order for the
+game dev to use minimax, we request a player that satisfies the constraints of
+the `IntelligentPlayer` concept:
 
     template <class T, class G>
     concept Player = requires(T player, G game) {
@@ -78,9 +112,15 @@ To employ a game player that uses AI algorithms like minimax, the game player ne
         { player.heuristic(game) } -> same_as<int>;
     };
 
-We employ template programming to specify to the game dev what functionality their player `T` needs to support in order to be hooked up to our AI framework. To use our AI algorithms, the game dev simply needs to add one additional function on top of the base three functions that any (intelligent or non-intelligent) player needs in order to be hooked into our game framework.
+We employ template programming to specify to the game dev what functionality
+their player `T` needs to support in order to be hooked up to our AI framework.
+To use our AI algorithms, the game dev simply needs to add one additional
+function on top of the base three functions that any (intelligent or
+non-intelligent) player needs in order to be hooked into our game framework.
 
-Note that a player is defined with respect to a constrained game that must be `Playable`. This means that a player can use any of the functions requested by `Playable` when implementing their strategy and heuristic functions:
+Note that a player is defined with respect to a constrained game that must be
+`Playable`. This means that a player can use any of the functions requested by
+`Playable` when implementing their strategy and heuristic functions:
 
     template <class G>
     concept Playable = requires(G m, G::move_t mv, ostream& os) {
@@ -97,7 +137,13 @@ Note that a player is defined with respect to a constrained game that must be `P
         { os << mv };
     };
 
-We provide the game dev with the option for an `IntelligentPlayer` to use (1) minimax with alpha beta pruning or (2) minimax with alpha beta pruning and iterative deepening via timeout. Minimax with alpha beta pruning decreases the number of states that need to be evaluated while ensuring that the optimal state is found. Minimax with iterative deepening adds an additional time constraint to the search of all possible states, which is important for maintaining playability in games with a large number of possible states. 
+We provide the game dev with the option for an `IntelligentPlayer` to use (1)
+minimax with alpha beta pruning or (2) minimax with alpha beta pruning and
+iterative deepening via timeout. Minimax with alpha beta pruning decreases the
+number of states that need to be evaluated while ensuring that the optimal state
+is found. Minimax with iterative deepening adds an additional time constraint to
+the search of all possible states, which is important for maintaining
+playability in games with a large number of possible states. 
 
 Model Checking
 --------------
@@ -153,9 +199,14 @@ Finally, here are the two main model checking utilities.
                                    Function isGoal,
                                    int depthLimit);
 
-`bfsFind()` is a depth-limited BFS search that traverses the state space. We return a
-templatized `SearchResult` which contains some information about the search –
-success, number of states explored, and a vector of matches. It's important to enforce a depth limit for these kinds of searches given that they're undirected. The state space can, at times, expand exponentially every turn which will slow down the run time. `depthLimit` is there to encourage the programmar to think about what could be the shallowest depth they'll find their solution at.
+`bfsFind()` is a depth-limited BFS search that traverses the state space. We
+return a templatized `SearchResult` which contains some information about the
+search – success, number of states explored, and a vector of matches. It's
+important to enforce a depth limit for these kinds of searches given that
+they're undirected.  The state space can, at times, expand exponentially every
+turn which will slow down the run time. `depthLimit` is there to encourage the
+programmar to think about what could be the shallowest depth they'll find their
+solution at.
 
 
     template<Checkable GameType, Predicate<GameType> Function>
@@ -164,29 +215,30 @@ success, number of states explored, and a vector of matches. It's important to e
                     int depthLimit);
 
 `pathExists()` essentially chains several `bfsFind()`s together by going through
-the vector of predicates and successively applying them in a backtracking search.
-I would've liked to implement `bfsFind()` as a generator using coroutines, but it seems
-that compiler support for coroutines is still very experimental. Since `bfsFind()` is an
-exhaustive search, it is infeasible to use directly in `pathExists()`, as I would like to
-greedily find states that satisfy all the predicates instead of slowly finding all states that
-satisfy each predicate. As such `pathExists()` is implemented similarly to `bfsFind()`, except that
-it recurses once it finds a match in order to search searching for a state that satisfies the next
-predicate.
+the vector of predicates and successively applying them in a backtracking
+search.  I would've liked to implement `bfsFind()` as a generator using
+coroutines, but it seems that compiler support for coroutines is still very
+experimental. Since `bfsFind()` is an exhaustive search, it is infeasible to use
+directly in `pathExists()`, as I would like to greedily find states that satisfy
+all the predicates instead of slowly finding all states that satisfy each
+predicate. As such `pathExists()` is implemented similarly to `bfsFind()`,
+except that it recurses once it finds a match in order to search searching for a
+state that satisfies the next predicate.
 
 Both `bfsFind()` and `pathExists()` are available as simple templated functions
 in the `Model` namespace. No extra object creation required to use these
 powerful functions.
 
 The `Function` template parameter is constrained using the `Predicate` concept,
-just for the sake of adding better typechecking to the function. It has to take a state
-and return a bool, so that's what we mandate:
+just for the sake of adding better typechecking to the function. It has to take
+a state and return a bool, so that's what we mandate:
 
     template <class Function, class Model>
     concept Predicate = Checkable<Model> && requires(Function f, Model m) {
         { f(m) } -> same_as<bool>;
     };
 
-I originally used `std::function<bool(const Model&)>` but found that that didn't work too well
-whenever I used lambdas. I suppose the phase of the compiler that does template computations
-happens before the phase were lambdas are typechecked to see if they can be converted to an
-equivalent type.
+I originally used `std::function<bool(const Model&)>` but found that that didn't
+work too well whenever I used lambdas. I suppose the phase of the compiler that
+does template computations happens before the phase were lambdas are typechecked
+to see if they can be converted to an equivalent type.
