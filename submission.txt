@@ -1,0 +1,21 @@
+afg: AI for Games
+=================
+All of our code, documentation, and benchmarks are on GitHub!
+https://github.com/rossjillian/afg
+
+Hollis Lehv <hml2138@columbia.edu>
+Hans Montero <hjm2133@columbia.edu>
+Jillian Ross <jr3751@columbia.edu>
+
+Design Doc: https://github.com/rossjillian/afg/blob/main/docs/design.md
+
+Code: https://github.com/rossjillian/afg/tree/main/include
+
+Measurements/Benchmarks: https://github.com/rossjillian/afg/tree/main/benchmarks
+                         https://github.com/rossjillian/afg/blob/main/docs/benchmarks.md
+
+Tutorial: https://github.com/rossjillian/afg#tutorial
+
+Manual: https://github.com/rossjillian/afg/blob/main/docs/manual.md
+
+Presentation: https://github.com/rossjillian/afg/blob/main/docs/presentation.pdf
